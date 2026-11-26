@@ -107,11 +107,21 @@
         main {
             flex: 1;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             text-align: center;
             padding: 40px 50px 90px;
             width: 100%;
+            gap: 20px;
+        }
+
+        .wip-notice {
+            color: #d92b2b;
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 1px;
+            text-transform: uppercase;
         }
 
         .main-text {
@@ -410,7 +420,6 @@
                 height: 60px;
             }
 
-            /* Bigger title on the right next to logo */
             .site-title {
                 position: static;
                 transform: none;
@@ -420,7 +429,6 @@
                 line-height: 1.2;
             }
 
-            /* Bigger, centered Scan button underneath the title bar */
             .scan-button {
                 position: absolute;
                 top: calc(100% + 16px);
@@ -451,6 +459,11 @@
 
             main {
                 padding: 85px 20px 80px;
+                gap: 14px;
+            }
+
+            .wip-notice {
+                font-size: 20px;
             }
 
             .main-text {
@@ -480,6 +493,7 @@
     </header>
 
     <main id="pageMain">
+        <p class="wip-notice">Work in progress</p>
         <p class="main-text">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore. Magna aliqua ut enim ad minim veniam, quis nostrud. Exercitation ullamco laboris nisi ut aliquip ex ea. Commodo consequat duis aute irure dolor in reprehenderit.
         </p>
@@ -531,111 +545,111 @@
     </section>
 
     <script>
-        const openScanBtn = document.getElementById("openScanBtn");
-        const bottomPopup = document.getElementById("bottomPopup");
-        const overlay = document.getElementById("overlay");
-        const cameraInput = document.getElementById("cameraInput");
-        const photosInput = document.getElementById("photosInput");
-        const resultsPage = document.getElementById("resultsPage");
-        const resultsOutput = document.getElementById("resultsOutput");
-        const backHomeBtn = document.getElementById("backHomeBtn");
+        const openScanBtn = document.getElementById('openScanBtn');
+        const bottomPopup = document.getElementById('bottomPopup');
+        const overlay = document.getElementById('overlay');
+        const cameraInput = document.getElementById('cameraInput');
+        const photosInput = document.getElementById('photosInput');
+        const resultsPage = document.getElementById('resultsPage');
+        const resultsOutput = document.getElementById('resultsOutput');
+        const backHomeBtn = document.getElementById('backHomeBtn');
 
         // Open the popup
-        openScanBtn.addEventListener("click", () => {
-            bottomPopup.classList.add("active");
-            overlay.classList.add("active");
+        openScanBtn.addEventListener('click', () => {
+            bottomPopup.classList.add('active');
+            overlay.classList.add('active');
         });
 
         // Close the popup when clicking outside
-        overlay.addEventListener("click", () => {
-            bottomPopup.classList.remove("active");
-            overlay.classList.remove("active");
+        overlay.addEventListener('click', () => {
+            bottomPopup.classList.remove('active');
+            overlay.classList.remove('active');
         });
 
-        // Return to home view
-        backHomeBtn.addEventListener("click", () => {
-            document.body.classList.remove("white-mode");
-            resultsPage.style.display = "none";
-            document.getElementById("pageHeader").style.display = "flex";
-            document.getElementById("pageMain").style.display = "flex";
-            document.getElementById("pageFooter").style.display = "block";
-            cameraInput.value = "";
-            photosInput.value = "";
+        // Return to main page
+        backHomeBtn.addEventListener('click', () => {
+            document.body.classList.remove('white-mode');
+            resultsPage.style.display = 'none';
+            document.getElementById('pageHeader').style.display = 'flex';
+            document.getElementById('pageMain').style.display = 'flex';
+            document.getElementById('pageFooter').style.display = 'block';
+            cameraInput.value = '';
+            photosInput.value = '';
         });
 
         function showBlankWhitePage() {
-            bottomPopup.classList.remove("active");
-            overlay.classList.remove("active");
-            document.getElementById("pageHeader").style.display = "none";
-            document.getElementById("pageMain").style.display = "none";
-            document.getElementById("pageFooter").style.display = "none";
-            document.body.classList.add("white-mode");
-            resultsPage.style.display = "block";
-            resultsOutput.innerHTML = "<p class="status-msg">Scanning sheet, please wait...</p>";
+            bottomPopup.classList.remove('active');
+            overlay.classList.remove('active');
+            document.getElementById('pageHeader').style.display = 'none';
+            document.getElementById('pageMain').style.display = 'none';
+            document.getElementById('pageFooter').style.display = 'none';
+            document.body.classList.add('white-mode');
+            resultsPage.style.display = 'block';
+            resultsOutput.innerHTML = '<p class="status-msg">Scanning sheet, please wait...</p>';
         }
 
         function capitalizeFirst(str) {
-            const clean = (str || "").replace(/\s+/g, " ").trim();
-            if (!clean) return "No text detected.";
+            const clean = (str || '').replace(/\s+/g, ' ').trim();
+            if (!clean) return 'No text detected.';
             return clean.charAt(0).toUpperCase() + clean.slice(1);
         }
 
         // Sheet layout coordinates relative to QR code top-left (in units of QR width)
         const SECTIONS = [
             {
-                title: "Too disgusting to rate",
-                boxes: [{ label: "Too disgusting to rate", dx: -0.10, dy: -3.96 }],
-                textLabel: "Why",
+                title: 'Too disgusting to rate',
+                boxes: [{ label: 'Too disgusting to rate', dx: -0.10, dy: -3.96 }],
+                textLabel: 'Why',
                 textArea: { dx: 2.65, dy: -4.08, dw: 1.75, dh: 0.28 }
             },
             {
-                title: "Stall 1",
+                title: 'Stall 1',
                 boxes: [
-                    { label: "Good", dx: 0.45, dy: -3.32 },
-                    { label: "Dirty", dx: 0.45, dy: -3.06 },
-                    { label: "Damaged", dx: 0.45, dy: -2.79 },
-                    { label: "Broken", dx: 0.45, dy: -2.53 }
+                    { label: 'Good', dx: 0.45, dy: -3.32 },
+                    { label: 'Dirty', dx: 0.45, dy: -3.06 },
+                    { label: 'Damaged', dx: 0.45, dy: -2.79 },
+                    { label: 'Broken', dx: 0.45, dy: -2.53 }
                 ],
-                textLabel: "Description",
+                textLabel: 'Description',
                 textArea: { dx: 0.35, dy: -2.35, dw: 1.75, dh: 0.32 }
             },
             {
-                title: "Hand washing",
+                title: 'Hand washing',
                 boxes: [
-                    { label: "Good", dx: 2.33, dy: -3.32 },
-                    { label: "Dirty", dx: 2.33, dy: -3.06 },
-                    { label: "Damaged", dx: 2.33, dy: -2.79 },
-                    { label: "Broken", dx: 2.33, dy: -2.53 }
+                    { label: 'Good', dx: 2.33, dy: -3.32 },
+                    { label: 'Dirty', dx: 2.33, dy: -3.06 },
+                    { label: 'Damaged', dx: 2.33, dy: -2.79 },
+                    { label: 'Broken', dx: 2.33, dy: -2.53 }
                 ],
-                textLabel: "Description",
+                textLabel: 'Description',
                 textArea: { dx: 2.25, dy: -2.35, dw: 1.75, dh: 0.32 }
             },
             {
-                title: "Stall 2",
+                title: 'Stall 2',
                 boxes: [
-                    { label: "Good", dx: 0.45, dy: -1.82 },
-                    { label: "Dirty", dx: 0.45, dy: -1.56 },
-                    { label: "Damaged", dx: 0.45, dy: -1.29 },
-                    { label: "Broken", dx: 0.45, dy: -1.03 }
+                    { label: 'Good', dx: 0.45, dy: -1.82 },
+                    { label: 'Dirty', dx: 0.45, dy: -1.56 },
+                    { label: 'Damaged', dx: 0.45, dy: -1.29 },
+                    { label: 'Broken', dx: 0.45, dy: -1.03 }
                 ],
-                textLabel: "Description",
+                textLabel: 'Description',
                 textArea: { dx: 0.35, dy: -0.85, dw: 1.75, dh: 0.32 }
             },
             {
-                title: "Urinal",
+                title: 'Urinal',
                 boxes: [
-                    { label: "Good", dx: 2.33, dy: -1.82 },
-                    { label: "Dirty", dx: 2.33, dy: -1.56 },
-                    { label: "Damaged", dx: 2.33, dy: -1.29 },
-                    { label: "Broken", dx: 2.33, dy: -1.03 }
+                    { label: 'Good', dx: 2.33, dy: -1.82 },
+                    { label: 'Dirty', dx: 2.33, dy: -1.56 },
+                    { label: 'Damaged', dx: 2.33, dy: -1.29 },
+                    { label: 'Broken', dx: 2.33, dy: -1.03 }
                 ],
-                textLabel: "Description",
+                textLabel: 'Description',
                 textArea: { dx: 2.25, dy: -0.85, dw: 1.75, dh: 0.32 }
             },
             {
-                title: "Comments",
+                title: 'Comments',
                 boxes: [],
-                textLabel: "Comments",
+                textLabel: 'Comments',
                 textArea: { dx: 1.05, dy: -0.22, dw: 3.10, dh: 1.25 }
             }
         ];
@@ -647,10 +661,9 @@
             const size = half * 2;
 
             if (x0 < 0 || y0 < 0 || x0 + size >= width || y0 + size >= height) {
-                return "not_detected";
+                return 'not_detected';
             }
 
-            // Sample surrounding paper brightness just to the left of the box
             const bgX = Math.max(0, x0 - size * 2);
             const bgData = ctx.getImageData(bgX, y0, size, size).data;
             let bgSum = 0;
@@ -658,9 +671,8 @@
                 bgSum += (bgData[i] + bgData[i + 1] + bgData[i + 2]) / 3;
             }
             const paperLuma = bgSum / (bgData.length / 4);
-            if (paperLuma < 80) return "not_detected";
+            if (paperLuma < 80) return 'not_detected';
 
-            // Sample interior of the checkbox
             const boxData = ctx.getImageData(x0, y0, size, size).data;
             let darkPixels = 0;
             const totalPixels = boxData.length / 4;
@@ -672,9 +684,9 @@
             }
 
             const ratio = darkPixels / totalPixels;
-            if (ratio >= 0.48) return "shaded";
-            if (ratio >= 0.24) return "not_detected";
-            return "unshaded";
+            if (ratio >= 0.48) return 'shaded';
+            if (ratio >= 0.24) return 'not_detected';
+            return 'unshaded';
         }
 
         async function readUnderlinedRegion(sourceCanvas, x, y, w, h) {
@@ -683,20 +695,20 @@
             const sw = Math.min(sourceCanvas.width - sx, Math.round(w));
             const sh = Math.min(sourceCanvas.height - sy, Math.round(h));
 
-            if (sw <= 10 || sh <= 10) return "No text detected.";
+            if (sw <= 10 || sh <= 10) return 'No text detected.';
 
-            const crop = document.createElement("canvas");
+            const crop = document.createElement('canvas');
             crop.width = sw * 2;
             crop.height = sh * 2;
-            const cctx = crop.getContext("2d");
+            const cctx = crop.getContext('2d');
             cctx.drawImage(sourceCanvas, sx, sy, sw, sh, 0, 0, crop.width, crop.height);
 
             try {
-                const res = await Tesseract.recognize(crop, "eng");
-                const cleaned = res.data.text.replace(/[_|—–-]+/g, " ").trim();
+                const res = await Tesseract.recognize(crop, 'eng');
+                const cleaned = res.data.text.replace(/[_|—–-]+/g, ' ').trim();
                 return capitalizeFirst(cleaned);
             } catch (e) {
-                return "No text detected.";
+                return 'No text detected.';
             }
         }
 
@@ -708,20 +720,20 @@
 
             const img = new Image();
             img.onload = async () => {
-                const canvas = document.createElement("canvas");
+                const canvas = document.createElement('canvas');
                 const maxDim = 1400;
                 const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
                 canvas.width = Math.round(img.width * scale);
                 canvas.height = Math.round(img.height * scale);
 
-                const ctx = canvas.getContext("2d");
+                const ctx = canvas.getContext('2d');
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
                 const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
                 const qr = jsQR(imageData.data, canvas.width, canvas.height);
 
                 if (!qr) {
-                    resultsOutput.innerHTML = "<p class="status-msg">Page not detected.</p>";
+                    resultsOutput.innerHTML = '<p class="status-msg">Page not detected.</p>';
                     return;
                 }
 
@@ -735,7 +747,7 @@
                 const vy = bl.y - tl.y;
                 const qrSize = Math.hypot(ux, uy);
 
-                let html = "";
+                let html = '';
 
                 for (const section of SECTIONS) {
                     const shadedList = [];
@@ -746,8 +758,8 @@
                         const py = tl.y + box.dx * uy + box.dy * vy;
                         const state = checkBoxState(ctx, canvas.width, canvas.height, px, py, qrSize);
 
-                        if (state === "shaded") shadedList.push(box.label);
-                        if (state === "not_detected") uncertainList.push(box.label);
+                        if (state === 'shaded') shadedList.push(box.label);
+                        if (state === 'not_detected') uncertainList.push(box.label);
                     }
 
                     const tx = tl.x + section.textArea.dx * ux + section.textArea.dy * vx;
@@ -756,23 +768,23 @@
                     const th = section.textArea.dh * qrSize;
                     const extractedText = await readUnderlinedRegion(canvas, tx, ty, tw, th);
 
-                    let boxSummary = "";
+                    let boxSummary = '';
                     if (section.boxes.length > 0) {
                         if (shadedList.length > 0) {
-                            boxSummary += shadedList.map(b => `<span class="shaded-badge">Shaded: ${b}</span>`).join("");
+                            boxSummary += shadedList.map(b => `<span class="shaded-badge">Shaded: ${b}</span>`).join('');
                         }
                         if (uncertainList.length > 0) {
-                            boxSummary += uncertainList.map(b => `<span class="not-detected-badge">Box not detected (${b})</span>`).join("");
+                            boxSummary += uncertainList.map(b => `<span class="not-detected-badge">Box not detected (${b})</span>`).join('');
                         }
                         if (shadedList.length === 0 && uncertainList.length === 0) {
-                            boxSummary = "<span>No boxes shaded.</span>";
+                            boxSummary = '<span>No boxes shaded.</span>';
                         }
                     }
 
                     html += `
                         <div class="result-card">
                             <h3>${section.title}</h3>
-                            ${boxSummary ? `<div class="shaded-status">${boxSummary}</div>` : ""}
+                            ${boxSummary ? `<div class="shaded-status">${boxSummary}</div>` : ''}
                             <div class="text-row">
                                 <span class="read-text" contenteditable="false">${extractedText}</span>
                                 <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
@@ -789,16 +801,16 @@
                 resultsOutput.innerHTML = html;
 
                 // Enable inline editing when clicking any pencil icon
-                document.querySelectorAll(".edit-pencil").forEach(btn => {
-                    btn.addEventListener("click", () => {
+                document.querySelectorAll('.edit-pencil').forEach(btn => {
+                    btn.addEventListener('click', () => {
                         const textSpan = btn.previousElementSibling;
-                        const isEditing = textSpan.getAttribute("contenteditable") === "true";
+                        const isEditing = textSpan.getAttribute('contenteditable') === 'true';
                         if (!isEditing) {
-                            textSpan.setAttribute("contenteditable", "true");
+                            textSpan.setAttribute('contenteditable', 'true');
                             textSpan.focus();
                         } else {
                             textSpan.textContent = capitalizeFirst(textSpan.textContent);
-                            textSpan.setAttribute("contenteditable", "false");
+                            textSpan.setAttribute('contenteditable', 'false');
                         }
                     });
                 });
@@ -806,8 +818,8 @@
             img.src = URL.createObjectURL(file);
         }
 
-        cameraInput.addEventListener("change", handleImageUpload);
-        photosInput.addEventListener("change", handleImageUpload);
+        cameraInput.addEventListener('change', handleImageUpload);
+        photosInput.addEventListener('change', handleImageUpload);
     </script>
 
 </body>
