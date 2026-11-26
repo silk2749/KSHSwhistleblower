@@ -612,7 +612,7 @@
 
     <footer id="pageFooter">
         <a href="mailto:contact@example.com">Contact us</a>
-        <span class="version-label">V2.36</span>
+        <span class="version-label">V2.38</span>
     </footer>
 
     <div class="overlay" id="overlay"></div>
@@ -996,7 +996,7 @@
             });
         }
 
-        manualEntryBtn.addEventListener('click', () => {
+            manualEntryBtn.addEventListener('click', () => {
             currentMode = 'manual';
             lastScanData = {};
             showFormPage('Manual entry');
@@ -1034,8 +1034,8 @@
                 bodyLines.push('');
                 bodyLines.push(
                     tooDisgustingReason
-                        ? `Please note that the facility was marked as too unsanitary to rate in full due to the following reason: "${tooDisgustingReason}".`
-                        : 'Please note that the overall condition of the facility was marked as too unsanitary to rate in full.'
+                        ? `Please note that the facility was marked as too unsanitary to enter due to the following reason: "${tooDisgustingReason}".`
+                        : 'Please note that the overall condition of the facility was marked as too unsanitary to enter.'
                 );
             }
 
@@ -1065,8 +1065,86 @@
             };
         }
 
+        function hasReportedIssues(rows) {
+            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
+            if (tooDisgusting && tooDisgusting.rating === 'Yes') return true;
+
+            for (const r of rows) {
+                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') continue;
+                if (['Dirty', 'Damaged', 'Broken'].includes(r.rating) || r.hasText) {
+                    return true;
+                }
+            }
+
+            const commentsRow = rows.find(r => r.title === 'Comments');
+            if (commentsRow && commentsRow.hasText) return true;
+
+            return false;
+        }
+
+        function ensureCustomEmailPage() {
+            if (document.getElementById('customEmailPage')) return;
+            const section = document.createElement('section');
+            section.id = 'customEmailPage';
+            section.className = 'white-screen';
+            section.innerHTML = `
+                <div class="results-container">
+                    <div class="results-top">
+                        <h2>Write Your Own Email</h2>
+                        <button type="button" class="back-btn" id="customEmailBackBtn">Back</button>
+                    </div>
+                    <div class="email-section">
+                        <div class="email-header">
+                            <h3>Custom Email</h3>
+                            <button type="button" class="copy-email-btn" id="copyCustomEmailBtn">Copy Email</button>
+                        </div>
+                        <div class="email-subject-row">
+                            <label for="customEmailSubject">Subject:</label>
+                            <input type="text" id="customEmailSubject" class="email-subject-input" placeholder="Enter email subject...">
+                        </div>
+                        <textarea id="customEmailBody" class="email-textarea" placeholder="Write your email here..."></textarea>
+                    </div>
+                    <div class="bottom-actions">
+                        <button type="button" class="finish-btn" id="customEmailDoneBtn">Done</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(section);
+
+            document.getElementById('customEmailBackBtn').addEventListener('click', () => {
+                document.getElementById('customEmailPage').style.display = 'none';
+                summaryPage.style.display = 'block';
+                window.scrollTo(0, 0);
+            });
+
+            document.getElementById('copyCustomEmailBtn').addEventListener('click', () => {
+                const btn = document.getElementById('copyCustomEmailBtn');
+                const subj = document.getElementById('customEmailSubject').value;
+                const body = document.getElementById('customEmailBody').value;
+                const fullText = `Subject: ${subj}\n\n${body}`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(fullText).then(() => {
+                        btn.textContent = 'Copied!';
+                        setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
+                    });
+                } else {
+                    const ta = document.getElementById('customEmailBody');
+                    ta.select();
+                    document.execCommand('copy');
+                    btn.textContent = 'Copied!';
+                    setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
+                }
+            });
+
+            document.getElementById('customEmailDoneBtn').addEventListener('click', () => {
+                document.getElementById('customEmailPage').style.display = 'none';
+                backHomeBtn.click();
+            });
+        }
+
         function goToSummaryPage() {
             closeIncompleteModal();
+            ensureCustomEmailPage();
             const blockSelect = document.getElementById('blockSelect');
             const selectedBlock = blockSelect ? blockSelect.value : currentBlock;
 
@@ -1112,7 +1190,32 @@
                 `;
             });
 
-            const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
+            const issuesFound = hasReportedIssues(collectedRows);
+            let bottomEmailBlock = '';
+
+            if (issuesFound) {
+                const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
+                bottomEmailBlock = `
+                    <div class="email-section">
+                        <div class="email-header">
+                            <h3>Formal Report Email (Editable)</h3>
+                            <button type="button" class="copy-email-btn" id="copyEmailBtn">Copy Email</button>
+                        </div>
+                        <div class="email-subject-row">
+                            <label for="emailSubjectInput">Subject:</label>
+                            <input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '&quot;')}">
+                        </div>
+                        <textarea id="emailBodyTextarea" class="email-textarea" aria-label="Formal email draft">${emailDraft.body}</textarea>
+                    </div>
+                `;
+            } else {
+                bottomEmailBlock = `
+                    <div class="email-section" style="text-align: center; padding: 24px 16px;">
+                        <p style="font-size: 18px; font-weight: bold; color: #29251f; margin-bottom: 6px;">No email needed</p>
+                        <button type="button" id="emailAnywayLink" style="background: none; border: none; color: #0066cc; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 0;">Email anyway</button>
+                    </div>
+                `;
+            }
 
             summaryOutput.innerHTML = `
                 <table class="summary-table">
@@ -1127,38 +1230,38 @@
                         ${rowsHtml}
                     </tbody>
                 </table>
-
-                <div class="email-section">
-                    <div class="email-header">
-                        <h3>Formal Report Email (Editable)</h3>
-                        <button type="button" class="copy-email-btn" id="copyEmailBtn">Copy Email</button>
-                    </div>
-                    <div class="email-subject-row">
-                        <label for="emailSubjectInput">Subject:</label>
-                        <input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '&quot;')}">
-                    </div>
-                    <textarea id="emailBodyTextarea" class="email-textarea" aria-label="Formal email draft">${emailDraft.body}</textarea>
-                </div>
+                ${bottomEmailBlock}
             `;
 
-            const copyBtn = document.getElementById('copyEmailBtn');
-            copyBtn.addEventListener('click', () => {
-                const subj = document.getElementById('emailSubjectInput').value;
-                const body = document.getElementById('emailBodyTextarea').value;
-                const fullText = `Subject: ${subj}\n\n${body}`;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(fullText).then(() => {
+            if (issuesFound) {
+                const copyBtn = document.getElementById('copyEmailBtn');
+                copyBtn.addEventListener('click', () => {
+                    const subj = document.getElementById('emailSubjectInput').value;
+                    const body = document.getElementById('emailBodyTextarea').value;
+                    const fullText = `Subject: ${subj}\n\n${body}`;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(fullText).then(() => {
+                            copyBtn.textContent = 'Copied!';
+                            setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
+                        });
+                    } else {
+                        const ta = document.getElementById('emailBodyTextarea');
+                        ta.select();
+                        document.execCommand('copy');
                         copyBtn.textContent = 'Copied!';
                         setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                    });
-                } else {
-                    const ta = document.getElementById('emailBodyTextarea');
-                    ta.select();
-                    document.execCommand('copy');
-                    copyBtn.textContent = 'Copied!';
-                    setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                }
-            });
+                    }
+                });
+            } else {
+                const emailAnywayLink = document.getElementById('emailAnywayLink');
+                emailAnywayLink.addEventListener('click', () => {
+                    document.getElementById('customEmailSubject').value = `Report: ${selectedBlock} Restroom`;
+                    document.getElementById('customEmailBody').value = '';
+                    summaryPage.style.display = 'none';
+                    document.getElementById('customEmailPage').style.display = 'block';
+                    window.scrollTo(0, 0);
+                });
+            }
 
             resultsPage.style.display = 'none';
             summaryPage.style.display = 'block';
@@ -1368,8 +1471,8 @@
                 const res = await Tesseract.recognize(padded, 'eng', { tessedit_pageseg_mode: '6' });
                 let text = (res.data.text || '')
                     .replace(/^(why|description|comments)\s*:?\s*/i, '')
-                    .replace(/\b(stall\s*[1234]|hand\s*washing|urinal|good|dirty|damaged|broken|too\s*disgusting\s*to\s*rate)\b/gi, ' ')
-                    .replace(/[_|—–~`^*=<>\\/\[\]{}]+/g, ' ')
+                    .replace(/(stall\s*[1234]|hand\s*washing|urinal|good|dirty|damaged|broken|too\s*disgusting\s*to\s*rate)/gi, ' ')
+                    .replace(/[_|—–~`^*=<>\/\[\]{}]+/g, ' ')
                     .replace(/\s+/g, ' ')
                     .trim();
 
