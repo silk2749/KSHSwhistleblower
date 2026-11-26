@@ -23,14 +23,18 @@
             flex-direction: column;
         }
 
-        /* Top navigation bar */
+        body.white-mode {
+            background-color: #ffffff;
+        }
+
+        /* Top navigation bar - same colour as popups (#3a3a3a) */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 24px 50px;
-            background-color: #FFF3D5;
-            border-bottom: 1px solid #E3CE9E;
+            background-color: #3a3a3a;
+            border-bottom: 1px solid #525252;
             position: relative;
             z-index: 20;
         }
@@ -39,31 +43,31 @@
             height: 95px;
             width: auto;
             display: block;
-            mix-blend-mode: multiply;
+            background-color: #ffffff;
+            padding: 6px;
+            border-radius: 10px;
         }
 
-        /* Larger, true-centered title on desktop */
         .site-title {
             position: absolute;
             left: 50%;
             transform: translateX(-50%);
             font-size: 42px;
             font-weight: bold;
-            color: #29251f;
+            color: #ffffff;
             text-align: center;
             white-space: nowrap;
         }
 
-        /* Scan button - Desktop */
         .scan-button {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background-color: #29251f;
+            background-color: #525252;
             color: white;
-            border: none;
+            border: 2px solid #666;
             padding: 14px 24px;
             border-radius: 10px;
             font-size: 16px;
@@ -75,7 +79,7 @@
         }
 
         .scan-button:hover {
-            background-color: #443b30;
+            background-color: #636363;
             transform: translateY(-2px);
         }
 
@@ -100,7 +104,6 @@
             box-shadow: 0 5px white, 0 10px white;
         }
 
-        /* Main content */
         main {
             flex: 1;
             display: flex;
@@ -111,25 +114,23 @@
             padding: 40px 50px 90px;
             width: 100%;
             gap: 20px;
-            background-color: #ffffff;
         }
 
         .main-text {
             width: 100%;
-            max-width: 900px;
             font-size: 21px;
             line-height: 1.9;
             color: #443b30;
         }
 
-        /* Bottom contact bar */
+        /* Bottom contact bar - same colour as popups (#3a3a3a) */
         footer {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
-            background-color: #FFF3D5;
-            border-top: 1px solid #E3CE9E;
+            background-color: #3a3a3a;
+            border-top: 1px solid #525252;
             padding: 16px 50px;
             z-index: 10;
             display: flex;
@@ -138,7 +139,7 @@
         }
 
         footer a {
-            color: #29251f;
+            color: #ffffff;
             text-decoration: none;
             font-weight: bold;
             font-size: 15px;
@@ -149,19 +150,18 @@
         }
 
         .version-label {
-            color: #29251f;
+            color: #dcdcdc;
             font-weight: bold;
-            font-size: 15px;
+            font-size: 14px;
         }
 
-        /* Dark background overlay when popup is open */
         .overlay {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: rgba(0, 0, 0, 0.55);
             opacity: 0;
             visibility: hidden;
             pointer-events: none;
@@ -184,17 +184,19 @@
             background-color: #3a3a3a;
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
-            padding: 26px 25px 38px;
-            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            padding: 24px 25px 36px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
             transition: bottom 0.3s ease-out;
             z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
+            visibility: hidden;
         }
 
         .bottom-popup.active {
             bottom: 0;
+            visibility: visible;
         }
 
         .popup-handle {
@@ -202,21 +204,21 @@
             height: 4px;
             background-color: #777;
             border-radius: 2px;
-            margin-bottom: 18px;
+            margin-bottom: 16px;
         }
 
         .popup-notice {
             width: 100%;
             max-width: 660px;
-            background-color: #4a4337;
-            border: 1px solid #8a734b;
-            color: #FFF3D5;
-            border-radius: 10px;
-            padding: 12px 16px;
+            background-color: #2c2c2c;
+            border: 1px solid #666;
+            color: #ffe599;
             font-size: 14px;
             line-height: 1.45;
+            padding: 10px 14px;
+            border-radius: 10px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .popup-boxes {
@@ -241,6 +243,7 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             gap: 10px;
         }
 
@@ -263,7 +266,7 @@
             display: none;
         }
 
-        /* Center Incomplete Modal Popup */
+        /* Center Incomplete Modal - matches popup grey (#3a3a3a) */
         .center-modal {
             position: fixed;
             top: 50%;
@@ -272,54 +275,45 @@
             width: 90%;
             max-width: 420px;
             background-color: #3a3a3a;
+            color: #ffffff;
             border: 2px solid #666;
-            border-radius: 18px;
-            padding: 28px 24px 22px;
-            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.45);
+            border-radius: 16px;
+            padding: 26px 24px 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
             z-index: 120;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: 0.2s ease;
-            display: flex;
+            display: none;
             flex-direction: column;
-            justify-content: space-between;
-            min-height: 175px;
+            gap: 24px;
         }
 
         .center-modal.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
+            display: flex;
             transform: translate(-50%, -50%) scale(1);
         }
 
         .center-modal-text {
-            color: #ffffff;
-            font-size: 20px;
+            font-size: 19px;
             font-weight: bold;
             text-align: center;
-            margin: 10px 0 26px;
+            line-height: 1.4;
         }
 
         .center-modal-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            width: 100%;
-            gap: 14px;
+            gap: 12px;
         }
 
         .modal-ok-btn {
             background-color: #218838;
             color: #ffffff;
             border: none;
-            border-radius: 10px;
-            padding: 11px 26px;
-            font-size: 16px;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .modal-ok-btn:hover {
@@ -328,29 +322,27 @@
 
         .modal-skip-btn {
             background-color: #f0ad4e;
-            color: #29251f;
+            color: #1f1a12;
             border: none;
-            border-radius: 10px;
-            padding: 11px 26px;
-            font-size: 16px;
+            padding: 11px 24px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .modal-skip-btn:hover {
             background-color: #ec971f;
         }
 
-        /* White Form & Summary Pages */
-        #resultsPage,
-        #summaryPage {
+        /* White Scan / Manual / Summary Pages */
+        #resultsPage, #summaryPage {
             display: none;
             background-color: #ffffff;
             color: #111111;
             min-height: 100vh;
             width: 100%;
-            padding: 36px 24px 70px;
+            padding: 36px 24px 60px;
         }
 
         .results-container {
@@ -381,7 +373,6 @@
             font-size: 14px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .back-btn:hover {
@@ -392,15 +383,15 @@
             font-size: 20px;
             font-weight: bold;
             text-align: center;
-            margin-top: 70px;
+            margin-top: 80px;
             color: #222;
         }
 
-        /* Bathroom / Block Selector Card */
+        /* Block selector card */
         .block-card {
-            border: 2px solid #E3CE9E;
+            border: 1px solid #E3CE9E;
             border-radius: 12px;
-            padding: 18px 20px;
+            padding: 16px 20px;
             margin-bottom: 20px;
             background-color: #FFF3D5;
             display: flex;
@@ -425,7 +416,6 @@
             transition: background-color 0.2s, border-color 0.2s;
         }
 
-        /* Red highlight for unanswered dropdown cards */
         .result-card.unanswered-highlight {
             background-color: #fdecea;
             border: 2px solid #d92b2b;
@@ -435,6 +425,23 @@
             font-size: 18px;
             margin-bottom: 10px;
             color: #111;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .unanswered-pill {
+            display: none;
+            background-color: #d92b2b;
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+            padding: 3px 9px;
+            border-radius: 6px;
+        }
+
+        .result-card.unanswered-highlight .unanswered-pill {
+            display: inline-block;
         }
 
         .shaded-status {
@@ -459,14 +466,8 @@
             min-width: 200px;
         }
 
-        .rating-select:focus {
-            outline: none;
-            border-color: #29251f;
-        }
-
-        .rating-select.unanswered-select {
-            border: 2px solid #d92b2b;
-            background-color: #fff6f6;
+        .result-card.unanswered-highlight .rating-select {
+            border-color: #d92b2b;
         }
 
         .shaded-badge {
@@ -481,7 +482,7 @@
 
         .not-detected-badge {
             display: inline-block;
-            background-color: #d92b2b;
+            background-color: #d9534f;
             color: #fff;
             padding: 4px 10px;
             border-radius: 6px;
@@ -489,7 +490,6 @@
             font-weight: bold;
         }
 
-        /* Text row + Edit pencil */
         .text-row {
             display: flex;
             align-items: center;
@@ -509,7 +509,7 @@
             word-break: break-word;
         }
 
-        .read-text.placeholder-text {
+        .read-text.is-placeholder {
             color: #777;
             font-style: italic;
         }
@@ -537,15 +537,13 @@
             align-items: center;
             justify-content: center;
             color: #444;
-            flex-shrink: 0;
         }
 
         .edit-pencil:hover {
             color: #000;
         }
 
-        /* Bottom-right green Finish / Done button */
-        .finish-row {
+        .results-bottom {
             display: flex;
             justify-content: flex-end;
             margin-top: 24px;
@@ -555,12 +553,11 @@
             background-color: #218838;
             color: #ffffff;
             border: none;
-            padding: 13px 30px;
-            border-radius: 10px;
+            padding: 12px 28px;
+            border-radius: 8px;
             font-size: 16px;
             font-weight: bold;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .finish-btn:hover {
@@ -572,72 +569,62 @@
             background-color: #FFF3D5;
             border: 1px solid #E3CE9E;
             border-radius: 12px;
-            padding: 16px 20px;
+            padding: 14px 18px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        .summary-banner strong {
-            font-size: 17px;
+            font-size: 16px;
+            font-weight: bold;
             color: #29251f;
         }
 
-        .summary-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-bottom: 24px;
+        .summary-item {
             border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            overflow: hidden;
+            border-radius: 10px;
+            padding: 14px 18px;
+            margin-bottom: 12px;
+            background-color: #fafafa;
         }
 
-        .summary-table th,
-        .summary-table td {
-            text-align: left;
-            padding: 14px 16px;
-            border-bottom: 1px solid #e6e6e6;
-            font-size: 15px;
-            vertical-align: top;
+        .summary-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            gap: 10px;
         }
 
-        .summary-table th {
-            background-color: #f4f4f4;
+        .summary-item-title {
+            font-size: 16px;
             font-weight: bold;
-            color: #222;
+            color: #111;
         }
 
-        .summary-table tr:last-child td {
-            border-bottom: none;
-        }
-
-        .summary-rating-pill {
-            display: inline-block;
+        .summary-rating-badge {
+            background-color: #29251f;
+            color: #ffffff;
             padding: 4px 10px;
             border-radius: 6px;
             font-size: 13px;
             font-weight: bold;
-            background-color: #29251f;
-            color: #fff;
         }
 
-        .summary-rating-pill.unanswered-pill {
+        .summary-rating-badge.unanswered {
             background-color: #d92b2b;
             color: #ffffff;
         }
 
-        .summary-no-text {
-            display: inline-block;
+        .summary-note {
+            font-size: 14px;
+            color: #333;
+            line-height: 1.45;
+            padding: 6px 10px;
+            border-radius: 6px;
+        }
+
+        .summary-note.no-text {
             background-color: #fff3cd;
             border-left: 4px solid #f0ad4e;
             color: #664d03;
-            padding: 4px 10px;
-            border-radius: 4px;
             font-weight: bold;
-            font-size: 14px;
         }
 
         /* Mobile layout */
@@ -676,10 +663,22 @@
                 gap: 10px;
                 padding: 15px 24px;
                 font-size: 18px;
+                background-color: #3a3a3a;
             }
 
             .scan-button:hover {
                 transform: translateX(-50%) translateY(-2px);
+            }
+
+            .document-icon {
+                width: 20px;
+                height: 24px;
+            }
+
+            .document-icon::before {
+                top: 5px;
+                width: 10px;
+                box-shadow: 0 4px white, 0 8px white;
             }
 
             main {
@@ -696,12 +695,13 @@
             }
 
             .popup-boxes {
-                gap: 10px;
+                flex-direction: column;
+                gap: 12px;
             }
 
             .option-box {
-                font-size: 15px;
-                padding: 18px 8px;
+                flex-direction: row;
+                padding: 16px 18px;
             }
         }
     </style>
@@ -729,27 +729,25 @@
 
     <footer id="pageFooter">
         <a href="mailto:contact@example.com">Contact us</a>
-        <span class="version-label">V2.33</span>
+        <span class="version-label">V2.34</span>
     </footer>
 
-    <!-- Shared Dark Overlay -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Bottom Scan Drawer -->
     <div class="bottom-popup" id="bottomPopup">
         <div class="popup-handle"></div>
         <div class="popup-notice">
             The photo response system is not finished yet — please check your responses carefully before sending or use manual mode.
         </div>
         <div class="popup-boxes">
-            <label for="cameraInput" class="option-box">
+            <label for="cameraInput" class="option-box" id="cameraLabel">
                 <svg viewBox="0 0 24 24">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                 </svg>
                 Camera
             </label>
-            <label for="photosInput" class="option-box">
+            <label for="photosInput" class="option-box" id="photosLabel">
                 <svg viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -769,9 +767,9 @@
         </div>
     </div>
 
-    <!-- Center Incomplete Warning Modal -->
-    <div class="center-modal" id="incompleteModal" role="dialog" aria-modal="true" aria-labelledby="incompleteModalText">
-        <p class="center-modal-text" id="incompleteModalText">not all responses are completed</p>
+    <!-- Center Incomplete Dropdowns Modal -->
+    <div class="center-modal" id="incompleteModal" role="dialog" aria-modal="true">
+        <p class="center-modal-text">not all responses are completed</p>
         <div class="center-modal-actions">
             <button type="button" class="modal-ok-btn" id="modalOkBtn">OK</button>
             <button type="button" class="modal-skip-btn" id="modalSkipBtn">Skip</button>
@@ -782,7 +780,7 @@
     <section id="resultsPage">
         <div class="results-container">
             <div class="results-top">
-                <h2 id="resultsHeading">Scan results</h2>
+                <h2 id="resultsPageTitle">Scan results</h2>
                 <button type="button" class="back-btn" id="backHomeBtn">Back</button>
             </div>
             <div id="resultsOutput"></div>
@@ -797,7 +795,7 @@
                 <button type="button" class="back-btn" id="summaryBackBtn">Back</button>
             </div>
             <div id="summaryOutput"></div>
-            <div class="finish-row">
+            <div class="results-bottom">
                 <button type="button" class="finish-btn" id="summaryDoneBtn">Done</button>
             </div>
         </div>
@@ -811,7 +809,7 @@
         const photosInput = document.getElementById('photosInput');
         const manualEntryBtn = document.getElementById('manualEntryBtn');
         const resultsPage = document.getElementById('resultsPage');
-        const resultsHeading = document.getElementById('resultsHeading');
+        const resultsPageTitle = document.getElementById('resultsPageTitle');
         const resultsOutput = document.getElementById('resultsOutput');
         const backHomeBtn = document.getElementById('backHomeBtn');
 
@@ -824,144 +822,44 @@
         const summaryBackBtn = document.getElementById('summaryBackBtn');
         const summaryDoneBtn = document.getElementById('summaryDoneBtn');
 
+        let currentMode = 'scan';
+        let selectedBlock = 'Block 3 boys (Yr9)';
+        let cachedScanResults = {};
+
         const BLOCK_OPTIONS = [
             'Block 3 boys (Yr9)',
             'Block 5 boys (Yr10)',
             'Block 1 (Yr 7-8)'
         ];
 
-        const STANDARD_SECTIONS = [
-            {
-                title: 'Too disgusting to rate',
-                boxes: [{ label: 'Yes', dx: -0.05, dy: -3.72 }],
-                dropdownOptions: ['No', 'Yes'],
-                textLabel: 'Why',
-                textArea: { dx: 2.75, dy: -3.86, dw: 1.65, dh: 0.24 }
-            },
-            {
-                title: 'Stall 1',
-                boxes: [
-                    { label: 'Good', dx: 0.35, dy: -3.05 },
-                    { label: 'Dirty', dx: 0.35, dy: -2.81 },
-                    { label: 'Damaged', dx: 0.35, dy: -2.57 },
-                    { label: 'Broken', dx: 0.35, dy: -2.33 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.25, dy: -2.18, dw: 1.72, dh: 0.24 }
-            },
-            {
-                title: 'Stall 2',
-                boxes: [
-                    { label: 'Good', dx: 0.35, dy: -1.68 },
-                    { label: 'Dirty', dx: 0.35, dy: -1.44 },
-                    { label: 'Damaged', dx: 0.35, dy: -1.20 },
-                    { label: 'Broken', dx: 0.35, dy: -0.96 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.25, dy: -0.82, dw: 1.72, dh: 0.24 }
-            },
-            {
-                title: 'Hand washing',
-                boxes: [
-                    { label: 'Good', dx: 2.22, dy: -3.05 },
-                    { label: 'Dirty', dx: 2.22, dy: -2.81 },
-                    { label: 'Damaged', dx: 2.22, dy: -2.57 },
-                    { label: 'Broken', dx: 2.22, dy: -2.33 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.12, dy: -2.18, dw: 1.72, dh: 0.24 }
-            },
-            {
-                title: 'Urinal',
-                boxes: [
-                    { label: 'Good', dx: 2.22, dy: -1.68 },
-                    { label: 'Dirty', dx: 2.22, dy: -1.44 },
-                    { label: 'Damaged', dx: 2.22, dy: -1.20 },
-                    { label: 'Broken', dx: 2.22, dy: -0.96 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.12, dy: -0.82, dw: 1.72, dh: 0.24 }
-            },
-            {
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textLabel: 'Comments',
-                textArea: { dx: 1.08, dy: -0.10, dw: 3.10, dh: 1.15 }
-            }
-        ];
+        function openDrawer() {
+            bottomPopup.style.display = 'flex';
+            bottomPopup.style.visibility = 'visible';
+            requestAnimationFrame(() => {
+                bottomPopup.classList.add('active');
+                overlay.classList.add('active');
+            });
+        }
 
-        const BLOCK1_SECTIONS = [
-            {
-                title: 'Too disgusting to rate',
-                boxes: [],
-                dropdownOptions: ['No', 'Yes'],
-                textLabel: 'Why'
-            },
-            {
-                title: 'Stall 1',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description'
-            },
-            {
-                title: 'Stall 2',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description'
-            },
-            {
-                title: 'Stall 3',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description'
-            },
-            {
-                title: 'Stall 4',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description'
-            },
-            {
-                title: 'Hand washing',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description'
-            },
-            {
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textLabel: 'Comments'
-            }
-        ];
-
-        let currentMode = 'scan';
-        let selectedBlock = BLOCK_OPTIONS[0];
-        let savedFormState = {};
-
-        function closeAllPopups() {
+        function closeDrawer() {
             bottomPopup.classList.remove('active');
+            overlay.classList.remove('active');
+            setTimeout(() => {
+                if (!bottomPopup.classList.contains('active')) {
+                    bottomPopup.style.visibility = 'hidden';
+                }
+            }, 260);
+        }
+
+        function closeIncompleteModal() {
             incompleteModal.classList.remove('active');
             overlay.classList.remove('active');
         }
 
-        openScanBtn.addEventListener('click', () => {
-            incompleteModal.classList.remove('active');
-            bottomPopup.classList.add('active');
-            overlay.classList.add('active');
-        });
-
-        overlay.addEventListener('click', () => {
-            closeAllPopups();
-        });
-
         function returnToHome() {
-            closeAllPopups();
+            closeDrawer();
+            closeIncompleteModal();
+            document.body.classList.remove('white-mode');
             resultsPage.style.display = 'none';
             summaryPage.style.display = 'none';
             document.getElementById('pageHeader').style.display = 'flex';
@@ -969,8 +867,17 @@
             document.getElementById('pageFooter').style.display = 'flex';
             cameraInput.value = '';
             photosInput.value = '';
-            savedFormState = {};
         }
+
+        openScanBtn.addEventListener('click', openDrawer);
+
+        overlay.addEventListener('click', () => {
+            if (incompleteModal.classList.contains('active')) {
+                closeIncompleteModal();
+            } else {
+                closeDrawer();
+            }
+        });
 
         backHomeBtn.addEventListener('click', returnToHome);
         summaryDoneBtn.addEventListener('click', returnToHome);
@@ -981,84 +888,196 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        function openWhiteForm(headingText, initialMessage = '') {
-            closeAllPopups();
+        function showBlankWhitePage(titleText, loadingText) {
+            bottomPopup.classList.remove('active');
+            bottomPopup.style.visibility = 'hidden';
+            overlay.classList.remove('active');
             document.getElementById('pageHeader').style.display = 'none';
             document.getElementById('pageMain').style.display = 'none';
             document.getElementById('pageFooter').style.display = 'none';
+            document.body.classList.add('white-mode');
             summaryPage.style.display = 'none';
-            resultsHeading.textContent = headingText;
             resultsPage.style.display = 'block';
-            if (initialMessage) {
-                resultsOutput.innerHTML = `<p class="status-msg">${initialMessage}</p>`;
+            resultsPageTitle.textContent = titleText;
+            if (loadingText) {
+                resultsOutput.innerHTML = `<p class="status-msg">${loadingText}</p>`;
             }
         }
 
-        function getSectionsForBlock(blockName) {
-            return blockName === 'Block 1 (Yr 7-8)' ? BLOCK1_SECTIONS : STANDARD_SECTIONS;
+        function capitalizeFirst(str) {
+            const clean = (str || '').replace(/\s+/g, ' ').trim();
+            if (!clean) return '';
+            return clean.charAt(0).toUpperCase() + clean.slice(1);
         }
 
-        function captureCurrentFormState() {
-            const blockEl = document.getElementById('blockSelector');
-            if (blockEl) {
-                selectedBlock = blockEl.value;
+        const STANDARD_SECTIONS = [
+            {
+                key: 'disgusting',
+                title: 'Too disgusting to rate',
+                boxes: [{ label: 'Yes', dx: -0.02, dy: -3.52 }],
+                dropdownOptions: ['No', 'Yes'],
+                textArea: { dx: 2.52, dy: -3.65, dw: 1.55, dh: 0.25 }
+            },
+            {
+                key: 'stall1',
+                title: 'Stall 1',
+                boxes: [
+                    { label: 'Good', dx: 0.42, dy: -2.92 },
+                    { label: 'Dirty', dx: 0.42, dy: -2.69 },
+                    { label: 'Damaged', dx: 0.42, dy: -2.46 },
+                    { label: 'Broken', dx: 0.42, dy: -2.23 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 0.30, dy: -2.06, dw: 1.58, dh: 0.27 }
+            },
+            {
+                key: 'stall2',
+                title: 'Stall 2',
+                boxes: [
+                    { label: 'Good', dx: 0.42, dy: -1.58 },
+                    { label: 'Dirty', dx: 0.42, dy: -1.35 },
+                    { label: 'Damaged', dx: 0.42, dy: -1.12 },
+                    { label: 'Broken', dx: 0.42, dy: -0.89 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 0.30, dy: -0.72, dw: 1.58, dh: 0.27 }
+            },
+            {
+                key: 'handwashing',
+                title: 'Hand washing',
+                boxes: [
+                    { label: 'Good', dx: 2.18, dy: -2.92 },
+                    { label: 'Dirty', dx: 2.18, dy: -2.69 },
+                    { label: 'Damaged', dx: 2.18, dy: -2.46 },
+                    { label: 'Broken', dx: 2.18, dy: -2.23 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 2.06, dy: -2.06, dw: 1.58, dh: 0.27 }
+            },
+            {
+                key: 'urinal',
+                title: 'Urinal',
+                boxes: [
+                    { label: 'Good', dx: 2.18, dy: -1.58 },
+                    { label: 'Dirty', dx: 2.18, dy: -1.35 },
+                    { label: 'Damaged', dx: 2.18, dy: -1.12 },
+                    { label: 'Broken', dx: 2.18, dy: -0.89 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 2.06, dy: -0.72, dw: 1.58, dh: 0.27 }
+            },
+            {
+                key: 'comments',
+                title: 'Comments',
+                boxes: [],
+                dropdownOptions: [],
+                textArea: { dx: 1.04, dy: -0.18, dw: 2.75, dh: 1.05 }
             }
-            document.querySelectorAll('#resultsOutput .result-card').forEach(card => {
-                const title = card.getAttribute('data-section-title');
-                const select = card.querySelector('.rating-select');
-                const textEl = card.querySelector('.read-text');
-                const isPlaceholder = textEl && textEl.classList.contains('placeholder-text');
-                savedFormState[title] = {
-                    rating: select ? select.value : null,
-                    text: textEl && !isPlaceholder ? textEl.textContent.trim() : ''
+        ];
+
+        const BLOCK1_SECTIONS = [
+            {
+                key: 'disgusting',
+                title: 'Too disgusting to rate',
+                boxes: [],
+                dropdownOptions: ['No', 'Yes']
+            },
+            {
+                key: 'stall1',
+                title: 'Stall 1',
+                boxes: [],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
+            },
+            {
+                key: 'stall2',
+                title: 'Stall 2',
+                boxes: [],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
+            },
+            {
+                key: 'stall3',
+                title: 'Stall 3',
+                boxes: [],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
+            },
+            {
+                key: 'stall4',
+                title: 'Stall 4',
+                boxes: [],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
+            },
+            {
+                key: 'handwashing',
+                title: 'Hand washing',
+                boxes: [],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
+            },
+            {
+                key: 'comments',
+                title: 'Comments',
+                boxes: [],
+                dropdownOptions: []
+            }
+        ];
+
+        function getActiveSections() {
+            return selectedBlock === 'Block 1 (Yr 7-8)' ? BLOCK1_SECTIONS : STANDARD_SECTIONS;
+        }
+
+        function snapshotCurrentFormState() {
+            document.querySelectorAll('.result-card[data-key]').forEach(card => {
+                const key = card.getAttribute('data-key');
+                const sel = card.querySelector('.rating-select');
+                const txt = card.querySelector('.read-text');
+                const existing = cachedScanResults[key] || {};
+                const rawText = txt ? txt.textContent.trim() : '';
+                cachedScanResults[key] = {
+                    ...existing,
+                    selectedValue: sel ? sel.value : (existing.selectedValue || ''),
+                    text: rawText === 'No text detected.' ? '' : rawText
                 };
             });
         }
 
-        function renderFormCards(detectedMap = {}) {
-            const sections = getSectionsForBlock(selectedBlock);
-            const isManual = currentMode === 'manual';
+        function renderFormCards(isManual) {
+            const sections = getActiveSections();
 
-            const blockOptionsMarkup = BLOCK_OPTIONS.map(opt =>
-                `<option value="${opt}" ${opt === selectedBlock ? 'selected' : ''}>${opt}</option>`
+            const blockOptionsHtml = BLOCK_OPTIONS.map(opt =>
+                `<option value="${opt}" ${selectedBlock === opt ? 'selected' : ''}>${opt}</option>`
             ).join('');
 
             let html = `
                 <div class="block-card">
                     <label for="blockSelector">Bathroom / Block</label>
                     <select id="blockSelector" class="rating-select">
-                        ${blockOptionsMarkup}
+                        ${blockOptionsHtml}
                     </select>
                 </div>
             `;
 
             for (const section of sections) {
-                const det = detectedMap[section.title] || {};
-                const prev = savedFormState[section.title] || {};
-                const hasDropdown = section.dropdownOptions && section.dropdownOptions.length > 0;
-                const isBinary = hasDropdown && section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
+                const saved = cachedScanResults[section.key] || {};
+                const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
 
-                let selectedVal = '';
-                if (prev.rating !== undefined && prev.rating !== null) {
-                    selectedVal = prev.rating;
-                } else if (det.selectedVal !== undefined) {
-                    selectedVal = det.selectedVal;
-                } else if (isBinary) {
-                    selectedVal = 'No';
+                let selectedValue = saved.selectedValue !== undefined ? saved.selectedValue : '';
+                if (!selectedValue && isBinary) {
+                    selectedValue = 'No';
                 }
 
                 let controlHtml = '';
-                if (hasDropdown) {
+                if (section.dropdownOptions && section.dropdownOptions.length > 0) {
                     const optionsMarkup = [
-                        !isBinary ? `<option value="" ${selectedVal === '' ? 'selected' : ''}>Select rating...</option>` : '',
+                        !isBinary ? `<option value="" ${selectedValue === '' ? 'selected' : ''}>Select rating...</option>` : '',
                         ...section.dropdownOptions.map(opt =>
-                            `<option value="${opt}" ${selectedVal === opt ? 'selected' : ''}>${opt}</option>`
+                            `<option value="${opt}" ${selectedValue === opt ? 'selected' : ''}>${opt}</option>`
                         )
                     ].join('');
 
-                    let badgeHtml = '';
-                    if (!isManual && det.statusBadge) {
-                        badgeHtml = det.statusBadge;
+                    let statusBadge = '';
+                    if (!isManual && saved.status === 'multiple') {
+                        statusBadge = `<span class="not-detected-badge">Detection failed</span>`;
+                    } else if (!isManual && saved.status === 'single' && saved.detectedLabel) {
+                        statusBadge = `<span class="shaded-badge">Detected: ${saved.detectedLabel}</span>`;
                     }
 
                     controlHtml = `
@@ -1066,236 +1085,252 @@
                             <select class="rating-select" aria-label="${section.title}">
                                 ${optionsMarkup}
                             </select>
-                            ${badgeHtml}
+                            ${statusBadge}
                         </div>
                     `;
                 }
 
-                const rawText = prev.text !== undefined
-                    ? prev.text
-                    : (det.text || '');
+                const hasText = Boolean(saved.text && saved.text.trim());
+                const displayText = hasText ? saved.text : (isManual ? '' : 'No text detected.');
+                const placeholderClass = (!hasText && !isManual) ? 'is-placeholder' : '';
+                const editableAttr = isManual ? 'true' : 'false';
 
-                const isEmpty = !rawText || rawText === 'No text detected.' || rawText === 'Click to type...';
-                const displayText = isEmpty
-                    ? (isManual ? 'Click to type...' : 'No text detected.')
-                    : rawText;
+                const pencilButtonHtml = isManual ? '' : `
+                    <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M12 20h9"></path>
+                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                        </svg>
+                    </button>
+                `;
 
                 html += `
-                    <div class="result-card" data-section-title="${section.title}">
-                        <h3>${section.title}</h3>
+                    <div class="result-card" data-key="${section.key}">
+                        <h3>
+                            <span>${section.title}</span>
+                            <span class="unanswered-pill">Unanswered</span>
+                        </h3>
                         ${controlHtml}
                         <div class="text-row">
-                            <span class="read-text ${isEmpty ? 'placeholder-text' : ''}" contenteditable="false">${displayText}</span>
-                            <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9"></path>
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                </svg>
-                            </button>
+                            <span class="read-text ${placeholderClass}" contenteditable="${editableAttr}">${displayText}</span>
+                            ${pencilButtonHtml}
                         </div>
                     </div>
                 `;
             }
 
             html += `
-                <div class="finish-row">
-                    <button type="button" class="finish-btn" id="formFinishBtn">Finish</button>
+                <div class="results-bottom">
+                    <button type="button" class="finish-btn" id="finishBtn">Finish</button>
                 </div>
             `;
 
             resultsOutput.innerHTML = html;
 
-            // Block selector change handler
             const blockSelector = document.getElementById('blockSelector');
             blockSelector.addEventListener('change', (e) => {
-                captureCurrentFormState();
+                snapshotCurrentFormState();
                 selectedBlock = e.target.value;
-                renderFormCards(detectedMap);
+                renderFormCards(isManual);
             });
 
-            // Clear red unanswered highlight once user picks a dropdown value
-            document.querySelectorAll('#resultsOutput .rating-select').forEach(sel => {
-                if (sel.id === 'blockSelector') return;
+            document.querySelectorAll('.result-card .rating-select').forEach(sel => {
                 sel.addEventListener('change', () => {
+                    const card = sel.closest('.result-card');
                     if (sel.value !== '') {
-                        sel.classList.remove('unanswered-select');
-                        const card = sel.closest('.result-card');
-                        if (card) card.classList.remove('unanswered-highlight');
+                        card.classList.remove('unanswered-highlight');
                     }
                 });
             });
 
-            // Setup inline editing (pencil on all devices, direct click on PC)
-            const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-            document.querySelectorAll('#resultsOutput .text-row').forEach(row => {
-                const textSpan = row.querySelector('.read-text');
-                const pencilBtn = row.querySelector('.edit-pencil');
-
-                const startEditing = () => {
-                    if (textSpan.getAttribute('contenteditable') === 'true') return;
-                    if (textSpan.classList.contains('placeholder-text') ||
-                        textSpan.textContent.trim() === 'No text detected.' ||
-                        textSpan.textContent.trim() === 'Click to type...') {
-                        textSpan.textContent = '';
-                        textSpan.classList.remove('placeholder-text');
-                    }
-                    textSpan.setAttribute('contenteditable', 'true');
-                    textSpan.focus();
-                };
-
-                const finishEditing = () => {
-                    if (textSpan.getAttribute('contenteditable') !== 'true') return;
-                    const cleaned = textSpan.textContent.replace(/\s+/g, ' ').trim();
-                    textSpan.setAttribute('contenteditable', 'false');
-                    if (!cleaned) {
-                        textSpan.textContent = isManual ? 'Click to type...' : 'No text detected.';
-                        textSpan.classList.add('placeholder-text');
-                    } else {
-                        textSpan.textContent = cleaned.charAt(0).toUpperCase() + cleaned.slice(1);
-                        textSpan.classList.remove('placeholder-text');
-                    }
-                };
-
-                pencilBtn.addEventListener('click', () => {
-                    if (textSpan.getAttribute('contenteditable') === 'true') {
-                        finishEditing();
-                    } else {
-                        startEditing();
-                    }
-                });
-
-                if (isDesktopPointer) {
-                    textSpan.addEventListener('click', startEditing);
+            function startEditingSpan(textSpan) {
+                if (textSpan.getAttribute('contenteditable') === 'true') return;
+                if (textSpan.textContent.trim() === 'No text detected.') {
+                    textSpan.textContent = '';
                 }
+                textSpan.classList.remove('is-placeholder');
+                textSpan.setAttribute('contenteditable', 'true');
+                textSpan.focus();
+            }
 
-                textSpan.addEventListener('blur', finishEditing);
-                textSpan.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
-                        e.preventDefault();
-                        finishEditing();
-                    }
-                });
-            });
-
-            // Finish button validation
-            document.getElementById('formFinishBtn').addEventListener('click', () => {
-                const unansweredSelects = Array.from(
-                    document.querySelectorAll('#resultsOutput .result-card .rating-select')
-                ).filter(sel => sel.value === '');
-
-                if (unansweredSelects.length > 0) {
-                    incompleteModal.classList.add('active');
-                    overlay.classList.add('active');
+            function finishEditingSpan(textSpan) {
+                if (textSpan.getAttribute('contenteditable') !== 'true') return;
+                const cleaned = capitalizeFirst(textSpan.textContent);
+                if (!cleaned) {
+                    textSpan.textContent = 'No text detected.';
+                    textSpan.classList.add('is-placeholder');
                 } else {
-                    openSummaryPage();
+                    textSpan.textContent = cleaned;
+                    textSpan.classList.remove('is-placeholder');
                 }
-            });
+                textSpan.setAttribute('contenteditable', 'false');
+            }
+
+            if (!isManual) {
+                const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+                document.querySelectorAll('.read-text').forEach(textSpan => {
+                    if (isDesktopPointer) {
+                        textSpan.addEventListener('click', () => startEditingSpan(textSpan));
+                    }
+                    textSpan.addEventListener('blur', () => finishEditingSpan(textSpan));
+                    textSpan.addEventListener('keydown', (e) => {
+                        if (e.key === 'Enter' && !e.shiftKey) {
+                            e.preventDefault();
+                            textSpan.blur();
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.edit-pencil').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const textSpan = btn.previousElementSibling;
+                        if (textSpan.getAttribute('contenteditable') !== 'true') {
+                            startEditingSpan(textSpan);
+                        } else {
+                            finishEditingSpan(textSpan);
+                        }
+                    });
+                });
+            }
+
+            document.getElementById('finishBtn').addEventListener('click', handleFinishClick);
         }
 
-        // Modal OK button: highlight unanswered dropdowns in red & scroll to first
-        modalOkBtn.addEventListener('click', () => {
-            closeAllPopups();
-            let firstMissingCard = null;
-
-            document.querySelectorAll('#resultsOutput .result-card').forEach(card => {
+        function getUnansweredCards() {
+            const missing = [];
+            document.querySelectorAll('.result-card[data-key]').forEach(card => {
                 const sel = card.querySelector('.rating-select');
                 if (sel && sel.value === '') {
-                    card.classList.add('unanswered-highlight');
-                    sel.classList.add('unanswered-select');
-                    if (!firstMissingCard) firstMissingCard = card;
-                } else {
-                    card.classList.remove('unanswered-highlight');
-                    if (sel) sel.classList.remove('unanswered-select');
+                    missing.push(card);
                 }
             });
+            return missing;
+        }
 
-            if (firstMissingCard) {
-                firstMissingCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        function handleFinishClick() {
+            const missingCards = getUnansweredCards();
+            if (missingCards.length > 0) {
+                overlay.classList.add('active');
+                incompleteModal.classList.add('active');
+            } else {
+                openSummaryPage();
+            }
+        }
+
+        modalOkBtn.addEventListener('click', () => {
+            closeIncompleteModal();
+            const missingCards = getUnansweredCards();
+            document.querySelectorAll('.result-card').forEach(c => c.classList.remove('unanswered-highlight'));
+            missingCards.forEach(c => c.classList.add('unanswered-highlight'));
+            if (missingCards.length > 0) {
+                missingCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
             }
         });
 
-        // Modal Skip button: proceed directly to Summary Page
         modalSkipBtn.addEventListener('click', () => {
-            closeAllPopups();
+            closeIncompleteModal();
             openSummaryPage();
         });
 
         function openSummaryPage() {
-            captureCurrentFormState();
-            const sections = getSectionsForBlock(selectedBlock);
+            snapshotCurrentFormState();
+            const sections = getActiveSections();
 
-            let rowsHtml = '';
+            let summaryHtml = `
+                <div class="summary-banner">
+                    Location: ${selectedBlock}
+                </div>
+            `;
+
             for (const section of sections) {
-                const state = savedFormState[section.title] || {};
+                const saved = cachedScanResults[section.key] || {};
                 const hasDropdown = section.dropdownOptions && section.dropdownOptions.length > 0;
+                const ratingVal = saved.selectedValue || '';
+                const noteVal = (saved.text || '').trim();
 
-                let ratingCell = '—';
+                let badgeHtml = '';
                 if (hasDropdown) {
-                    if (!state.rating) {
-                        ratingCell = `<span class="summary-rating-pill unanswered-pill">Unanswered</span>`;
+                    if (ratingVal) {
+                        badgeHtml = `<span class="summary-rating-badge">${ratingVal}</span>`;
                     } else {
-                        ratingCell = `<span class="summary-rating-pill">${state.rating}</span>`;
+                        badgeHtml = `<span class="summary-rating-badge unanswered">Unanswered</span>`;
                     }
                 }
 
-                const textCell = state.text
-                    ? escapeHtml(state.text)
-                    : `<span class="summary-no-text">No text entered</span>`;
+                const noteClass = noteVal ? 'summary-note' : 'summary-note no-text';
+                const noteDisplay = noteVal ? noteVal : 'No text entered';
 
-                rowsHtml += `
-                    <tr>
-                        <td><strong>${section.title}</strong></td>
-                        <td>${ratingCell}</td>
-                        <td>${textCell}</td>
-                    </tr>
+                summaryHtml += `
+                    <div class="summary-item">
+                        <div class="summary-item-header">
+                            <span class="summary-item-title">${section.title}</span>
+                            ${badgeHtml}
+                        </div>
+                        <div class="${noteClass}">${noteDisplay}</div>
+                    </div>
                 `;
             }
 
-            summaryOutput.innerHTML = `
-                <div class="summary-banner">
-                    <span>Location: <strong>${escapeHtml(selectedBlock)}</strong></span>
-                    <span>Mode: <strong>${currentMode === 'manual' ? 'Manual entry' : 'Sheet scan'}</strong></span>
-                </div>
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Rating</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-            `;
-
+            summaryOutput.innerHTML = summaryHtml;
             resultsPage.style.display = 'none';
             summaryPage.style.display = 'block';
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
-        function escapeHtml(str) {
-            return String(str)
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;');
-        }
-
-        // Manual entry flow
         manualEntryBtn.addEventListener('click', () => {
             currentMode = 'manual';
-            savedFormState = {};
-            openWhiteForm('Manual entry');
-            renderFormCards({});
+            cachedScanResults = {};
+            showBlankWhitePage('Manual entry', '');
+            renderFormCards(true);
         });
 
-        // QR & Image Scanning Pipeline
-        function detectQR(img) {
-            const maxDims = [1500, 2100, 1000];
-            for (const maxDim of maxDims) {
+        function preprocessQRFrame(sourceCanvas, mode) {
+            const w = sourceCanvas.width;
+            const h = sourceCanvas.height;
+            const out = document.createElement('canvas');
+            out.width = w;
+            out.height = h;
+            const octx = out.getContext('2d', { willReadFrequently: true });
+            octx.drawImage(sourceCanvas, 0, 0);
+
+            const imgData = octx.getImageData(0, 0, w, h);
+            const d = imgData.data;
+
+            if (mode === 'contrast') {
+                let minL = 255, maxL = 0;
+                for (let i = 0; i < d.length; i += 4) {
+                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                    if (l < minL) minL = l;
+                    if (l > maxL) maxL = l;
+                }
+                const rng = Math.max(1, maxL - minL);
+                for (let i = 0; i < d.length; i += 4) {
+                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                    const v = ((l - minL) / rng) * 255;
+                    d[i] = d[i + 1] = d[i + 2] = v;
+                }
+            } else if (mode === 'threshold') {
+                let sum = 0;
+                for (let i = 0; i < d.length; i += 4) {
+                    sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                }
+                const mean = sum / (d.length / 4);
+                for (let i = 0; i < d.length; i += 4) {
+                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
+                    const v = l < mean * 0.92 ? 0 : 255;
+                    d[i] = d[i + 1] = d[i + 2] = v;
+                }
+            }
+
+            octx.putImageData(imgData, 0, 0);
+            return out;
+        }
+
+        function detectQROnSheet(img) {
+            const scales = [1600, 1200, 2200];
+
+            for (const maxDim of scales) {
                 const canvas = document.createElement('canvas');
                 const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
                 canvas.width = Math.round(img.width * scale);
@@ -1304,209 +1339,239 @@
                 const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                // Scan left 82% first to avoid neighbor QR codes on edge
-                const cropW = Math.round(canvas.width * 0.85);
-                const imgData = ctx.getImageData(0, 0, cropW, canvas.height);
+                const leftCropW = Math.round(canvas.width * 0.78);
+                const leftCanvas = document.createElement('canvas');
+                leftCanvas.width = leftCropW;
+                leftCanvas.height = canvas.height;
+                leftCanvas.getContext('2d').drawImage(canvas, 0, 0, leftCropW, canvas.height, 0, 0, leftCropW, canvas.height);
 
-                let qr = jsQR(imgData.data, cropW, canvas.height, {
-                    inversionAttempts: 'attemptBoth'
-                });
-                if (qr) return { qr, canvas, ctx };
+                const candidates = [
+                    leftCanvas,
+                    canvas,
+                    preprocessQRFrame(leftCanvas, 'contrast'),
+                    preprocessQRFrame(canvas, 'contrast'),
+                    preprocessQRFrame(leftCanvas, 'threshold')
+                ];
 
-                // Contrast-stretched pass for creased/shadowed sheets
-                const data = new Uint8ClampedArray(imgData.data);
-                let minL = 255, maxL = 0;
-                for (let i = 0; i < data.length; i += 4) {
-                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                    if (l < minL) minL = l;
-                    if (l > maxL) maxL = l;
+                for (const cand of candidates) {
+                    const cctx = cand.getContext('2d', { willReadFrequently: true });
+                    const imgData = cctx.getImageData(0, 0, cand.width, cand.height);
+                    const qr = jsQR(imgData.data, cand.width, cand.height, {
+                        inversionAttempts: 'attemptBoth'
+                    });
+                    if (qr && qr.data) {
+                        return { qr, canvas, ctx };
+                    }
                 }
-                const range = Math.max(1, maxL - minL);
-                for (let i = 0; i < data.length; i += 4) {
-                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                    const s = ((l - minL) / range) * 255;
-                    const v = s < 128 ? s * 0.72 : Math.min(255, s * 1.18);
-                    data[i] = data[i + 1] = data[i + 2] = v;
-                }
-                qr = jsQR(data, cropW, canvas.height, { inversionAttempts: 'attemptBoth' });
-                if (qr) return { qr, canvas, ctx };
             }
+
             return null;
         }
 
-        function measureBoxShading(ctx, width, height, cx, cy, qrSize) {
-            const half = Math.max(4, Math.round(qrSize * 0.042));
-            const size = half * 2;
-            const jitter = Math.max(2, Math.round(qrSize * 0.015));
+        function checkBoxShaded(ctx, width, height, cx, cy, qrSize) {
+            const coreHalf = Math.max(3, Math.round(qrSize * 0.026));
+            const coreSize = coreHalf * 2 + 1;
+            const jitter = Math.max(2, Math.round(qrSize * 0.014));
 
-            const sampleAt = (ox, oy) => {
-                const x0 = Math.max(0, Math.min(width - size, Math.round(ox - half)));
-                const y0 = Math.max(0, Math.min(height - size, Math.round(oy - half)));
+            if (cx < coreHalf + 4 || cy < coreHalf + 4 || cx >= width - coreHalf - 4 || cy >= height - coreHalf - 4) {
+                return false;
+            }
 
-                const refX = Math.max(0, x0 - Math.round(size * 2.2));
-                const refData = ctx.getImageData(refX, y0, size, size).data;
+            const sampleCore = (ox, oy) => {
+                const x0 = Math.max(0, Math.min(width - coreSize, Math.round(ox - coreHalf)));
+                const y0 = Math.max(0, Math.min(height - coreSize, Math.round(oy - coreHalf)));
+
+                const paperX = Math.max(0, Math.round(x0 - qrSize * 0.14));
+                const paperData = ctx.getImageData(paperX, y0, coreSize, coreSize).data;
                 let paperSum = 0;
-                for (let i = 0; i < refData.length; i += 4) {
-                    paperSum += (refData[i] + refData[i + 1] + refData[i + 2]) / 3;
+                for (let i = 0; i < paperData.length; i += 4) {
+                    paperSum += 0.299 * paperData[i] + 0.587 * paperData[i + 1] + 0.114 * paperData[i + 2];
                 }
-                const paperLuma = paperSum / (refData.length / 4);
-                if (paperLuma < 55) return 0;
+                const paperLuma = paperSum / (paperData.length / 4);
+                if (paperLuma < 65) return 0;
 
-                const boxData = ctx.getImageData(x0, y0, size, size).data;
-                let darkCount = 0;
-                const total = boxData.length / 4;
-                const thresh = paperLuma * 0.76;
+                const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
+                let darkPixels = 0;
+                const totalPixels = boxData.length / 4;
 
                 for (let i = 0; i < boxData.length; i += 4) {
                     const r = boxData[i], g = boxData[i + 1], b = boxData[i + 2];
-                    const luma = (r + g + b) / 3;
-                    const blueBoost = Math.max(0, b - (r + g) * 0.5) * 0.85;
-                    if (luma - blueBoost < thresh) darkCount++;
+                    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+                    const blueBoost = Math.max(0, b - (r + g) * 0.5);
+                    const effectiveLuma = luma - blueBoost * 0.65;
+                    if (effectiveLuma < paperLuma * 0.72) {
+                        darkPixels++;
+                    }
                 }
-                return darkCount / total;
+                return darkPixels / totalPixels;
             };
 
-            const offsets = [[0, 0], [-jitter, 0], [jitter, 0], [0, -jitter], [0, jitter]];
-            let best = 0;
+            const offsets = [
+                [0, 0],
+                [-jitter, 0],
+                [jitter, 0],
+                [0, -jitter],
+                [0, jitter]
+            ];
+
+            let bestRatio = 0;
             for (const [dx, dy] of offsets) {
-                const r = sampleAt(cx + dx, cy + dy);
-                if (r > best) best = r;
+                const r = sampleCore(cx + dx, cy + dy);
+                if (r > bestRatio) bestRatio = r;
             }
-            return best;
+
+            return bestRatio >= 0.42;
         }
 
-        async function readWritingZone(sourceCanvas, tl, ux, uy, vx, vy, area) {
+        function extractDeskewedLine(sourceCanvas, tl, ux, uy, vx, vy, area) {
             const p0x = tl.x + area.dx * ux + area.dy * vx;
             const p0y = tl.y + area.dx * uy + area.dy * vy;
-            const p1x = p0x + area.dw * ux;
-            const p1y = p0y + area.dw * uy;
-            const p2x = p0x + area.dh * vx;
-            const p2y = p0y + area.dh * vy;
+            const p1x = tl.x + (area.dx + area.dw) * ux + area.dy * vx;
+            const p1y = tl.y + (area.dx + area.dw) * uy + area.dy * vy;
+            const p2x = tl.x + area.dx * ux + (area.dy + area.dh) * vx;
+            const p2y = tl.y + area.dx * uy + (area.dy + area.dh) * vy;
 
-            const qrSize = Math.hypot(ux, uy);
-            const outW = Math.max(40, Math.round(area.dw * qrSize * 3));
-            const outH = Math.max(24, Math.round(area.dh * qrSize * 3));
+            const scale = 3.0;
+            const outW = Math.max(60, Math.round(Math.hypot(p1x - p0x, p1y - p0y) * scale));
+            const outH = Math.max(36, Math.round(Math.hypot(p2x - p0x, p2y - p0y) * scale));
 
+            const pad = 16;
             const crop = document.createElement('canvas');
-            crop.width = outW;
-            crop.height = outH;
+            crop.width = outW + pad * 2;
+            crop.height = outH + pad * 2;
             const cctx = crop.getContext('2d', { willReadFrequently: true });
 
-            const a = (p1x - p0x) / outW;
-            const b = (p1y - p0y) / outW;
-            const c = (p2x - p0x) / outH;
-            const d = (p2y - p0y) / outH;
+            cctx.fillStyle = '#ffffff';
+            cctx.fillRect(0, 0, crop.width, crop.height);
 
-            cctx.setTransform(a, b, c, d, p0x, p0y);
-            // Invert affine transform via inverse matrix
-            const det = a * d - b * c;
-            if (Math.abs(det) < 1e-6) return '';
-
-            cctx.setTransform(
-                d / det,
-                -b / det,
-                -c / det,
-                a / det,
-                (c * p0y - d * p0x) / det,
-                (b * p0x - a * p0y) / det
+            cctx.save();
+            cctx.translate(pad, pad);
+            cctx.transform(
+                (p1x - p0x) / outW,
+                (p1y - p0y) / outW,
+                (p2x - p0x) / outH,
+                (p2y - p0y) / outH,
+                p0x,
+                p0y
             );
-            cctx.drawImage(sourceCanvas, 0, 0);
-            cctx.setTransform(1, 0, 0, 1, 0, 0);
+            cctx.inverseTransform = false;
+            cctx.restore();
 
-            const imgData = cctx.getImageData(0, 0, outW, outH);
+            const raw = document.createElement('canvas');
+            raw.width = outW;
+            raw.height = outH;
+            const rctx = raw.getContext('2d', { willReadFrequently: true });
+
+            const det = (p1x - p0x) * (p2y - p0y) - (p2x - p0x) * (p1y - p0y);
+            if (Math.abs(det) < 1e-5) return null;
+
+            const a = (outW * (p2y - p0y)) / det;
+            const b = (-outW * (p2x - p0x)) / det;
+            const c = (-outH * (p1y - p0y)) / det;
+            const d = (outH * (p1x - p0x)) / det;
+            const e = -(a * p0x + c * p0y);
+            const f = -(b * p0x + d * p0y);
+
+            rctx.setTransform(a, b, c, d, e, f);
+            rctx.drawImage(sourceCanvas, 0, 0);
+            rctx.setTransform(1, 0, 0, 1, 0, 0);
+
+            const imgData = rctx.getImageData(0, 0, outW, outH);
             const px = imgData.data;
 
-            // Estimate 85th percentile background brightness
-            const lumas = new Uint8Array(outW * outH);
-            for (let i = 0, j = 0; i < px.length; i += 4, j++) {
-                const r = px[i], g = px[i + 1], bVal = px[i + 2];
-                const blueBoost = Math.max(0, bVal - (r + g) * 0.5) * 0.9;
-                lumas[j] = Math.max(0, Math.min(255, ((r + g + bVal) / 3) - blueBoost));
+            const lumas = new Float32Array(outW * outH);
+            const sorted = [];
+            for (let i = 0; i < outW * outH; i++) {
+                const idx = i * 4;
+                const r = px[idx], g = px[idx + 1], bVal = px[idx + 2];
+                const luma = 0.299 * r + 0.587 * g + 0.114 * bVal;
+                const blueInk = Math.max(0, bVal - (r + g) * 0.5);
+                const val = luma - blueInk * 0.85;
+                lumas[i] = val;
+                if (i % 4 === 0) sorted.push(val);
             }
-            const sorted = Uint8Array.from(lumas).sort();
-            const bg = Math.max(80, sorted[Math.floor(sorted.length * 0.85)]);
-            const inkThresh = bg * 0.78;
 
-            // Erase solid horizontal ruled lines while keeping vertical handwriting strokes
-            const binary = new Uint8Array(outW * outH);
-            for (let y = 0; y < outH; y++) {
+            sorted.sort((x, y) => x - y);
+            const paperBg = sorted[Math.floor(sorted.length * 0.85)] || 210;
+            const thresh = paperBg * 0.78;
+
+            const bin = new Uint8Array(outW * outH);
+            for (let i = 0; i < outW * outH; i++) {
+                bin[i] = lumas[i] < thresh ? 1 : 0;
+            }
+
+            // Erase solid horizontal underline while keeping vertical handwriting crossings
+            for (let y = 1; y < outH - 1; y++) {
                 let rowDark = 0;
                 for (let x = 0; x < outW; x++) {
-                    if (lumas[y * outW + x] < inkThresh) rowDark++;
+                    if (bin[y * outW + x]) rowDark++;
                 }
-                const isRuledLine = rowDark > outW * 0.68;
-                for (let x = 0; x < outW; x++) {
-                    const idx = y * outW + x;
-                    if (lumas[idx] < inkThresh) {
-                        if (isRuledLine) {
-                            const aboveDark = y > 1 && lumas[(y - 2) * outW + x] < inkThresh;
-                            const belowDark = y < outH - 2 && lumas[(y + 2) * outW + x] < inkThresh;
-                            binary[idx] = (aboveDark || belowDark) ? 1 : 0;
-                        } else {
-                            binary[idx] = 1;
+                if (rowDark > outW * 0.68) {
+                    for (let x = 0; x < outW; x++) {
+                        const above = y >= 2 ? bin[(y - 2) * outW + x] : 0;
+                        const below = y + 2 < outH ? bin[(y + 2) * outW + x] : 0;
+                        if (!above && !below) {
+                            bin[y * outW + x] = 0;
                         }
                     }
                 }
             }
 
-            let inkPixels = 0;
-            for (let i = 0; i < binary.length; i++) {
-                if (binary[i]) inkPixels++;
+            let inkCount = 0;
+            for (let i = 0; i < outW * outH; i++) {
+                const idx = i * 4;
+                const v = bin[i] ? 0 : 255;
+                if (bin[i]) inkCount++;
+                px[idx] = px[idx + 1] = px[idx + 2] = v;
+                px[idx + 3] = 255;
             }
-            if (inkPixels / binary.length < 0.0025) return '';
 
-            // Add white padding around cleaned ink for Tesseract
-            const pad = 20;
-            const padded = document.createElement('canvas');
-            padded.width = outW + pad * 2;
-            padded.height = outH + pad * 2;
-            const pctx = padded.getContext('2d');
-            pctx.fillStyle = '#ffffff';
-            pctx.fillRect(0, 0, padded.width, padded.height);
-
-            const outImg = pctx.createImageData(outW, outH);
-            for (let i = 0, j = 0; i < outImg.data.length; i += 4, j++) {
-                const val = binary[j] ? 0 : 255;
-                outImg.data[i] = val;
-                outImg.data[i + 1] = val;
-                outImg.data[i + 2] = val;
-                outImg.data[i + 3] = 255;
+            if (inkCount / (outW * outH) < 0.0025) {
+                return null;
             }
-            pctx.putImageData(outImg, pad, pad);
 
-            try {
-                const res = await Promise.race([
-                    Tesseract.recognize(padded, 'eng'),
-                    new Promise((_, reject) => setTimeout(() => reject(new Error('OCR timeout')), 7000))
-                ]);
-                let text = (res.data.text || '')
-                    .replace(/[_|—–~=<>^*]+/g, ' ')
-                    .replace(/(Stall\s*[1-4]|Hand\s*washing|Urinal|Description|Comments|Why|Good|Dirty|Damaged|Broken)/gi, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-                return text;
-            } catch (err) {
-                return '';
-            }
+            rctx.putImageData(imgData, 0, 0);
+            cctx.drawImage(raw, pad, pad);
+            return crop;
+        }
+
+        function cleanRecognizedText(raw) {
+            let txt = (raw || '')
+                .replace(/[_|—–~=<>^*]+/g, ' ')
+                .replace(/\b(Why|Description|Comments|Stall\s*1|Stall\s*2|Hand\s*washing|Urinal|Good|Dirty|Damaged|Broken)\b:?/gi, ' ')
+                .replace(/[^a-zA-Z0-9.,!?'"()\-\s]/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+
+            if (txt.length < 2) return '';
+            return capitalizeFirst(txt);
+        }
+
+        function withTimeout(promise, ms) {
+            return Promise.race([
+                promise,
+                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+            ]);
         }
 
         async function handleImageUpload(event) {
-            const file = event.target.files && event.target.files[0];
+            const file = event.target.files[0];
             if (!file) return;
 
             currentMode = 'scan';
-            savedFormState = {};
-            openWhiteForm('Scan results', 'Scanning sheet, please wait...');
+            cachedScanResults = {};
+            showBlankWhitePage('Scan results', 'Locating QR code...');
 
             const img = new Image();
             img.onload = async () => {
-                const found = detectQR(img);
-                if (!found) {
+                const detected = detectQROnSheet(img);
+
+                if (!detected) {
                     resultsOutput.innerHTML = '<p class="status-msg">Page not detected.</p>';
                     return;
                 }
 
-                const { qr, canvas, ctx } = found;
+                const { qr, canvas, ctx } = detected;
                 const tl = qr.location.topLeftCorner;
                 const tr = qr.location.topRightCorner;
                 const bl = qr.location.bottomLeftCorner;
@@ -1517,47 +1582,65 @@
                 const vy = bl.y - tl.y;
                 const qrSize = Math.hypot(ux, uy);
 
-                const detectedMap = {};
+                let worker = null;
+                try {
+                    resultsOutput.innerHTML = '<p class="status-msg">Reading checkboxes and handwriting...</p>';
+                    worker = await withTimeout(Tesseract.createWorker('eng'), 12000);
+                    await worker.setParameters({ tessedit_pageseg_mode: '6' });
+                } catch (e) {
+                    worker = null;
+                }
 
-                for (let idx = 0; idx < STANDARD_SECTIONS.length; idx++) {
-                    const section = STANDARD_SECTIONS[idx];
-                    resultsOutput.innerHTML = `<p class="status-msg">Reading ${section.title} (${idx + 1}/${STANDARD_SECTIONS.length})...</p>`;
-
-                    const shadedMatches = [];
+                for (const section of STANDARD_SECTIONS) {
+                    const shadedLabels = [];
                     for (const box of section.boxes) {
                         const px = tl.x + box.dx * ux + box.dy * vx;
                         const py = tl.y + box.dx * uy + box.dy * vy;
-                        const ratio = measureBoxShading(ctx, canvas.width, canvas.height, px, py, qrSize);
-                        if (ratio >= 0.36) {
-                            shadedMatches.push({ label: box.label, ratio });
+                        if (checkBoxShaded(ctx, canvas.width, canvas.height, px, py, qrSize)) {
+                            shadedLabels.push(box.label);
                         }
                     }
 
                     const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-                    let selectedVal = isBinary ? 'No' : '';
-                    let statusBadge = '';
+                    let status = 'none';
+                    let detectedLabel = '';
+                    let selectedValue = isBinary ? 'No' : '';
 
-                    if (shadedMatches.length > 1) {
-                        selectedVal = '';
-                        statusBadge = `<span class="not-detected-badge">Detection failed</span>`;
-                    } else if (shadedMatches.length === 1) {
-                        selectedVal = shadedMatches[0].label;
-                        statusBadge = `<span class="shaded-badge">Detected: ${selectedVal}</span>`;
+                    if (shadedLabels.length > 1) {
+                        status = 'multiple';
+                        selectedValue = '';
+                    } else if (shadedLabels.length === 1) {
+                        status = 'single';
+                        detectedLabel = shadedLabels[0];
+                        selectedValue = shadedLabels[0];
                     }
 
-                    let text = '';
-                    if (section.textArea) {
-                        text = await readWritingZone(canvas, tl, ux, uy, vx, vy, section.textArea);
+                    let extractedText = '';
+                    if (worker && section.textArea) {
+                        const crop = extractDeskewedLine(canvas, tl, ux, uy, vx, vy, section.textArea);
+                        if (crop) {
+                            try {
+                                const res = await withTimeout(worker.recognize(crop), 7000);
+                                extractedText = cleanRecognizedText(res.data.text);
+                            } catch (e) {
+                                extractedText = '';
+                            }
+                        }
                     }
 
-                    detectedMap[section.title] = {
-                        selectedVal,
-                        statusBadge,
-                        text
+                    cachedScanResults[section.key] = {
+                        status,
+                        detectedLabel,
+                        selectedValue,
+                        text: extractedText
                     };
                 }
 
-                renderFormCards(detectedMap);
+                if (worker) {
+                    try { await worker.terminate(); } catch (e) {}
+                }
+
+                renderFormCards(false);
             };
             img.src = URL.createObjectURL(file);
         }
