@@ -116,26 +116,21 @@
             background-color: white;
             text-align: center;
             padding: 14px;
-            font-size: 13px;
+            font-size: 12px;
             color: #555;
             z-index: 10;
         }
 
-        .contact-btn {
-            background: none;
-            border: none;
+        footer a {
             color: #29251f;
-            font-size: 13px;
-            font-family: inherit;
-            cursor: pointer;
-            padding: 0;
+            text-decoration: none;
         }
 
-        .contact-btn:hover {
+        footer a:hover {
             text-decoration: underline;
         }
 
-        /* Dark background overlay when any popup is open */
+        /* Dark background overlay when popup is open */
         .overlay {
             position: fixed;
             top: 0;
@@ -154,7 +149,7 @@
             visibility: visible;
         }
 
-        /* Shared Grey Bottom Pop-up Styling */
+        /* Grey Bottom Pop-up */
         .bottom-popup {
             position: fixed;
             bottom: -100%;
@@ -172,11 +167,6 @@
             align-items: center;
         }
 
-        /* Shorter height padding for the Contact pop-up */
-        .bottom-popup.short {
-            padding: 20px 25px 28px;
-        }
-
         .bottom-popup.active {
             bottom: 0;
         }
@@ -187,7 +177,7 @@
             height: 4px;
             background-color: #777;
             border-radius: 2px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
         /* Container for the 2 Scan boxes */
@@ -224,26 +214,6 @@
 
         .option-box span.icon {
             font-size: 28px;
-        }
-
-        /* Contact Email display inside the short pop-up */
-        .contact-info {
-            color: white;
-            text-align: center;
-            font-size: 17px;
-        }
-
-        .contact-info a {
-            display: inline-block;
-            margin-top: 6px;
-            color: #FFF3D5;
-            font-weight: bold;
-            font-size: 19px;
-            text-decoration: none;
-        }
-
-        .contact-info a:hover {
-            text-decoration: underline;
         }
 
         /* Hide default file inputs */
@@ -299,14 +269,14 @@
     </main>
 
     <footer>
-        <button class="contact-btn" id="openContactBtn">Contact us</button>
+        <a href="mailto:contact@example.com">Contact us</a>
     </footer>
 
-    <!-- Dark overlay to close any open popup when tapping outside -->
+    <!-- Dark overlay to close popup when tapping outside -->
     <div class="overlay" id="overlay"></div>
 
     <!-- Scan Bottom Pop-up Menu -->
-    <div class="bottom-popup" id="scanPopup">
+    <div class="bottom-popup" id="bottomPopup">
         <div class="popup-handle"></div>
         <div class="popup-boxes">
             <!-- Camera Box -->
@@ -325,42 +295,20 @@
         </div>
     </div>
 
-    <!-- Contact Us Shorter Bottom Pop-up -->
-    <div class="bottom-popup short" id="contactPopup">
-        <div class="popup-handle"></div>
-        <div class="contact-info">
-            <p>Reach out to us via email:</p>
-            <a href="mailto:placeholder@example.com">placeholder@example.com</a>
-        </div>
-    </div>
-
     <script>
         const openScanBtn = document.getElementById('openScanBtn');
-        const scanPopup = document.getElementById('scanPopup');
-
-        const openContactBtn = document.getElementById('openContactBtn');
-        const contactPopup = document.getElementById('contactPopup');
-
+        const bottomPopup = document.getElementById('bottomPopup');
         const overlay = document.getElementById('overlay');
 
-        // Open Scan popup
+        // Open the popup
         openScanBtn.addEventListener('click', () => {
-            contactPopup.classList.remove('active');
-            scanPopup.classList.add('active');
+            bottomPopup.classList.add('active');
             overlay.classList.add('active');
         });
 
-        // Open Contact popup
-        openContactBtn.addEventListener('click', () => {
-            scanPopup.classList.remove('active');
-            contactPopup.classList.add('active');
-            overlay.classList.add('active');
-        });
-
-        // Close whichever popup is open when clicking outside
+        // Close the popup when clicking outside
         overlay.addEventListener('click', () => {
-            scanPopup.classList.remove('active');
-            contactPopup.classList.remove('active');
+            bottomPopup.classList.remove('active');
             overlay.classList.remove('active');
         });
     </script>
