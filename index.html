@@ -8,11 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
 
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: Arial, sans-serif;
@@ -23,11 +19,6 @@
             flex-direction: column;
         }
 
-        body.white-mode {
-            background-color: #ffffff;
-        }
-
-        /* Top navigation bar - same colour as popups (#3a3a3a) */
         header {
             display: flex;
             justify-content: space-between;
@@ -36,17 +27,18 @@
             background-color: #3a3a3a;
             border-bottom: 1px solid #525252;
             position: relative;
-            z-index: 20;
         }
 
-        .logo img {
-            height: 95px;
-            width: auto;
-            display: block;
+        .logo {
             background-color: #ffffff;
-            padding: 6px;
+            padding: 6px 10px;
             border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
+        .logo img { height: 83px; width: auto; display: block; }
 
         .site-title {
             position: absolute;
@@ -65,9 +57,9 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
-            background-color: #525252;
+            background-color: #29251f;
             color: white;
-            border: 2px solid #666;
+            border: 1px solid #666;
             padding: 14px 24px;
             border-radius: 10px;
             font-size: 16px;
@@ -75,13 +67,10 @@
             cursor: pointer;
             transition: 0.3s;
             flex-shrink: 0;
-            z-index: 25;
+            z-index: 20;
         }
 
-        .scan-button:hover {
-            background-color: #636363;
-            transform: translateY(-2px);
-        }
+        .scan-button:hover { background-color: #525252; transform: translateY(-2px); }
 
         .document-icon {
             width: 22px;
@@ -114,16 +103,17 @@
             padding: 40px 50px 90px;
             width: 100%;
             gap: 20px;
+            background-color: #ffffff;
         }
 
         .main-text {
             width: 100%;
+            max-width: 960px;
             font-size: 21px;
             line-height: 1.9;
             color: #443b30;
         }
 
-        /* Bottom contact bar - same colour as popups (#3a3a3a) */
         footer {
             position: fixed;
             bottom: 0;
@@ -131,51 +121,29 @@
             width: 100%;
             background-color: #3a3a3a;
             border-top: 1px solid #525252;
-            padding: 16px 50px;
-            z-index: 10;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 16px 50px;
+            z-index: 10;
         }
 
-        footer a {
-            color: #ffffff;
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 15px;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
-
-        .version-label {
-            color: #dcdcdc;
-            font-weight: bold;
-            font-size: 14px;
-        }
+        footer a { color: #ffffff; text-decoration: none; font-weight: bold; font-size: 15px; }
+        footer a:hover { text-decoration: underline; }
+        .version-label { color: #d6d6d6; font-weight: bold; font-size: 14px; }
 
         .overlay {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             background-color: rgba(0, 0, 0, 0.55);
             opacity: 0;
             visibility: hidden;
-            pointer-events: none;
             transition: 0.25s ease;
             z-index: 99;
         }
 
-        .overlay.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
+        .overlay.active { opacity: 1; visibility: visible; }
 
-        /* Grey Bottom Pop-up */
         .bottom-popup {
             position: fixed;
             bottom: -100%;
@@ -184,49 +152,40 @@
             background-color: #3a3a3a;
             border-top-left-radius: 24px;
             border-top-right-radius: 24px;
-            padding: 24px 25px 36px;
+            padding: 26px 25px 38px;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.35);
             transition: bottom 0.3s ease-out;
             z-index: 100;
             display: flex;
             flex-direction: column;
             align-items: center;
-            visibility: hidden;
         }
 
-        .bottom-popup.active {
-            bottom: 0;
-            visibility: visible;
-        }
+        .bottom-popup.active { bottom: 0; }
 
         .popup-handle {
-            width: 40px;
-            height: 4px;
+            width: 40px; height: 4px;
             background-color: #777;
             border-radius: 2px;
-            margin-bottom: 16px;
+            margin-bottom: 18px;
         }
 
         .popup-notice {
             width: 100%;
-            max-width: 660px;
-            background-color: #2c2c2c;
-            border: 1px solid #666;
-            color: #ffe599;
-            font-size: 14px;
-            line-height: 1.45;
-            padding: 10px 14px;
+            max-width: 640px;
+            background-color: #FFF3D5;
+            border: 1px solid #E3CE9E;
+            color: #29251f;
             border-radius: 10px;
+            padding: 11px 16px;
+            font-size: 14px;
+            font-weight: bold;
             text-align: center;
             margin-bottom: 18px;
+            line-height: 1.4;
         }
 
-        .popup-boxes {
-            display: flex;
-            gap: 16px;
-            width: 100%;
-            max-width: 660px;
-        }
+        .popup-boxes { display: flex; gap: 16px; width: 100%; max-width: 640px; }
 
         .option-box {
             flex: 1;
@@ -243,100 +202,87 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
             gap: 10px;
         }
 
-        .option-box:hover {
-            background-color: #636363;
-            transform: translateY(-3px);
-        }
+        .option-box:hover { background-color: #636363; transform: translateY(-3px); }
 
         .option-box svg {
-            width: 32px;
-            height: 32px;
-            stroke: white;
-            fill: none;
-            stroke-width: 2;
-            stroke-linecap: round;
-            stroke-linejoin: round;
+            width: 32px; height: 32px;
+            stroke: white; fill: none;
+            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
         }
 
-        input[type="file"] {
-            display: none;
-        }
+        input[type="file"] { display: none; }
 
-        /* Center Incomplete Modal - matches popup grey (#3a3a3a) */
+        /* Center Incomplete Modal */
         .center-modal {
             position: fixed;
-            top: 50%;
-            left: 50%;
+            top: 50%; left: 50%;
             transform: translate(-50%, -50%) scale(0.95);
-            width: 90%;
-            max-width: 420px;
             background-color: #3a3a3a;
-            color: #ffffff;
             border: 2px solid #666;
+            color: #ffffff;
             border-radius: 16px;
-            padding: 26px 24px 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45);
+            padding: 28px 26px 22px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 12px 32px rgba(0, 0, 0, 0.45);
             z-index: 120;
-            display: none;
-            flex-direction: column;
-            gap: 24px;
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.2s ease;
+            text-align: center;
         }
 
         .center-modal.active {
-            display: flex;
+            opacity: 1;
+            visibility: visible;
             transform: translate(-50%, -50%) scale(1);
         }
 
-        .center-modal-text {
+        .center-modal p {
             font-size: 19px;
             font-weight: bold;
-            text-align: center;
-            line-height: 1.4;
+            margin-bottom: 26px;
+            color: #ffffff;
         }
 
-        .center-modal-actions {
+        .modal-actions {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            gap: 12px;
+            gap: 16px;
         }
 
         .modal-ok-btn {
             background-color: #218838;
             color: #ffffff;
             border: none;
-            padding: 11px 24px;
+            padding: 10px 24px;
             border-radius: 8px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .modal-ok-btn:hover {
-            background-color: #19692c;
-        }
+        .modal-ok-btn:hover { background-color: #19692c; }
 
         .modal-skip-btn {
             background-color: #f0ad4e;
-            color: #1f1a12;
+            color: #111111;
             border: none;
-            padding: 11px 24px;
+            padding: 10px 24px;
             border-radius: 8px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .modal-skip-btn:hover {
-            background-color: #ec971f;
-        }
+        .modal-skip-btn:hover { background-color: #ec971f; }
 
-        /* White Scan / Manual / Summary Pages */
-        #resultsPage, #summaryPage {
+        /* White Form & Summary Pages */
+        .white-screen {
             display: none;
             background-color: #ffffff;
             color: #111111;
@@ -345,10 +291,7 @@
             padding: 36px 24px 60px;
         }
 
-        .results-container {
-            max-width: 720px;
-            margin: 0 auto;
-        }
+        .results-container { max-width: 720px; margin: 0 auto; }
 
         .results-top {
             display: flex;
@@ -359,10 +302,7 @@
             padding-bottom: 16px;
         }
 
-        .results-top h2 {
-            font-size: 24px;
-            color: #111;
-        }
+        .results-top h2 { font-size: 24px; color: #111; }
 
         .back-btn {
             background-color: #d92b2b;
@@ -375,19 +315,35 @@
             cursor: pointer;
         }
 
-        .back-btn:hover {
-            background-color: #b82020;
+        .back-btn:hover { background-color: #b82020; }
+
+        .bottom-actions {
+            display: flex;
+            justify-content: flex-end;
+            margin-top: 24px;
         }
+
+        .finish-btn {
+            background-color: #218838;
+            color: white;
+            border: none;
+            padding: 13px 28px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .finish-btn:hover { background-color: #19692c; }
 
         .status-msg {
             font-size: 20px;
             font-weight: bold;
             text-align: center;
-            margin-top: 80px;
+            margin-top: 70px;
             color: #222;
         }
 
-        /* Block selector card */
         .block-card {
             border: 1px solid #E3CE9E;
             border-radius: 12px;
@@ -396,16 +352,12 @@
             background-color: #FFF3D5;
             display: flex;
             flex-wrap: wrap;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
         }
 
-        .block-card label {
-            font-size: 17px;
-            font-weight: bold;
-            color: #29251f;
-        }
+        .block-card label { font-size: 16px; font-weight: bold; color: #29251f; }
 
         .result-card {
             border: 1px solid #e0e0e0;
@@ -421,28 +373,7 @@
             border: 2px solid #d92b2b;
         }
 
-        .result-card h3 {
-            font-size: 18px;
-            margin-bottom: 10px;
-            color: #111;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .unanswered-pill {
-            display: none;
-            background-color: #d92b2b;
-            color: #ffffff;
-            font-size: 12px;
-            font-weight: bold;
-            padding: 3px 9px;
-            border-radius: 6px;
-        }
-
-        .result-card.unanswered-highlight .unanswered-pill {
-            display: inline-block;
-        }
+        .result-card h3 { font-size: 18px; margin-bottom: 10px; color: #111; }
 
         .shaded-status {
             display: flex;
@@ -467,7 +398,7 @@
         }
 
         .result-card.unanswered-highlight .rating-select {
-            border-color: #d92b2b;
+            border: 2px solid #d92b2b;
         }
 
         .shaded-badge {
@@ -482,7 +413,7 @@
 
         .not-detected-badge {
             display: inline-block;
-            background-color: #d9534f;
+            background-color: #d92b2b;
             color: #fff;
             padding: 4px 10px;
             border-radius: 6px;
@@ -504,31 +435,20 @@
             flex: 1;
             font-size: 15px;
             color: #222;
-            min-height: 22px;
+            min-height: 20px;
             outline: none;
-            word-break: break-word;
         }
 
-        .read-text.is-placeholder {
-            color: #777;
-            font-style: italic;
+        @media (hover: hover) and (pointer: fine) {
+            .read-text { cursor: text; }
         }
 
         .read-text[contenteditable="true"] {
             border-bottom: 2px solid #29251f;
             padding-bottom: 2px;
-            color: #111;
-            font-style: normal;
-        }
-
-        @media (hover: hover) and (pointer: fine) {
-            .read-text {
-                cursor: text;
-            }
         }
 
         .edit-pencil {
-            position: relative;
             background: none;
             border: none;
             cursor: pointer;
@@ -539,170 +459,135 @@
             color: #444;
         }
 
-        .edit-pencil:hover {
-            color: #000;
+        /* Summary Page Table & Email Draft */
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 28px;
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
         }
 
-        .results-bottom {
+        .summary-table th, .summary-table td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid #e6e6e6;
+            font-size: 15px;
+            vertical-align: top;
+        }
+
+        .summary-table th {
+            background-color: #f4f4f4;
+            font-weight: bold;
+            color: #222;
+        }
+
+        .summary-unanswered {
+            display: inline-block;
+            background-color: #fdecea;
+            color: #b82020;
+            border: 1px solid #d92b2b;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .summary-notext {
+            display: inline-block;
+            background-color: #fff8db;
+            color: #7a5a00;
+            border: 1px solid #e6c229;
+            padding: 2px 8px;
+            border-radius: 6px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .email-section {
+            border: 1px solid #dcdcdc;
+            border-radius: 12px;
+            padding: 18px 20px;
+            background-color: #fafafa;
+            margin-bottom: 12px;
+        }
+
+        .email-header {
             display: flex;
-            justify-content: flex-end;
-            margin-top: 24px;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            gap: 10px;
+            flex-wrap: wrap;
         }
 
-        .finish-btn {
-            background-color: #218838;
+        .email-header h3 { font-size: 18px; color: #111; }
+
+        .copy-email-btn {
+            background-color: #3a3a3a;
             color: #ffffff;
             border: none;
-            padding: 12px 28px;
-            border-radius: 8px;
-            font-size: 16px;
+            padding: 8px 14px;
+            border-radius: 7px;
+            font-size: 13px;
             font-weight: bold;
             cursor: pointer;
         }
 
-        .finish-btn:hover {
-            background-color: #19692c;
-        }
+        .copy-email-btn:hover { background-color: #525252; }
 
-        /* Summary Page Table */
-        .summary-banner {
-            background-color: #FFF3D5;
-            border: 1px solid #E3CE9E;
-            border-radius: 12px;
-            padding: 14px 18px;
-            margin-bottom: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            color: #29251f;
-        }
-
-        .summary-item {
-            border: 1px solid #e0e0e0;
-            border-radius: 10px;
-            padding: 14px 18px;
-            margin-bottom: 12px;
-            background-color: #fafafa;
-        }
-
-        .summary-item-header {
+        .email-subject-row {
             display: flex;
-            justify-content: space-between;
             align-items: center;
-            margin-bottom: 6px;
-            gap: 10px;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
-        .summary-item-title {
-            font-size: 16px;
+        .email-subject-row label {
+            font-size: 14px;
             font-weight: bold;
+            color: #333;
+        }
+
+        .email-subject-input {
+            flex: 1;
+            padding: 8px 10px;
+            font-size: 14px;
+            font-family: Arial, sans-serif;
+            border: 1px solid #cfcfcf;
+            border-radius: 8px;
+            background-color: #ffffff;
             color: #111;
         }
 
-        .summary-rating-badge {
-            background-color: #29251f;
-            color: #ffffff;
-            padding: 4px 10px;
-            border-radius: 6px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        .summary-rating-badge.unanswered {
-            background-color: #d92b2b;
-            color: #ffffff;
-        }
-
-        .summary-note {
+        .email-textarea {
+            width: 100%;
+            min-height: 230px;
+            padding: 12px 14px;
             font-size: 14px;
-            color: #333;
-            line-height: 1.45;
-            padding: 6px 10px;
-            border-radius: 6px;
+            line-height: 1.6;
+            font-family: Arial, sans-serif;
+            color: #111;
+            background-color: #ffffff;
+            border: 1px solid #cfcfcf;
+            border-radius: 8px;
+            resize: vertical;
         }
 
-        .summary-note.no-text {
-            background-color: #fff3cd;
-            border-left: 4px solid #f0ad4e;
-            color: #664d03;
-            font-weight: bold;
-        }
-
-        /* Mobile layout */
         @media (max-width: 768px) {
-            header {
-                justify-content: space-between;
-                gap: 12px;
-                padding: 16px 20px;
-            }
-
-            .logo {
-                flex-shrink: 0;
-            }
-
-            .logo img {
-                height: 60px;
-            }
-
-            .site-title {
-                position: static;
-                transform: none;
-                font-size: 26px;
-                text-align: right;
-                white-space: normal;
-                line-height: 1.2;
-            }
-
+            header { justify-content: space-between; gap: 12px; padding: 16px 20px; }
+            .logo img { height: 52px; }
+            .site-title { position: static; transform: none; font-size: 24px; text-align: right; white-space: normal; line-height: 1.2; }
             .scan-button {
-                position: absolute;
-                top: calc(100% + 16px);
-                left: 50%;
-                transform: translateX(-50%);
-                width: 45vw;
-                min-width: 150px;
-                flex-direction: row;
-                gap: 10px;
-                padding: 15px 24px;
-                font-size: 18px;
-                background-color: #3a3a3a;
+                position: absolute; top: calc(100% + 16px); left: 50%; transform: translateX(-50%);
+                width: 45vw; min-width: 150px; flex-direction: row; gap: 10px; padding: 15px 24px; font-size: 18px;
             }
-
-            .scan-button:hover {
-                transform: translateX(-50%) translateY(-2px);
-            }
-
-            .document-icon {
-                width: 20px;
-                height: 24px;
-            }
-
-            .document-icon::before {
-                top: 5px;
-                width: 10px;
-                box-shadow: 0 4px white, 0 8px white;
-            }
-
-            main {
-                padding: 85px 20px 80px;
-                gap: 14px;
-            }
-
-            .main-text {
-                font-size: 17px;
-            }
-
-            footer {
-                padding: 15px 20px;
-            }
-
-            .popup-boxes {
-                flex-direction: column;
-                gap: 12px;
-            }
-
-            .option-box {
-                flex-direction: row;
-                padding: 16px 18px;
-            }
+            main { padding: 85px 20px 80px; gap: 14px; }
+            .main-text { font-size: 17px; }
+            footer { padding: 15px 20px; }
+            .popup-boxes { flex-direction: column; gap: 12px; }
+            .option-box { flex-direction: row; justify-content: center; padding: 16px; }
         }
     </style>
 </head>
@@ -712,10 +597,8 @@
         <div class="logo">
             <img src="logo.png" alt="KSHS Whistle Blowers Logo">
         </div>
-
         <h1 class="site-title">KSHS whistle blowers</h1>
-
-        <button type="button" class="scan-button" id="openScanBtn">
+        <button class="scan-button" id="openScanBtn">
             <span class="document-icon"></span>
             <span>Scan</span>
         </button>
@@ -729,7 +612,7 @@
 
     <footer id="pageFooter">
         <a href="mailto:contact@example.com">Contact us</a>
-        <span class="version-label">V2.34</span>
+        <span class="version-label">V2.36</span>
     </footer>
 
     <div class="overlay" id="overlay"></div>
@@ -740,14 +623,14 @@
             The photo response system is not finished yet — please check your responses carefully before sending or use manual mode.
         </div>
         <div class="popup-boxes">
-            <label for="cameraInput" class="option-box" id="cameraLabel">
+            <label for="cameraInput" class="option-box">
                 <svg viewBox="0 0 24 24">
                     <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
                     <circle cx="12" cy="13" r="4"></circle>
                 </svg>
                 Camera
             </label>
-            <label for="photosInput" class="option-box" id="photosLabel">
+            <label for="photosInput" class="option-box">
                 <svg viewBox="0 0 24 24">
                     <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
                     <circle cx="8.5" cy="8.5" r="1.5"></circle>
@@ -767,36 +650,39 @@
         </div>
     </div>
 
-    <!-- Center Incomplete Dropdowns Modal -->
-    <div class="center-modal" id="incompleteModal" role="dialog" aria-modal="true">
-        <p class="center-modal-text">not all responses are completed</p>
-        <div class="center-modal-actions">
+    <!-- Incomplete Responses Modal -->
+    <div class="center-modal" id="incompleteModal">
+        <p>not all responses are completed</p>
+        <div class="modal-actions">
             <button type="button" class="modal-ok-btn" id="modalOkBtn">OK</button>
             <button type="button" class="modal-skip-btn" id="modalSkipBtn">Skip</button>
         </div>
     </div>
 
-    <!-- First White Page: Scan Results / Manual Entry -->
-    <section id="resultsPage">
+    <!-- First White Screen: Form / Scan Results -->
+    <section id="resultsPage" class="white-screen">
         <div class="results-container">
             <div class="results-top">
-                <h2 id="resultsPageTitle">Scan results</h2>
-                <button type="button" class="back-btn" id="backHomeBtn">Back</button>
+                <h2 id="formPageTitle">Scan results</h2>
+                <button class="back-btn" id="backHomeBtn">Back</button>
             </div>
             <div id="resultsOutput"></div>
+            <div class="bottom-actions" id="formBottomActions" style="display:none;">
+                <button type="button" class="finish-btn" id="finishBtn">Finish</button>
+            </div>
         </div>
     </section>
 
-    <!-- Second White Page: Response Summary -->
-    <section id="summaryPage">
+    <!-- Second White Screen: Response Summary + Editable Formal Email -->
+    <section id="summaryPage" class="white-screen">
         <div class="results-container">
             <div class="results-top">
                 <h2>Response summary</h2>
-                <button type="button" class="back-btn" id="summaryBackBtn">Back</button>
+                <button class="back-btn" id="backToFormBtn">Back</button>
             </div>
             <div id="summaryOutput"></div>
-            <div class="results-bottom">
-                <button type="button" class="finish-btn" id="summaryDoneBtn">Done</button>
+            <div class="bottom-actions">
+                <button type="button" class="finish-btn" id="doneSummaryBtn">Done</button>
             </div>
         </div>
     </section>
@@ -809,22 +695,18 @@
         const photosInput = document.getElementById('photosInput');
         const manualEntryBtn = document.getElementById('manualEntryBtn');
         const resultsPage = document.getElementById('resultsPage');
-        const resultsPageTitle = document.getElementById('resultsPageTitle');
+        const summaryPage = document.getElementById('summaryPage');
         const resultsOutput = document.getElementById('resultsOutput');
+        const summaryOutput = document.getElementById('summaryOutput');
+        const formPageTitle = document.getElementById('formPageTitle');
+        const formBottomActions = document.getElementById('formBottomActions');
         const backHomeBtn = document.getElementById('backHomeBtn');
-
+        const finishBtn = document.getElementById('finishBtn');
+        const backToFormBtn = document.getElementById('backToFormBtn');
+        const doneSummaryBtn = document.getElementById('doneSummaryBtn');
         const incompleteModal = document.getElementById('incompleteModal');
         const modalOkBtn = document.getElementById('modalOkBtn');
         const modalSkipBtn = document.getElementById('modalSkipBtn');
-
-        const summaryPage = document.getElementById('summaryPage');
-        const summaryOutput = document.getElementById('summaryOutput');
-        const summaryBackBtn = document.getElementById('summaryBackBtn');
-        const summaryDoneBtn = document.getElementById('summaryDoneBtn');
-
-        let currentMode = 'scan';
-        let selectedBlock = 'Block 3 boys (Yr9)';
-        let cachedScanResults = {};
 
         const BLOCK_OPTIONS = [
             'Block 3 boys (Yr9)',
@@ -832,23 +714,88 @@
             'Block 1 (Yr 7-8)'
         ];
 
+        const SECTIONS_STANDARD = [
+            {
+                title: 'Too disgusting to rate',
+                boxes: [{ label: 'Yes', dx: 0.08, dy: -3.88 }],
+                dropdownOptions: ['No', 'Yes'],
+                textArea: { dx: 2.68, dy: -4.02, dw: 1.72, dh: 0.30 }
+            },
+            {
+                title: 'Stall 1',
+                boxes: [
+                    { label: 'Good', dx: 0.56, dy: -3.22 },
+                    { label: 'Dirty', dx: 0.56, dy: -2.97 },
+                    { label: 'Damaged', dx: 0.56, dy: -2.72 },
+                    { label: 'Broken', dx: 0.56, dy: -2.47 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 0.36, dy: -2.30, dw: 1.78, dh: 0.30 }
+            },
+            {
+                title: 'Stall 2',
+                boxes: [
+                    { label: 'Good', dx: 0.56, dy: -1.76 },
+                    { label: 'Dirty', dx: 0.56, dy: -1.51 },
+                    { label: 'Damaged', dx: 0.56, dy: -1.26 },
+                    { label: 'Broken', dx: 0.56, dy: -1.01 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 0.36, dy: -0.84, dw: 1.78, dh: 0.30 }
+            },
+            {
+                title: 'Hand washing',
+                boxes: [
+                    { label: 'Good', dx: 2.38, dy: -3.22 },
+                    { label: 'Dirty', dx: 2.38, dy: -2.97 },
+                    { label: 'Damaged', dx: 2.38, dy: -2.72 },
+                    { label: 'Broken', dx: 2.38, dy: -2.47 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 2.24, dy: -2.30, dw: 1.78, dh: 0.30 }
+            },
+            {
+                title: 'Urinal',
+                boxes: [
+                    { label: 'Good', dx: 2.38, dy: -1.76 },
+                    { label: 'Dirty', dx: 2.38, dy: -1.51 },
+                    { label: 'Damaged', dx: 2.38, dy: -1.26 },
+                    { label: 'Broken', dx: 2.38, dy: -1.01 }
+                ],
+                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
+                textArea: { dx: 2.24, dy: -0.84, dw: 1.78, dh: 0.30 }
+            },
+            {
+                title: 'Comments',
+                boxes: [],
+                dropdownOptions: [],
+                textArea: { dx: 1.12, dy: -0.18, dw: 3.05, dh: 1.18 }
+            }
+        ];
+
+        const SECTIONS_BLOCK1 = [
+            { title: 'Too disgusting to rate', boxes: [], dropdownOptions: ['No', 'Yes'] },
+            { title: 'Stall 1', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
+            { title: 'Stall 2', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
+            { title: 'Stall 3', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
+            { title: 'Stall 4', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
+            { title: 'Hand washing', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
+            { title: 'Comments', boxes: [], dropdownOptions: [] }
+        ];
+
+        let currentBlock = BLOCK_OPTIONS[0];
+        let lastScanData = {};
+        let currentMode = 'scan';
+
         function openDrawer() {
             bottomPopup.style.display = 'flex';
-            bottomPopup.style.visibility = 'visible';
-            requestAnimationFrame(() => {
-                bottomPopup.classList.add('active');
-                overlay.classList.add('active');
-            });
+            bottomPopup.classList.add('active');
+            overlay.classList.add('active');
         }
 
         function closeDrawer() {
             bottomPopup.classList.remove('active');
             overlay.classList.remove('active');
-            setTimeout(() => {
-                if (!bottomPopup.classList.contains('active')) {
-                    bottomPopup.style.visibility = 'hidden';
-                }
-            }, 260);
         }
 
         function closeIncompleteModal() {
@@ -856,10 +803,16 @@
             overlay.classList.remove('active');
         }
 
-        function returnToHome() {
+        openScanBtn.addEventListener('click', openDrawer);
+
+        overlay.addEventListener('click', () => {
             closeDrawer();
             closeIncompleteModal();
-            document.body.classList.remove('white-mode');
+        });
+
+        function returnHome() {
+            closeDrawer();
+            closeIncompleteModal();
             resultsPage.style.display = 'none';
             summaryPage.style.display = 'none';
             document.getElementById('pageHeader').style.display = 'flex';
@@ -867,563 +820,468 @@
             document.getElementById('pageFooter').style.display = 'flex';
             cameraInput.value = '';
             photosInput.value = '';
+            lastScanData = {};
         }
 
-        openScanBtn.addEventListener('click', openDrawer);
+        backHomeBtn.addEventListener('click', returnHome);
+        doneSummaryBtn.addEventListener('click', returnHome);
 
-        overlay.addEventListener('click', () => {
-            if (incompleteModal.classList.contains('active')) {
-                closeIncompleteModal();
-            } else {
-                closeDrawer();
-            }
-        });
-
-        backHomeBtn.addEventListener('click', returnToHome);
-        summaryDoneBtn.addEventListener('click', returnToHome);
-
-        summaryBackBtn.addEventListener('click', () => {
+        backToFormBtn.addEventListener('click', () => {
             summaryPage.style.display = 'none';
             resultsPage.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo(0, 0);
         });
 
-        function showBlankWhitePage(titleText, loadingText) {
-            bottomPopup.classList.remove('active');
-            bottomPopup.style.visibility = 'hidden';
-            overlay.classList.remove('active');
+        function showFormPage(titleText) {
+            closeDrawer();
             document.getElementById('pageHeader').style.display = 'none';
             document.getElementById('pageMain').style.display = 'none';
             document.getElementById('pageFooter').style.display = 'none';
-            document.body.classList.add('white-mode');
             summaryPage.style.display = 'none';
             resultsPage.style.display = 'block';
-            resultsPageTitle.textContent = titleText;
-            if (loadingText) {
-                resultsOutput.innerHTML = `<p class="status-msg">${loadingText}</p>`;
-            }
+            formPageTitle.textContent = titleText;
+            formBottomActions.style.display = 'none';
         }
 
         function capitalizeFirst(str) {
             const clean = (str || '').replace(/\s+/g, ' ').trim();
-            if (!clean) return '';
+            if (!clean) return 'No text detected.';
             return clean.charAt(0).toUpperCase() + clean.slice(1);
         }
 
-        const STANDARD_SECTIONS = [
-            {
-                key: 'disgusting',
-                title: 'Too disgusting to rate',
-                boxes: [{ label: 'Yes', dx: -0.02, dy: -3.52 }],
-                dropdownOptions: ['No', 'Yes'],
-                textArea: { dx: 2.52, dy: -3.65, dw: 1.55, dh: 0.25 }
-            },
-            {
-                key: 'stall1',
-                title: 'Stall 1',
-                boxes: [
-                    { label: 'Good', dx: 0.42, dy: -2.92 },
-                    { label: 'Dirty', dx: 0.42, dy: -2.69 },
-                    { label: 'Damaged', dx: 0.42, dy: -2.46 },
-                    { label: 'Broken', dx: 0.42, dy: -2.23 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 0.30, dy: -2.06, dw: 1.58, dh: 0.27 }
-            },
-            {
-                key: 'stall2',
-                title: 'Stall 2',
-                boxes: [
-                    { label: 'Good', dx: 0.42, dy: -1.58 },
-                    { label: 'Dirty', dx: 0.42, dy: -1.35 },
-                    { label: 'Damaged', dx: 0.42, dy: -1.12 },
-                    { label: 'Broken', dx: 0.42, dy: -0.89 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 0.30, dy: -0.72, dw: 1.58, dh: 0.27 }
-            },
-            {
-                key: 'handwashing',
-                title: 'Hand washing',
-                boxes: [
-                    { label: 'Good', dx: 2.18, dy: -2.92 },
-                    { label: 'Dirty', dx: 2.18, dy: -2.69 },
-                    { label: 'Damaged', dx: 2.18, dy: -2.46 },
-                    { label: 'Broken', dx: 2.18, dy: -2.23 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 2.06, dy: -2.06, dw: 1.58, dh: 0.27 }
-            },
-            {
-                key: 'urinal',
-                title: 'Urinal',
-                boxes: [
-                    { label: 'Good', dx: 2.18, dy: -1.58 },
-                    { label: 'Dirty', dx: 2.18, dy: -1.35 },
-                    { label: 'Damaged', dx: 2.18, dy: -1.12 },
-                    { label: 'Broken', dx: 2.18, dy: -0.89 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 2.06, dy: -0.72, dw: 1.58, dh: 0.27 }
-            },
-            {
-                key: 'comments',
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textArea: { dx: 1.04, dy: -0.18, dw: 2.75, dh: 1.05 }
-            }
-        ];
-
-        const BLOCK1_SECTIONS = [
-            {
-                key: 'disgusting',
-                title: 'Too disgusting to rate',
-                boxes: [],
-                dropdownOptions: ['No', 'Yes']
-            },
-            {
-                key: 'stall1',
-                title: 'Stall 1',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
-            },
-            {
-                key: 'stall2',
-                title: 'Stall 2',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
-            },
-            {
-                key: 'stall3',
-                title: 'Stall 3',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
-            },
-            {
-                key: 'stall4',
-                title: 'Stall 4',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
-            },
-            {
-                key: 'handwashing',
-                title: 'Hand washing',
-                boxes: [],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken']
-            },
-            {
-                key: 'comments',
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: []
-            }
-        ];
-
-        function getActiveSections() {
-            return selectedBlock === 'Block 1 (Yr 7-8)' ? BLOCK1_SECTIONS : STANDARD_SECTIONS;
+        function getActiveSections(blockName) {
+            return blockName === 'Block 1 (Yr 7-8)' ? SECTIONS_BLOCK1 : SECTIONS_STANDARD;
         }
 
-        function snapshotCurrentFormState() {
-            document.querySelectorAll('.result-card[data-key]').forEach(card => {
-                const key = card.getAttribute('data-key');
-                const sel = card.querySelector('.rating-select');
-                const txt = card.querySelector('.read-text');
-                const existing = cachedScanResults[key] || {};
-                const rawText = txt ? txt.textContent.trim() : '';
-                cachedScanResults[key] = {
-                    ...existing,
-                    selectedValue: sel ? sel.value : (existing.selectedValue || ''),
-                    text: rawText === 'No text detected.' ? '' : rawText
-                };
-            });
-        }
-
-        function renderFormCards(isManual) {
-            const sections = getActiveSections();
-
-            const blockOptionsHtml = BLOCK_OPTIONS.map(opt =>
-                `<option value="${opt}" ${selectedBlock === opt ? 'selected' : ''}>${opt}</option>`
+        function renderFormCards(blockName, prefillMap = {}) {
+            const sections = getActiveSections(blockName);
+            const blockOptionsHtml = BLOCK_OPTIONS.map(b =>
+                `<option value="${b}" ${b === blockName ? 'selected' : ''}>${b}</option>`
             ).join('');
 
             let html = `
                 <div class="block-card">
-                    <label for="blockSelector">Bathroom / Block</label>
-                    <select id="blockSelector" class="rating-select">
+                    <label for="blockSelect">Bathroom / Block</label>
+                    <select id="blockSelect" class="rating-select">
                         ${blockOptionsHtml}
                     </select>
                 </div>
             `;
 
             for (const section of sections) {
-                const saved = cachedScanResults[section.key] || {};
-                const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-
-                let selectedValue = saved.selectedValue !== undefined ? saved.selectedValue : '';
-                if (!selectedValue && isBinary) {
-                    selectedValue = 'No';
-                }
+                const saved = prefillMap[section.title] || {};
+                const detectedValue = saved.selectedValue || '';
+                const badgeHtml = saved.badgeHtml || '';
+                const textVal = saved.text || 'No text detected.';
 
                 let controlHtml = '';
                 if (section.dropdownOptions && section.dropdownOptions.length > 0) {
+                    const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
+                    const defaultVal = detectedValue || (isBinary ? 'No' : '');
                     const optionsMarkup = [
-                        !isBinary ? `<option value="" ${selectedValue === '' ? 'selected' : ''}>Select rating...</option>` : '',
+                        !isBinary ? `<option value="" ${defaultVal === '' ? 'selected' : ''}>Select rating...</option>` : '',
                         ...section.dropdownOptions.map(opt =>
-                            `<option value="${opt}" ${selectedValue === opt ? 'selected' : ''}>${opt}</option>`
+                            `<option value="${opt}" ${defaultVal === opt ? 'selected' : ''}>${opt}</option>`
                         )
                     ].join('');
 
-                    let statusBadge = '';
-                    if (!isManual && saved.status === 'multiple') {
-                        statusBadge = `<span class="not-detected-badge">Detection failed</span>`;
-                    } else if (!isManual && saved.status === 'single' && saved.detectedLabel) {
-                        statusBadge = `<span class="shaded-badge">Detected: ${saved.detectedLabel}</span>`;
-                    }
-
                     controlHtml = `
                         <div class="shaded-status">
-                            <select class="rating-select" aria-label="${section.title}">
+                            <select class="rating-select section-dropdown" data-section="${section.title}" aria-label="${section.title}">
                                 ${optionsMarkup}
                             </select>
-                            ${statusBadge}
+                            ${badgeHtml}
                         </div>
                     `;
                 }
 
-                const hasText = Boolean(saved.text && saved.text.trim());
-                const displayText = hasText ? saved.text : (isManual ? '' : 'No text detected.');
-                const placeholderClass = (!hasText && !isManual) ? 'is-placeholder' : '';
-                const editableAttr = isManual ? 'true' : 'false';
-
-                const pencilButtonHtml = isManual ? '' : `
-                    <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M12 20h9"></path>
-                            <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                        </svg>
-                    </button>
-                `;
-
                 html += `
-                    <div class="result-card" data-key="${section.key}">
-                        <h3>
-                            <span>${section.title}</span>
-                            <span class="unanswered-pill">Unanswered</span>
-                        </h3>
+                    <div class="result-card" data-card-section="${section.title}">
+                        <h3>${section.title}</h3>
                         ${controlHtml}
                         <div class="text-row">
-                            <span class="read-text ${placeholderClass}" contenteditable="${editableAttr}">${displayText}</span>
-                            ${pencilButtonHtml}
+                            <span class="read-text" data-section="${section.title}" contenteditable="false">${textVal}</span>
+                            <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 20h9"></path>
+                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 `;
             }
-
-            html += `
-                <div class="results-bottom">
-                    <button type="button" class="finish-btn" id="finishBtn">Finish</button>
-                </div>
-            `;
 
             resultsOutput.innerHTML = html;
+            formBottomActions.style.display = 'flex';
 
-            const blockSelector = document.getElementById('blockSelector');
-            blockSelector.addEventListener('change', (e) => {
-                snapshotCurrentFormState();
-                selectedBlock = e.target.value;
-                renderFormCards(isManual);
+            const blockSelect = document.getElementById('blockSelect');
+            blockSelect.addEventListener('change', () => {
+                const snapshot = captureCurrentFormState();
+                currentBlock = blockSelect.value;
+                renderFormCards(currentBlock, snapshot);
             });
 
-            document.querySelectorAll('.result-card .rating-select').forEach(sel => {
+            document.querySelectorAll('.section-dropdown').forEach(sel => {
                 sel.addEventListener('change', () => {
-                    const card = sel.closest('.result-card');
                     if (sel.value !== '') {
-                        card.classList.remove('unanswered-highlight');
+                        const card = sel.closest('.result-card');
+                        if (card) card.classList.remove('unanswered-highlight');
                     }
                 });
             });
 
-            function startEditingSpan(textSpan) {
-                if (textSpan.getAttribute('contenteditable') === 'true') return;
-                if (textSpan.textContent.trim() === 'No text detected.') {
-                    textSpan.textContent = '';
-                }
-                textSpan.classList.remove('is-placeholder');
-                textSpan.setAttribute('contenteditable', 'true');
-                textSpan.focus();
-            }
-
-            function finishEditingSpan(textSpan) {
-                if (textSpan.getAttribute('contenteditable') !== 'true') return;
-                const cleaned = capitalizeFirst(textSpan.textContent);
-                if (!cleaned) {
-                    textSpan.textContent = 'No text detected.';
-                    textSpan.classList.add('is-placeholder');
-                } else {
-                    textSpan.textContent = cleaned;
-                    textSpan.classList.remove('is-placeholder');
-                }
-                textSpan.setAttribute('contenteditable', 'false');
-            }
-
-            if (!isManual) {
-                const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-                document.querySelectorAll('.read-text').forEach(textSpan => {
-                    if (isDesktopPointer) {
-                        textSpan.addEventListener('click', () => startEditingSpan(textSpan));
-                    }
-                    textSpan.addEventListener('blur', () => finishEditingSpan(textSpan));
-                    textSpan.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            textSpan.blur();
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.edit-pencil').forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        const textSpan = btn.previousElementSibling;
-                        if (textSpan.getAttribute('contenteditable') !== 'true') {
-                            startEditingSpan(textSpan);
-                        } else {
-                            finishEditingSpan(textSpan);
-                        }
-                    });
-                });
-            }
-
-            document.getElementById('finishBtn').addEventListener('click', handleFinishClick);
+            attachTextEditHandlers();
         }
 
-        function getUnansweredCards() {
-            const missing = [];
-            document.querySelectorAll('.result-card[data-key]').forEach(card => {
-                const sel = card.querySelector('.rating-select');
-                if (sel && sel.value === '') {
-                    missing.push(card);
-                }
+        function captureCurrentFormState() {
+            const snapshot = { ...lastScanData };
+            document.querySelectorAll('.result-card').forEach(card => {
+                const title = card.getAttribute('data-card-section');
+                const sel = card.querySelector('.section-dropdown');
+                const txt = card.querySelector('.read-text');
+                const badge = card.querySelector('.shaded-badge, .not-detected-badge');
+                snapshot[title] = {
+                    selectedValue: sel ? sel.value : '',
+                    text: txt ? txt.textContent.trim() : 'No text detected.',
+                    badgeHtml: badge ? badge.outerHTML : ''
+                };
             });
-            return missing;
+            return snapshot;
         }
 
-        function handleFinishClick() {
-            const missingCards = getUnansweredCards();
-            if (missingCards.length > 0) {
-                overlay.classList.add('active');
-                incompleteModal.classList.add('active');
-            } else {
-                openSummaryPage();
+        function startEditingSpan(span) {
+            if (!span) return;
+            if (span.getAttribute('contenteditable') !== 'true') {
+                if (span.textContent.trim() === 'No text detected.') {
+                    span.textContent = '';
+                }
+                span.setAttribute('contenteditable', 'true');
             }
+            span.focus();
         }
 
-        modalOkBtn.addEventListener('click', () => {
-            closeIncompleteModal();
-            const missingCards = getUnansweredCards();
-            document.querySelectorAll('.result-card').forEach(c => c.classList.remove('unanswered-highlight'));
-            missingCards.forEach(c => c.classList.add('unanswered-highlight'));
-            if (missingCards.length > 0) {
-                missingCards[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
+        function finishEditingSpan(span) {
+            if (!span || span.getAttribute('contenteditable') !== 'true') return;
+            span.textContent = capitalizeFirst(span.textContent);
+            span.setAttribute('contenteditable', 'false');
+        }
 
-        modalSkipBtn.addEventListener('click', () => {
-            closeIncompleteModal();
-            openSummaryPage();
-        });
+        function attachTextEditHandlers() {
+            const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-        function openSummaryPage() {
-            snapshotCurrentFormState();
-            const sections = getActiveSections();
+            document.querySelectorAll('.read-text').forEach(span => {
+                if (isDesktopPointer) {
+                    span.addEventListener('click', () => startEditingSpan(span));
+                }
+                span.addEventListener('blur', () => finishEditingSpan(span));
+                span.addEventListener('keydown', e => {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        finishEditingSpan(span);
+                    }
+                });
+            });
 
-            let summaryHtml = `
-                <div class="summary-banner">
-                    Location: ${selectedBlock}
-                </div>
-            `;
-
-            for (const section of sections) {
-                const saved = cachedScanResults[section.key] || {};
-                const hasDropdown = section.dropdownOptions && section.dropdownOptions.length > 0;
-                const ratingVal = saved.selectedValue || '';
-                const noteVal = (saved.text || '').trim();
-
-                let badgeHtml = '';
-                if (hasDropdown) {
-                    if (ratingVal) {
-                        badgeHtml = `<span class="summary-rating-badge">${ratingVal}</span>`;
+            document.querySelectorAll('.edit-pencil').forEach(btn => {
+                btn.addEventListener('click', e => {
+                    e.stopPropagation();
+                    const textSpan = btn.previousElementSibling;
+                    if (textSpan.getAttribute('contenteditable') === 'true') {
+                        finishEditingSpan(textSpan);
                     } else {
-                        badgeHtml = `<span class="summary-rating-badge unanswered">Unanswered</span>`;
+                        startEditingSpan(textSpan);
                     }
-                }
-
-                const noteClass = noteVal ? 'summary-note' : 'summary-note no-text';
-                const noteDisplay = noteVal ? noteVal : 'No text entered';
-
-                summaryHtml += `
-                    <div class="summary-item">
-                        <div class="summary-item-header">
-                            <span class="summary-item-title">${section.title}</span>
-                            ${badgeHtml}
-                        </div>
-                        <div class="${noteClass}">${noteDisplay}</div>
-                    </div>
-                `;
-            }
-
-            summaryOutput.innerHTML = summaryHtml;
-            resultsPage.style.display = 'none';
-            summaryPage.style.display = 'block';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
         }
 
         manualEntryBtn.addEventListener('click', () => {
             currentMode = 'manual';
-            cachedScanResults = {};
-            showBlankWhitePage('Manual entry', '');
-            renderFormCards(true);
+            lastScanData = {};
+            showFormPage('Manual entry');
+            renderFormCards(currentBlock, {});
         });
 
-        function preprocessQRFrame(sourceCanvas, mode) {
-            const w = sourceCanvas.width;
-            const h = sourceCanvas.height;
-            const out = document.createElement('canvas');
-            out.width = w;
-            out.height = h;
-            const octx = out.getContext('2d', { willReadFrequently: true });
-            octx.drawImage(sourceCanvas, 0, 0);
+        function buildFormalEmail(blockName, rows) {
+            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
+            const isTooDisgusting = tooDisgusting && tooDisgusting.rating === 'Yes';
+            const tooDisgustingReason = tooDisgusting && tooDisgusting.hasText ? tooDisgusting.rawText : '';
 
-            const imgData = octx.getImageData(0, 0, w, h);
-            const d = imgData.data;
+            const issues = [];
+            rows.forEach(r => {
+                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') return;
+                const badStatus = ['Dirty', 'Damaged', 'Broken'].includes(r.rating);
+                if (badStatus || r.hasText) {
+                    const statusPart = badStatus ? `Condition: ${r.rating}` : (r.rating ? `Condition: ${r.rating}` : 'Condition: Not specified');
+                    const detailPart = r.hasText ? ` — Details: "${r.rawText}"` : '';
+                    issues.push(`• ${r.title}: ${statusPart}${detailPart}`);
+                }
+            });
 
-            if (mode === 'contrast') {
-                let minL = 255, maxL = 0;
-                for (let i = 0; i < d.length; i += 4) {
-                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    if (l < minL) minL = l;
-                    if (l > maxL) maxL = l;
-                }
-                const rng = Math.max(1, maxL - minL);
-                for (let i = 0; i < d.length; i += 4) {
-                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    const v = ((l - minL) / rng) * 255;
-                    d[i] = d[i + 1] = d[i + 2] = v;
-                }
-            } else if (mode === 'threshold') {
-                let sum = 0;
-                for (let i = 0; i < d.length; i += 4) {
-                    sum += 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                }
-                const mean = sum / (d.length / 4);
-                for (let i = 0; i < d.length; i += 4) {
-                    const l = 0.299 * d[i] + 0.587 * d[i + 1] + 0.114 * d[i + 2];
-                    const v = l < mean * 0.92 ? 0 : 255;
-                    d[i] = d[i + 1] = d[i + 2] = v;
-                }
+            const commentsRow = rows.find(r => r.title === 'Comments');
+            const generalComments = commentsRow && commentsRow.hasText ? commentsRow.rawText : '';
+
+            const subject = `Maintenance & Hygiene Report: ${blockName} Restroom`;
+
+            let bodyLines = [
+                'Dear Facilities and Maintenance Team,',
+                '',
+                `I am writing to report hygiene and maintenance issues identified in the ${blockName} restroom facilities.`
+            ];
+
+            if (isTooDisgusting) {
+                bodyLines.push('');
+                bodyLines.push(
+                    tooDisgustingReason
+                        ? `Please note that the facility was marked as too unsanitary to rate in full due to the following reason: "${tooDisgustingReason}".`
+                        : 'Please note that the overall condition of the facility was marked as too unsanitary to rate in full.'
+                );
             }
 
-            octx.putImageData(imgData, 0, 0);
-            return out;
+            if (issues.length > 0) {
+                bodyLines.push('');
+                bodyLines.push('The specific issues requiring attention are detailed below:');
+                bodyLines.push(...issues);
+            } else if (!isTooDisgusting) {
+                bodyLines.push('');
+                bodyLines.push('No specific fixture faults or cleanliness issues were flagged during this inspection.');
+            }
+
+            if (generalComments) {
+                bodyLines.push('');
+                bodyLines.push(`Additional Comments: ${generalComments}`);
+            }
+
+            bodyLines.push('');
+            bodyLines.push('Thank you for your prompt attention to resolving these matters so the facilities remain safe and sanitary for students.');
+            bodyLines.push('');
+            bodyLines.push('Kind regards,');
+            bodyLines.push('KSHS Whistle Blowers');
+
+            return {
+                subject,
+                body: bodyLines.join('\n')
+            };
         }
 
-        function detectQROnSheet(img) {
-            const scales = [1600, 1200, 2200];
+        function goToSummaryPage() {
+            closeIncompleteModal();
+            const blockSelect = document.getElementById('blockSelect');
+            const selectedBlock = blockSelect ? blockSelect.value : currentBlock;
 
+            const collectedRows = [];
+            let rowsHtml = `
+                <tr>
+                    <td><strong>Bathroom / Block</strong></td>
+                    <td>${selectedBlock}</td>
+                    <td>—</td>
+                </tr>
+            `;
+
+            document.querySelectorAll('.result-card').forEach(card => {
+                const title = card.getAttribute('data-card-section');
+                const sel = card.querySelector('.section-dropdown');
+                const txt = card.querySelector('.read-text');
+
+                const rawRating = sel ? sel.value : '—';
+                const isUnanswered = sel && sel.value === '';
+                const ratingCell = isUnanswered
+                    ? `<span class="summary-unanswered">Unanswered</span>`
+                    : rawRating;
+
+                const rawText = txt ? txt.textContent.trim() : '';
+                const isNoText = !rawText || rawText === 'No text detected.';
+                const textCell = isNoText
+                    ? `<span class="summary-notext">No text entered</span>`
+                    : rawText;
+
+                collectedRows.push({
+                    title,
+                    rating: isUnanswered ? '' : rawRating,
+                    hasText: !isNoText,
+                    rawText
+                });
+
+                rowsHtml += `
+                    <tr>
+                        <td><strong>${title}</strong></td>
+                        <td>${ratingCell}</td>
+                        <td>${textCell}</td>
+                    </tr>
+                `;
+            });
+
+            const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
+
+            summaryOutput.innerHTML = `
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Rating</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>
+
+                <div class="email-section">
+                    <div class="email-header">
+                        <h3>Formal Report Email (Editable)</h3>
+                        <button type="button" class="copy-email-btn" id="copyEmailBtn">Copy Email</button>
+                    </div>
+                    <div class="email-subject-row">
+                        <label for="emailSubjectInput">Subject:</label>
+                        <input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '&quot;')}">
+                    </div>
+                    <textarea id="emailBodyTextarea" class="email-textarea" aria-label="Formal email draft">${emailDraft.body}</textarea>
+                </div>
+            `;
+
+            const copyBtn = document.getElementById('copyEmailBtn');
+            copyBtn.addEventListener('click', () => {
+                const subj = document.getElementById('emailSubjectInput').value;
+                const body = document.getElementById('emailBodyTextarea').value;
+                const fullText = `Subject: ${subj}\n\n${body}`;
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(fullText).then(() => {
+                        copyBtn.textContent = 'Copied!';
+                        setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
+                    });
+                } else {
+                    const ta = document.getElementById('emailBodyTextarea');
+                    ta.select();
+                    document.execCommand('copy');
+                    copyBtn.textContent = 'Copied!';
+                    setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
+                }
+            });
+
+            resultsPage.style.display = 'none';
+            summaryPage.style.display = 'block';
+            window.scrollTo(0, 0);
+        }
+
+        finishBtn.addEventListener('click', () => {
+            document.querySelectorAll('.read-text[contenteditable="true"]').forEach(finishEditingSpan);
+
+            const unansweredDropdowns = Array.from(document.querySelectorAll('.section-dropdown'))
+                .filter(sel => sel.value === '');
+
+            if (unansweredDropdowns.length > 0) {
+                incompleteModal.classList.add('active');
+                overlay.classList.add('active');
+            } else {
+                goToSummaryPage();
+            }
+        });
+
+        modalOkBtn.addEventListener('click', () => {
+            closeIncompleteModal();
+            let firstUnansweredCard = null;
+            document.querySelectorAll('.section-dropdown').forEach(sel => {
+                const card = sel.closest('.result-card');
+                if (sel.value === '') {
+                    if (card) {
+                        card.classList.add('unanswered-highlight');
+                        if (!firstUnansweredCard) firstUnansweredCard = card;
+                    }
+                } else if (card) {
+                    card.classList.remove('unanswered-highlight');
+                }
+            });
+            if (firstUnansweredCard) {
+                firstUnansweredCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        });
+
+        modalSkipBtn.addEventListener('click', goToSummaryPage);
+
+        // QR & Sheet Scanner
+        function detectQR(img) {
+            const scales = [1400, 2000, 1000];
             for (const maxDim of scales) {
                 const canvas = document.createElement('canvas');
                 const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
                 canvas.width = Math.round(img.width * scale);
                 canvas.height = Math.round(img.height * scale);
-
                 const ctx = canvas.getContext('2d', { willReadFrequently: true });
                 ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-                const leftCropW = Math.round(canvas.width * 0.78);
-                const leftCanvas = document.createElement('canvas');
-                leftCanvas.width = leftCropW;
-                leftCanvas.height = canvas.height;
-                leftCanvas.getContext('2d').drawImage(canvas, 0, 0, leftCropW, canvas.height, 0, 0, leftCropW, canvas.height);
+                const scanW = Math.round(canvas.width * 0.86);
+                const baseImage = ctx.getImageData(0, 0, scanW, canvas.height);
 
-                const candidates = [
-                    leftCanvas,
-                    canvas,
-                    preprocessQRFrame(leftCanvas, 'contrast'),
-                    preprocessQRFrame(canvas, 'contrast'),
-                    preprocessQRFrame(leftCanvas, 'threshold')
-                ];
+                let qr = jsQR(baseImage.data, scanW, canvas.height, { inversionAttempts: 'attemptBoth' });
+                if (qr) return { qr, canvas, ctx };
 
-                for (const cand of candidates) {
-                    const cctx = cand.getContext('2d', { willReadFrequently: true });
-                    const imgData = cctx.getImageData(0, 0, cand.width, cand.height);
-                    const qr = jsQR(imgData.data, cand.width, cand.height, {
-                        inversionAttempts: 'attemptBoth'
-                    });
-                    if (qr && qr.data) {
-                        return { qr, canvas, ctx };
-                    }
+                const data = new Uint8ClampedArray(baseImage.data);
+                let minL = 255, maxL = 0;
+                for (let i = 0; i < data.length; i += 4) {
+                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    if (l < minL) minL = l;
+                    if (l > maxL) maxL = l;
                 }
+                const range = Math.max(1, maxL - minL);
+                for (let i = 0; i < data.length; i += 4) {
+                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
+                    const s = ((l - minL) / range) * 255;
+                    const b = s < 128 ? s * 0.72 : Math.min(255, s * 1.18);
+                    data[i] = data[i + 1] = data[i + 2] = b;
+                }
+                qr = jsQR(data, scanW, canvas.height, { inversionAttempts: 'attemptBoth' });
+                if (qr) return { qr, canvas, ctx };
             }
-
             return null;
         }
 
-        function checkBoxShaded(ctx, width, height, cx, cy, qrSize) {
+        function measureBoxInterior(ctx, width, height, cx, cy, qrSize) {
             const coreHalf = Math.max(3, Math.round(qrSize * 0.026));
             const coreSize = coreHalf * 2 + 1;
-            const jitter = Math.max(2, Math.round(qrSize * 0.014));
+            const jitter = Math.max(2, Math.round(qrSize * 0.016));
 
-            if (cx < coreHalf + 4 || cy < coreHalf + 4 || cx >= width - coreHalf - 4 || cy >= height - coreHalf - 4) {
-                return false;
+            if (cx - coreHalf < 0 || cy - coreHalf < 0 || cx + coreHalf >= width || cy + coreHalf >= height) {
+                return { shaded: false, score: 0 };
             }
 
-            const sampleCore = (ox, oy) => {
-                const x0 = Math.max(0, Math.min(width - coreSize, Math.round(ox - coreHalf)));
-                const y0 = Math.max(0, Math.min(height - coreSize, Math.round(oy - coreHalf)));
+            const bgX = Math.max(0, Math.round(cx - qrSize * 0.16));
+            const bgY = Math.max(0, Math.min(height - coreSize, Math.round(cy - coreHalf)));
+            const bgData = ctx.getImageData(bgX, bgY, coreSize, coreSize).data;
+            let paperSum = 0;
+            for (let i = 0; i < bgData.length; i += 4) {
+                const eff = Math.min((bgData[i] + bgData[i + 1] + bgData[i + 2]) / 3, bgData[i] * 0.5 + bgData[i + 1] * 0.5);
+                paperSum += eff;
+            }
+            const paperLuma = paperSum / (bgData.length / 4);
+            if (paperLuma < 65) return { shaded: false, score: 0 };
 
-                const paperX = Math.max(0, Math.round(x0 - qrSize * 0.14));
-                const paperData = ctx.getImageData(paperX, y0, coreSize, coreSize).data;
-                let paperSum = 0;
-                for (let i = 0; i < paperData.length; i += 4) {
-                    paperSum += 0.299 * paperData[i] + 0.587 * paperData[i + 1] + 0.114 * paperData[i + 2];
-                }
-                const paperLuma = paperSum / (paperData.length / 4);
-                if (paperLuma < 65) return 0;
+            const offsets = [[0, 0], [-jitter, 0], [jitter, 0], [0, -jitter], [0, jitter]];
+            let bestScore = 0;
 
+            for (const [dx, dy] of offsets) {
+                const x0 = Math.max(0, Math.min(width - coreSize, Math.round(cx + dx - coreHalf)));
+                const y0 = Math.max(0, Math.min(height - coreSize, Math.round(cy + dy - coreHalf)));
                 const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
-                let darkPixels = 0;
-                const totalPixels = boxData.length / 4;
 
+                let darkCount = 0;
+                const total = boxData.length / 4;
                 for (let i = 0; i < boxData.length; i += 4) {
                     const r = boxData[i], g = boxData[i + 1], b = boxData[i + 2];
-                    const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+                    const luma = (r + g + b) / 3;
                     const blueBoost = Math.max(0, b - (r + g) * 0.5);
-                    const effectiveLuma = luma - blueBoost * 0.65;
-                    if (effectiveLuma < paperLuma * 0.72) {
-                        darkPixels++;
-                    }
+                    const effectiveDarkness = paperLuma - (luma - blueBoost * 0.65);
+                    if (effectiveDarkness > paperLuma * 0.24) darkCount++;
                 }
-                return darkPixels / totalPixels;
-            };
-
-            const offsets = [
-                [0, 0],
-                [-jitter, 0],
-                [jitter, 0],
-                [0, -jitter],
-                [0, jitter]
-            ];
-
-            let bestRatio = 0;
-            for (const [dx, dy] of offsets) {
-                const r = sampleCore(cx + dx, cy + dy);
-                if (r > bestRatio) bestRatio = r;
+                const ratio = darkCount / total;
+                if (ratio > bestScore) bestScore = ratio;
             }
 
-            return bestRatio >= 0.42;
+            return { shaded: bestScore >= 0.42, score: bestScore };
         }
 
-        function extractDeskewedLine(sourceCanvas, tl, ux, uy, vx, vy, area) {
+        async function readWritingZone(sourceCanvas, tl, ux, uy, vx, vy, qrSize, area) {
             const p0x = tl.x + area.dx * ux + area.dy * vx;
             const p0y = tl.y + area.dx * uy + area.dy * vy;
             const p1x = tl.x + (area.dx + area.dw) * ux + area.dy * vx;
@@ -1431,127 +1289,95 @@
             const p2x = tl.x + area.dx * ux + (area.dy + area.dh) * vx;
             const p2y = tl.y + area.dx * uy + (area.dy + area.dh) * vy;
 
-            const scale = 3.0;
-            const outW = Math.max(60, Math.round(Math.hypot(p1x - p0x, p1y - p0y) * scale));
-            const outH = Math.max(36, Math.round(Math.hypot(p2x - p0x, p2y - p0y) * scale));
+            const outW = Math.max(60, Math.round(area.dw * qrSize * 3));
+            const outH = Math.max(30, Math.round(area.dh * qrSize * 3));
 
-            const pad = 16;
             const crop = document.createElement('canvas');
-            crop.width = outW + pad * 2;
-            crop.height = outH + pad * 2;
+            crop.width = outW;
+            crop.height = outH;
             const cctx = crop.getContext('2d', { willReadFrequently: true });
 
-            cctx.fillStyle = '#ffffff';
-            cctx.fillRect(0, 0, crop.width, crop.height);
+            const a = (p1x - p0x) / outW;
+            const b = (p1y - p0y) / outW;
+            const c = (p2x - p0x) / outH;
+            const d = (p2y - p0y) / outH;
+            cctx.setTransform(a, b, c, d, p0x, p0y);
+            cctx.drawImage(sourceCanvas, 0, 0);
+            cctx.setTransform(1, 0, 0, 1, 0, 0);
 
-            cctx.save();
-            cctx.translate(pad, pad);
-            cctx.transform(
-                (p1x - p0x) / outW,
-                (p1y - p0y) / outW,
-                (p2x - p0x) / outH,
-                (p2y - p0y) / outH,
-                p0x,
-                p0y
-            );
-            cctx.inverseTransform = false;
-            cctx.restore();
-
-            const raw = document.createElement('canvas');
-            raw.width = outW;
-            raw.height = outH;
-            const rctx = raw.getContext('2d', { willReadFrequently: true });
-
-            const det = (p1x - p0x) * (p2y - p0y) - (p2x - p0x) * (p1y - p0y);
-            if (Math.abs(det) < 1e-5) return null;
-
-            const a = (outW * (p2y - p0y)) / det;
-            const b = (-outW * (p2x - p0x)) / det;
-            const c = (-outH * (p1y - p0y)) / det;
-            const d = (outH * (p1x - p0x)) / det;
-            const e = -(a * p0x + c * p0y);
-            const f = -(b * p0x + d * p0y);
-
-            rctx.setTransform(a, b, c, d, e, f);
-            rctx.drawImage(sourceCanvas, 0, 0);
-            rctx.setTransform(1, 0, 0, 1, 0, 0);
-
-            const imgData = rctx.getImageData(0, 0, outW, outH);
+            const imgData = cctx.getImageData(0, 0, outW, outH);
             const px = imgData.data;
+            const gray = new Float32Array(outW * outH);
+            const samples = [];
 
-            const lumas = new Float32Array(outW * outH);
-            const sorted = [];
             for (let i = 0; i < outW * outH; i++) {
-                const idx = i * 4;
-                const r = px[idx], g = px[idx + 1], bVal = px[idx + 2];
-                const luma = 0.299 * r + 0.587 * g + 0.114 * bVal;
-                const blueInk = Math.max(0, bVal - (r + g) * 0.5);
-                const val = luma - blueInk * 0.85;
-                lumas[i] = val;
-                if (i % 4 === 0) sorted.push(val);
+                const r = px[i * 4], g = px[i * 4 + 1], bCh = px[i * 4 + 2];
+                const blueBoost = Math.max(0, bCh - (r + g) * 0.5);
+                const val = ((r + g + bCh) / 3) - blueBoost * 0.7;
+                gray[i] = val;
+                if (i % 4 === 0) samples.push(val);
             }
 
-            sorted.sort((x, y) => x - y);
-            const paperBg = sorted[Math.floor(sorted.length * 0.85)] || 210;
-            const thresh = paperBg * 0.78;
+            samples.sort((x, y) => x - y);
+            const paperBg = samples[Math.floor(samples.length * 0.85)] || 220;
 
             const bin = new Uint8Array(outW * outH);
+            let inkPixels = 0;
             for (let i = 0; i < outW * outH; i++) {
-                bin[i] = lumas[i] < thresh ? 1 : 0;
+                const isInk = (paperBg - gray[i]) > Math.max(18, paperBg * 0.13);
+                bin[i] = isInk ? 1 : 0;
+                if (isInk) inkPixels++;
             }
 
-            // Erase solid horizontal underline while keeping vertical handwriting crossings
-            for (let y = 1; y < outH - 1; y++) {
-                let rowDark = 0;
-                for (let x = 0; x < outW; x++) {
-                    if (bin[y * outW + x]) rowDark++;
-                }
-                if (rowDark > outW * 0.68) {
+            for (let y = 0; y < outH; y++) {
+                let rowInk = 0;
+                for (let x = 0; x < outW; x++) rowInk += bin[y * outW + x];
+                if (rowInk > outW * 0.68) {
                     for (let x = 0; x < outW; x++) {
-                        const above = y >= 2 ? bin[(y - 2) * outW + x] : 0;
-                        const below = y + 2 < outH ? bin[(y + 2) * outW + x] : 0;
-                        if (!above && !below) {
+                        const above = y > 1 ? bin[(y - 2) * outW + x] : 0;
+                        const below = y < outH - 2 ? bin[(y + 2) * outW + x] : 0;
+                        if (!above && !below && bin[y * outW + x]) {
                             bin[y * outW + x] = 0;
+                            inkPixels--;
                         }
                     }
                 }
             }
 
-            let inkCount = 0;
+            if (inkPixels / (outW * outH) < 0.0025) return 'No text detected.';
+
+            const pad = 24;
+            const padded = document.createElement('canvas');
+            padded.width = outW + pad * 2;
+            padded.height = outH + pad * 2;
+            const pctx = padded.getContext('2d');
+            pctx.fillStyle = '#ffffff';
+            pctx.fillRect(0, 0, padded.width, padded.height);
+
+            const cleanImg = pctx.createImageData(outW, outH);
             for (let i = 0; i < outW * outH; i++) {
-                const idx = i * 4;
                 const v = bin[i] ? 0 : 255;
-                if (bin[i]) inkCount++;
-                px[idx] = px[idx + 1] = px[idx + 2] = v;
-                px[idx + 3] = 255;
+                cleanImg.data[i * 4] = v;
+                cleanImg.data[i * 4 + 1] = v;
+                cleanImg.data[i * 4 + 2] = v;
+                cleanImg.data[i * 4 + 3] = 255;
             }
+            pctx.putImageData(cleanImg, pad, pad);
 
-            if (inkCount / (outW * outH) < 0.0025) {
-                return null;
+            try {
+                const res = await Tesseract.recognize(padded, 'eng', { tessedit_pageseg_mode: '6' });
+                let text = (res.data.text || '')
+                    .replace(/^(why|description|comments)\s*:?\s*/i, '')
+                    .replace(/\b(stall\s*[1234]|hand\s*washing|urinal|good|dirty|damaged|broken|too\s*disgusting\s*to\s*rate)\b/gi, ' ')
+                    .replace(/[_|—–~`^*=<>\\/\[\]{}]+/g, ' ')
+                    .replace(/\s+/g, ' ')
+                    .trim();
+
+                if (!text || !/[a-zA-Z0-9]{2,}/.test(text)) return 'No text detected.';
+                return capitalizeFirst(text);
+            } catch (err) {
+                return 'No text detected.';
             }
-
-            rctx.putImageData(imgData, 0, 0);
-            cctx.drawImage(raw, pad, pad);
-            return crop;
-        }
-
-        function cleanRecognizedText(raw) {
-            let txt = (raw || '')
-                .replace(/[_|—–~=<>^*]+/g, ' ')
-                .replace(/\b(Why|Description|Comments|Stall\s*1|Stall\s*2|Hand\s*washing|Urinal|Good|Dirty|Damaged|Broken)\b:?/gi, ' ')
-                .replace(/[^a-zA-Z0-9.,!?'"()\-\s]/g, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-
-            if (txt.length < 2) return '';
-            return capitalizeFirst(txt);
-        }
-
-        function withTimeout(promise, ms) {
-            return Promise.race([
-                promise,
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
-            ]);
         }
 
         async function handleImageUpload(event) {
@@ -1559,13 +1385,12 @@
             if (!file) return;
 
             currentMode = 'scan';
-            cachedScanResults = {};
-            showBlankWhitePage('Scan results', 'Locating QR code...');
+            showFormPage('Scan results');
+            resultsOutput.innerHTML = '<p class="status-msg">Scanning sheet, please wait...</p>';
 
             const img = new Image();
             img.onload = async () => {
-                const detected = detectQROnSheet(img);
-
+                const detected = detectQR(img);
                 if (!detected) {
                     resultsOutput.innerHTML = '<p class="status-msg">Page not detected.</p>';
                     return;
@@ -1582,65 +1407,37 @@
                 const vy = bl.y - tl.y;
                 const qrSize = Math.hypot(ux, uy);
 
-                let worker = null;
-                try {
-                    resultsOutput.innerHTML = '<p class="status-msg">Reading checkboxes and handwriting...</p>';
-                    worker = await withTimeout(Tesseract.createWorker('eng'), 12000);
-                    await worker.setParameters({ tessedit_pageseg_mode: '6' });
-                } catch (e) {
-                    worker = null;
-                }
+                const scannedMap = {};
 
-                for (const section of STANDARD_SECTIONS) {
-                    const shadedLabels = [];
+                for (const section of SECTIONS_STANDARD) {
+                    const shadedBoxes = [];
                     for (const box of section.boxes) {
                         const px = tl.x + box.dx * ux + box.dy * vx;
                         const py = tl.y + box.dx * uy + box.dy * vy;
-                        if (checkBoxShaded(ctx, canvas.width, canvas.height, px, py, qrSize)) {
-                            shadedLabels.push(box.label);
-                        }
+                        const res = measureBoxInterior(ctx, canvas.width, canvas.height, px, py, qrSize);
+                        if (res.shaded) shadedBoxes.push(box.label);
                     }
 
-                    const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-                    let status = 'none';
-                    let detectedLabel = '';
-                    let selectedValue = isBinary ? 'No' : '';
+                    const text = await readWritingZone(canvas, tl, ux, uy, vx, vy, qrSize, section.textArea);
 
-                    if (shadedLabels.length > 1) {
-                        status = 'multiple';
+                    let selectedValue = '';
+                    let badgeHtml = '';
+
+                    if (shadedBoxes.length > 1) {
                         selectedValue = '';
-                    } else if (shadedLabels.length === 1) {
-                        status = 'single';
-                        detectedLabel = shadedLabels[0];
-                        selectedValue = shadedLabels[0];
+                        badgeHtml = '<span class="not-detected-badge">Detection failed</span>';
+                    } else if (shadedBoxes.length === 1) {
+                        selectedValue = shadedBoxes[0];
+                        badgeHtml = `<span class="shaded-badge">Detected: ${shadedBoxes[0]}</span>`;
+                    } else if (section.title === 'Too disgusting to rate') {
+                        selectedValue = 'No';
                     }
 
-                    let extractedText = '';
-                    if (worker && section.textArea) {
-                        const crop = extractDeskewedLine(canvas, tl, ux, uy, vx, vy, section.textArea);
-                        if (crop) {
-                            try {
-                                const res = await withTimeout(worker.recognize(crop), 7000);
-                                extractedText = cleanRecognizedText(res.data.text);
-                            } catch (e) {
-                                extractedText = '';
-                            }
-                        }
-                    }
-
-                    cachedScanResults[section.key] = {
-                        status,
-                        detectedLabel,
-                        selectedValue,
-                        text: extractedText
-                    };
+                    scannedMap[section.title] = { selectedValue, badgeHtml, text };
                 }
 
-                if (worker) {
-                    try { await worker.terminate(); } catch (e) {}
-                }
-
-                renderFormCards(false);
+                lastScanData = scannedMap;
+                renderFormCards(currentBlock, scannedMap);
             };
             img.src = URL.createObjectURL(file);
         }
@@ -1648,7 +1445,6 @@
         cameraInput.addEventListener('change', handleImageUpload);
         photosInput.addEventListener('change', handleImageUpload);
     </script>
-
 </body>
 </html>
 
