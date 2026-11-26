@@ -39,7 +39,7 @@
             mix-blend-mode: multiply;
         }
 
-        /* Larger, true-centered title */
+        /* Larger, true-centered title on desktop */
         .site-title {
             position: absolute;
             left: 50%;
@@ -233,7 +233,7 @@
         /* Mobile layout */
         @media (max-width: 768px) {
             header {
-                justify-content: flex-start;
+                justify-content: space-between;
                 gap: 12px;
                 padding: 16px 20px;
             }
@@ -242,41 +242,46 @@
                 height: 60px;
             }
 
-            /* Title sits next to logo on top */
+            /* Title moved to the right next to logo */
             .site-title {
                 position: static;
                 transform: none;
-                font-size: 22px;
-                text-align: left;
+                font-size: 21px;
+                text-align: right;
                 white-space: normal;
             }
 
-            /* Scan button sits just underneath the title bar, 1/4 screen wide, text to the right of icon */
+            /* Bigger, centered Scan button underneath the title bar */
             .scan-button {
                 position: absolute;
-                top: calc(100% + 12px);
-                right: 20px;
-                width: 25vw;
-                min-width: 95px;
+                top: calc(100% + 16px);
+                left: 50%;
+                transform: translateX(-50%);
+                width: 45vw;
+                min-width: 150px;
                 flex-direction: row;
-                gap: 8px;
-                padding: 10px 12px;
-                font-size: 15px;
+                gap: 10px;
+                padding: 15px 24px;
+                font-size: 18px;
+            }
+
+            .scan-button:hover {
+                transform: translateX(-50%) translateY(-2px);
             }
 
             .document-icon {
-                width: 18px;
-                height: 22px;
+                width: 20px;
+                height: 24px;
             }
 
             .document-icon::before {
-                top: 4px;
-                width: 8px;
+                top: 5px;
+                width: 10px;
                 box-shadow: 0 4px white, 0 8px white;
             }
 
             main {
-                padding: 70px 20px 80px;
+                padding: 85px 20px 80px;
             }
 
             .main-text {
