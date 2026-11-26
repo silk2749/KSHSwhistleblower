@@ -14,7 +14,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #d6b995;
+            background-color: #FFF3D5; /* Main page background */
             min-height: 100vh;
             color: #29251f;
         }
@@ -24,7 +24,9 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px 50px;
+            padding: 16px 50px;
+            background-color: #F2E0B6; /* Slightly darker horizontal bar */
+            border-bottom: 1px solid #E3CE9E;
         }
 
         .logo img {
@@ -135,12 +137,12 @@
         /* Grey Bottom Pop-up */
         .bottom-popup {
             position: fixed;
-            bottom: -100%; /* Hidden off-screen by default */
+            bottom: -100%;
             left: 0;
             width: 100%;
-            background-color: #3a3a3a; /* Grey background */
-            border-top-left-radius: 24px; /* Top-left rounded edge */
-            border-top-right-radius: 24px; /* Top-right rounded edge */
+            background-color: #3a3a3a;
+            border-top-left-radius: 24px;
+            border-top-right-radius: 24px;
             padding: 30px 25px 40px;
             box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
             transition: bottom 0.3s ease-out;
@@ -151,7 +153,7 @@
         }
 
         .bottom-popup.active {
-            bottom: 0; /* Slides into view */
+            bottom: 0;
         }
 
         /* Small drag handle bar at top of popup */
