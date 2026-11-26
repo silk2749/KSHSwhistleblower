@@ -1,0 +1,154 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Website</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d6b995;
+            min-height: 100vh;
+            color: #29251f;
+        }
+
+        /* Top navigation bar */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 25px 50px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            letter-spacing: 2px;
+        }
+
+        /* Scan button */
+        .scan-button {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #29251f;
+            color: white;
+            border: none;
+            padding: 12px 22px;
+            border-radius: 8px;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .scan-button:hover {
+            background-color: #443b30;
+            transform: translateY(-2px);
+        }
+
+        .document-icon {
+            width: 18px;
+            height: 22px;
+            border: 2px solid white;
+            border-radius: 2px;
+            position: relative;
+        }
+
+        .document-icon::before {
+            content: "";
+            position: absolute;
+            top: 5px;
+            left: 3px;
+            width: 10px;
+            height: 2px;
+            background: white;
+            box-shadow: 0 4px white, 0 8px white;
+        }
+
+        /* Main content */
+        main {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            min-height: calc(100vh - 150px);
+            padding: 30px;
+        }
+
+        .main-text {
+            max-width: 650px;
+            font-size: 20px;
+            line-height: 1.9;
+            color: #443b30;
+        }
+
+        /* Bottom contact bar */
+        footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: white;
+            text-align: center;
+            padding: 14px;
+            font-size: 12px;
+            color: #555;
+        }
+
+        footer a {
+            color: #29251f;
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Mobile layout */
+        @media (max-width: 600px) {
+            header {
+                padding: 20px;
+            }
+
+            .main-text {
+                font-size: 17px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">LOGO</div>
+
+        <button class="scan-button">
+            <span class="document-icon"></span>
+            Scan
+        </button>
+    </header>
+
+    <main>
+        <p class="main-text">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.<br>
+            Sed do eiusmod tempor incididunt ut labore et dolore.<br>
+            Magna aliqua ut enim ad minim veniam, quis nostrud.<br>
+            Exercitation ullamco laboris nisi ut aliquip ex ea.<br>
+            Commodo consequat duis aute irure dolor in reprehenderit.
+        </p>
+    </main>
+
+    <footer>
+        <a href="mailto:contact@example.com">Contact us</a>
+    </footer>
+
+</body>
+</html>
