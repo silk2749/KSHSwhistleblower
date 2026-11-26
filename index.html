@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
+    <title>KSHS whistle blowers</title>
 
     <style>
         * {
@@ -14,7 +14,7 @@
 
         body {
             font-family: Arial, sans-serif;
-            background-color: #FFF3D5; /* Main page background */
+            background-color: #FFF3D5;
             min-height: 100vh;
             color: #29251f;
         }
@@ -25,15 +25,29 @@
             justify-content: space-between;
             align-items: center;
             padding: 16px 50px;
-            background-color: #F2E0B6; /* Slightly darker horizontal bar */
+            background-color: #F2E0B6;
             border-bottom: 1px solid #E3CE9E;
+            gap: 15px;
+        }
+
+        /* Logo + Title container */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
 
         .logo img {
-            height: 75px;
+            height: 70px;
             width: auto;
             display: block;
             mix-blend-mode: multiply;
+        }
+
+        .site-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #29251f;
         }
 
         /* Scan button */
@@ -49,6 +63,7 @@
             font-size: 15px;
             cursor: pointer;
             transition: 0.3s;
+            flex-shrink: 0;
         }
 
         .scan-button:hover {
@@ -101,21 +116,26 @@
             background-color: white;
             text-align: center;
             padding: 14px;
-            font-size: 12px;
+            font-size: 13px;
             color: #555;
             z-index: 10;
         }
 
-        footer a {
+        .contact-btn {
+            background: none;
+            border: none;
             color: #29251f;
-            text-decoration: none;
+            font-size: 13px;
+            font-family: inherit;
+            cursor: pointer;
+            padding: 0;
         }
 
-        footer a:hover {
+        .contact-btn:hover {
             text-decoration: underline;
         }
 
-        /* Dark background overlay when popup is open */
+        /* Dark background overlay when any popup is open */
         .overlay {
             position: fixed;
             top: 0;
@@ -134,7 +154,7 @@
             visibility: visible;
         }
 
-        /* Grey Bottom Pop-up */
+        /* Shared Grey Bottom Pop-up Styling */
         .bottom-popup {
             position: fixed;
             bottom: -100%;
@@ -152,6 +172,11 @@
             align-items: center;
         }
 
+        /* Shorter height padding for the Contact pop-up */
+        .bottom-popup.short {
+            padding: 20px 25px 28px;
+        }
+
         .bottom-popup.active {
             bottom: 0;
         }
@@ -162,10 +187,10 @@
             height: 4px;
             background-color: #777;
             border-radius: 2px;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        /* Container for the 2 boxes */
+        /* Container for the 2 Scan boxes */
         .popup-boxes {
             display: flex;
             gap: 20px;
@@ -201,6 +226,26 @@
             font-size: 28px;
         }
 
+        /* Contact Email display inside the short pop-up */
+        .contact-info {
+            color: white;
+            text-align: center;
+            font-size: 17px;
+        }
+
+        .contact-info a {
+            display: inline-block;
+            margin-top: 6px;
+            color: #FFF3D5;
+            font-weight: bold;
+            font-size: 19px;
+            text-decoration: none;
+        }
+
+        .contact-info a:hover {
+            text-decoration: underline;
+        }
+
         /* Hide default file inputs */
         input[type="file"] {
             display: none;
@@ -213,7 +258,11 @@
             }
 
             .logo img {
-                height: 60px;
+                height: 55px;
+            }
+
+            .site-title {
+                font-size: 18px;
             }
 
             .main-text {
@@ -226,8 +275,11 @@
 <body>
 
     <header>
-        <div class="logo">
-            <img src="logo.png" alt="Website Logo">
+        <div class="brand">
+            <div class="logo">
+                <img src="logo.png" alt="KSHS Whistle Blowers Logo">
+            </div>
+            <h1 class="site-title">KSHS whistle blowers</h1>
         </div>
 
         <button class="scan-button" id="openScanBtn">
@@ -247,14 +299,14 @@
     </main>
 
     <footer>
-        <a href="mailto:contact@example.com">Contact us</a>
+        <button class="contact-btn" id="openContactBtn">Contact us</button>
     </footer>
 
-    <!-- Dark overlay to close popup when tapping outside -->
+    <!-- Dark overlay to close any open popup when tapping outside -->
     <div class="overlay" id="overlay"></div>
 
-    <!-- Bottom Pop-up Menu -->
-    <div class="bottom-popup" id="bottomPopup">
+    <!-- Scan Bottom Pop-up Menu -->
+    <div class="bottom-popup" id="scanPopup">
         <div class="popup-handle"></div>
         <div class="popup-boxes">
             <!-- Camera Box -->
@@ -273,20 +325,42 @@
         </div>
     </div>
 
+    <!-- Contact Us Shorter Bottom Pop-up -->
+    <div class="bottom-popup short" id="contactPopup">
+        <div class="popup-handle"></div>
+        <div class="contact-info">
+            <p>Reach out to us via email:</p>
+            <a href="mailto:placeholder@example.com">placeholder@example.com</a>
+        </div>
+    </div>
+
     <script>
         const openScanBtn = document.getElementById('openScanBtn');
-        const bottomPopup = document.getElementById('bottomPopup');
+        const scanPopup = document.getElementById('scanPopup');
+
+        const openContactBtn = document.getElementById('openContactBtn');
+        const contactPopup = document.getElementById('contactPopup');
+
         const overlay = document.getElementById('overlay');
 
-        // Open the popup
+        // Open Scan popup
         openScanBtn.addEventListener('click', () => {
-            bottomPopup.classList.add('active');
+            contactPopup.classList.remove('active');
+            scanPopup.classList.add('active');
             overlay.classList.add('active');
         });
 
-        // Close the popup when clicking outside
+        // Open Contact popup
+        openContactBtn.addEventListener('click', () => {
+            scanPopup.classList.remove('active');
+            contactPopup.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        // Close whichever popup is open when clicking outside
         overlay.addEventListener('click', () => {
-            bottomPopup.classList.remove('active');
+            scanPopup.classList.remove('active');
+            contactPopup.classList.remove('active');
             overlay.classList.remove('active');
         });
     </script>
