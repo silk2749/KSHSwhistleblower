@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -25,13 +24,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 25px 50px;
+            padding: 20px 50px;
         }
 
-        .logo {
-            font-size: 24px;
-            font-weight: bold;
-            letter-spacing: 2px;
+        .logo img {
+            height: 75px;
+            width: auto;
+            display: block;
+            mix-blend-mode: multiply;
         }
 
         /* Scan button */
@@ -101,6 +101,7 @@
             padding: 14px;
             font-size: 12px;
             color: #555;
+            z-index: 10;
         }
 
         footer a {
@@ -112,10 +113,105 @@
             text-decoration: underline;
         }
 
+        /* Dark background overlay when popup is open */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: 0.3s ease;
+            z-index: 99;
+        }
+
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Grey Bottom Pop-up */
+        .bottom-popup {
+            position: fixed;
+            bottom: -100%; /* Hidden off-screen by default */
+            left: 0;
+            width: 100%;
+            background-color: #3a3a3a; /* Grey background */
+            border-top-left-radius: 24px; /* Top-left rounded edge */
+            border-top-right-radius: 24px; /* Top-right rounded edge */
+            padding: 30px 25px 40px;
+            box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+            transition: bottom 0.3s ease-out;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .bottom-popup.active {
+            bottom: 0; /* Slides into view */
+        }
+
+        /* Small drag handle bar at top of popup */
+        .popup-handle {
+            width: 40px;
+            height: 4px;
+            background-color: #777;
+            border-radius: 2px;
+            margin-bottom: 25px;
+        }
+
+        /* Container for the 2 boxes */
+        .popup-boxes {
+            display: flex;
+            gap: 20px;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* Camera & Photos boxes */
+        .option-box {
+            flex: 1;
+            background-color: #525252;
+            color: white;
+            border: 2px solid #666;
+            border-radius: 14px;
+            padding: 25px 15px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .option-box:hover {
+            background-color: #636363;
+            transform: translateY(-3px);
+        }
+
+        .option-box span.icon {
+            font-size: 28px;
+        }
+
+        /* Hide default file inputs */
+        input[type="file"] {
+            display: none;
+        }
+
         /* Mobile layout */
         @media (max-width: 600px) {
             header {
-                padding: 20px;
+                padding: 15px 20px;
+            }
+
+            .logo img {
+                height: 60px;
             }
 
             .main-text {
@@ -128,9 +224,11 @@
 <body>
 
     <header>
-        <div class="logo">LOGO</div>
+        <div class="logo">
+            <img src="logo.png" alt="Website Logo">
+        </div>
 
-        <button class="scan-button">
+        <button class="scan-button" id="openScanBtn">
             <span class="document-icon"></span>
             Scan
         </button>
@@ -149,6 +247,47 @@
     <footer>
         <a href="mailto:contact@example.com">Contact us</a>
     </footer>
+
+    <!-- Dark overlay to close popup when tapping outside -->
+    <div class="overlay" id="overlay"></div>
+
+    <!-- Bottom Pop-up Menu -->
+    <div class="bottom-popup" id="bottomPopup">
+        <div class="popup-handle"></div>
+        <div class="popup-boxes">
+            <!-- Camera Box -->
+            <label for="cameraInput" class="option-box">
+                <span class="icon">📷</span>
+                Camera
+            </label>
+            <input type="file" id="cameraInput" accept="image/*" capture="environment">
+
+            <!-- Photos Box -->
+            <label for="photosInput" class="option-box">
+                <span class="icon">🖼️</span>
+                Photos
+            </label>
+            <input type="file" id="photosInput" accept="image/*">
+        </div>
+    </div>
+
+    <script>
+        const openScanBtn = document.getElementById('openScanBtn');
+        const bottomPopup = document.getElementById('bottomPopup');
+        const overlay = document.getElementById('overlay');
+
+        // Open the popup
+        openScanBtn.addEventListener('click', () => {
+            bottomPopup.classList.add('active');
+            overlay.classList.add('active');
+        });
+
+        // Close the popup when clicking outside
+        overlay.addEventListener('click', () => {
+            bottomPopup.classList.remove('active');
+            overlay.classList.remove('active');
+        });
+    </script>
 
 </body>
 </html>
