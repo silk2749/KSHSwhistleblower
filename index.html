@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>KSHS complaints</title>
-       <script>
+        <script>
         [
             'cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js',
             'cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js',
@@ -18,7 +18,6 @@
             document.head.appendChild(s);
         });
     </script>
-
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -511,843 +510,13 @@
             font-size: 15px;
             vertical-align: top;
         }
-  <script>
-        const openScanBtn = document.getElementById('openScanBtn');
-        const bottomPopup = document.getElementById('bottomPopup');
-        const overlay = document.getElementById('overlay');
-        const cameraInput = document.getElementById('cameraInput');
-        const photosInput = document.getElementById('photosInput');
-        const manualEntryBtn = document.getElementById('manualEntryBtn');
-        const resultsPage = document.getElementById('resultsPage');
-        const resultsTitle = document.getElementById('resultsTitle');
-        const resultsOutput = document.getElementById('resultsOutput');
-        const backHomeBtn = document.getElementById('backHomeBtn');
-        const finishBtn = document.getElementById('finishBtn');
 
-        const summaryPage = document.getElementById('summaryPage');
-        const summaryOutput = document.getElementById('summaryOutput');
-        const summaryBackBtn = document.getElementById('summaryBackBtn');
-        const summaryDoneBtn = document.getElementById('summaryDoneBtn');
-
-        const incompleteModal = document.getElementById('incompleteModal');
-        const modalOkBtn = document.getElementById('modalOkBtn');
-        const modalSkipBtn = document.getElementById('modalSkipBtn');
-
-        const RECIPIENT_EMAIL = 'KSHSstudentcomplaintline@outlook.com';
-        let currentBlock = 'Block 3 boys (Yr9)';
-
-        function openMailto(subject, body) {
-            const url = `mailto:${RECIPIENT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-            window.location.href = url;
-        }
-
-        function openPopup() {
-            bottomPopup.style.display = 'flex';
-            bottomPopup.style.visibility = 'visible';
-            requestAnimationFrame(() => {
-                bottomPopup.classList.add('active');
-                overlay.classList.add('active');
-            });
-        }
-
-        function closePopup() {
-            bottomPopup.classList.remove('active');
-            if (!incompleteModal.classList.contains('active')) {
-                overlay.classList.remove('active');
-            }
-        }
-
-        function openIncompleteModal() {
-            overlay.classList.add('active');
-            incompleteModal.classList.add('active');
-        }
-
-        function closeIncompleteModal() {
-            incompleteModal.classList.remove('active');
-            if (!bottomPopup.classList.contains('active')) {
-                overlay.classList.remove('active');
-            }
-        }
-
-        openScanBtn.addEventListener('click', openPopup);
-
-        overlay.addEventListener('click', () => {
-            closePopup();
-            closeIncompleteModal();
-        });
-
-        backHomeBtn.addEventListener('click', () => {
-            closePopup();
-            closeIncompleteModal();
-            resultsPage.style.display = 'none';
-            summaryPage.style.display = 'none';
-            document.getElementById('customEmailPage').style.display = 'none';
-            document.getElementById('suggestionPage').style.display = 'none';
-            document.getElementById('pageHeader').style.display = 'flex';
-            document.getElementById('pageMain').style.display = 'flex';
-            document.getElementById('pageFooter').style.display = 'flex';
-            cameraInput.value = '';
-            photosInput.value = '';
-        });
-
-        summaryBackBtn.addEventListener('click', () => {
-            summaryPage.style.display = 'none';
-            resultsPage.style.display = 'block';
-            window.scrollTo(0, 0);
-        });
-
-        summaryDoneBtn.addEventListener('click', () => {
-            summaryPage.style.display = 'none';
-            backHomeBtn.click();
-        });
-
-        function showWhiteScreen(titleText, statusText = '') {
-            closePopup();
-            closeIncompleteModal();
-            document.getElementById('pageHeader').style.display = 'none';
-            document.getElementById('pageMain').style.display = 'none';
-            document.getElementById('pageFooter').style.display = 'none';
-            summaryPage.style.display = 'none';
-            resultsTitle.textContent = titleText;
-            resultsPage.style.display = 'block';
-            finishBtn.style.display = statusText ? 'none' : 'inline-block';
-            if (statusText) {
-                resultsOutput.innerHTML = `<p class="status-msg">${statusText}</p>`;
-            }
-        }
-
-        function buildFormalEmail(blockName, rows) {
-            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
-            const isTooDisgusting = tooDisgusting && tooDisgusting.rating === 'Yes';
-
-            const problemItems = [];
-            const goodItems = [];
-
-            rows.forEach(r => {
-                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') return;
-                const hasIssue = ['Dirty', 'Damaged', 'Broken'].includes(r.rating);
-                if (hasIssue || r.hasText) {
-                    const statusPart = hasIssue ? `rated as ${r.rating}` : 'noted';
-                    const detailPart = r.hasText ? ` (${r.rawText})` : '';
-                    problemItems.push(`- ${r.title}: ${statusPart}${detailPart}`);
-                } else if (r.rating === 'Good') {
-                    goodItems.push(r.title);
-                }
-            });
-
-            const commentsRow = rows.find(r => r.title === 'Comments');
-            const extraComments = commentsRow && commentsRow.hasText ? commentsRow.rawText : '';
-
-            const subject = `Restroom Maintenance & Hygiene Report — ${blockName}`;
-            const lines = [
-                'Dear Facilities & Administration Team,',
-                '',
-                `I am writing to report hygiene and maintenance issues identified in the ${blockName} restroom facilities.`
-            ];
-
-            if (isTooDisgusting) {
-                const reasonText = tooDisgusting.hasText ? ` Reason noted: "${tooDisgusting.rawText}".` : '';
-                lines.push(
-                    '',
-                    `The restroom was marked as "Too disgusting to rate," indicating severe unsanitary conditions requiring immediate cleaning attention.${reasonText}`
-                );
-            }
-
-            if (problemItems.length > 0) {
-                lines.push('', 'Summary of Reported Issues:', ...problemItems);
-            } else if (!isTooDisgusting) {
-                lines.push('', 'No specific fixture defects were flagged, though the inspection log is attached below for your records.');
-            }
-
-            if (goodItems.length > 0) {
-                lines.push('', `Fixtures found in satisfactory condition: ${goodItems.join(', ')}.`);
-            }
-
-            if (extraComments) {
-                lines.push('', `Additional Comments: ${extraComments}`);
-            }
-
-            lines.push(
-                '',
-                'Please arrange for maintenance or custodial staff to inspect and address these concerns at your earliest convenience.',
-                '',
-                'Kind regards,',
-                'KSHS Student Complaints'
-            );
-
-            return { subject, body: lines.join('\n') };
-        }
-
-        function hasReportedIssues(rows) {
-            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
-            if (tooDisgusting && tooDisgusting.rating === 'Yes') return true;
-
-            for (const r of rows) {
-                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') continue;
-                if (['Dirty', 'Damaged', 'Broken'].includes(r.rating) || r.hasText) {
-                    return true;
-                }
-            }
-
-            const commentsRow = rows.find(r => r.title === 'Comments');
-            if (commentsRow && commentsRow.hasText) return true;
-
-            return false;
-        }
-
-        function goToSummaryPage() {
-            closeIncompleteModal();
-            const blockSelect = document.getElementById('blockSelect');
-            const selectedBlock = blockSelect ? blockSelect.value : currentBlock;
-
-            const collectedRows = [];
-            let rowsHtml = `
-                <tr>
-                    <td><strong>Bathroom / Block</strong></td>
-                    <td>${selectedBlock}</td>
-                    <td>—</td>
-                </tr>
-            `;
-
-            document.querySelectorAll('.result-card').forEach(card => {
-                const title = card.getAttribute('data-card-section');
-                const sel = card.querySelector('.section-dropdown');
-                const txt = card.querySelector('.read-text');
-
-                const rawRating = sel ? sel.value : '—';
-                const isUnanswered = sel && sel.value === '';
-                const ratingCell = isUnanswered
-                    ? `<span class="summary-unanswered">Unanswered</span>`
-                    : rawRating;
-
-                const rawText = txt ? txt.textContent.trim() : '';
-                const isNoText = !rawText || rawText === 'No text detected.';
-                const textCell = isNoText
-                    ? `<span class="summary-notext">No text entered</span>`
-                    : rawText;
-
-                collectedRows.push({
-                    title,
-                    rating: isUnanswered ? '' : rawRating,
-                    hasText: !isNoText,
-                    rawText
-                });
-
-                rowsHtml += `
-                    <tr>
-                        <td><strong>${title}</strong></td>
-                        <td>${ratingCell}</td>
-                        <td>${textCell}</td>
-                    </tr>
-                `;
-            });
-
-            const issuesFound = hasReportedIssues(collectedRows);
-            let bottomEmailBlock = '';
-
-            if (issuesFound) {
-                const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
-                bottomEmailBlock = `
-Use code with caution.
-Formal Report Email (Editable)
-
-Copy Email
-Send Email
-
-
-Subject:
-<input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '"')}">
-
-${emailDraft.body}
-
-; } else { bottomEmailBlock = 
-No email needed
-Email anyway
-
-`;
-}
-summaryOutput.innerHTML = `
-${rowsHtml}
-
-Section	Rating	Notes
-
-${bottomEmailBlock}
-`;
-if (issuesFound) {
-const copyBtn = document.getElementById('copyEmailBtn');
-copyBtn.addEventListener('click', () => {
-const subj = document.getElementById('emailSubjectInput').value;
-const body = document.getElementById('emailBodyTextarea').value;
-const fullText = Subject: ${subj}\n\n${body};
-if (navigator.clipboard && navigator.clipboard.writeText) {
-navigator.clipboard.writeText(fullText).then(() => {
-copyBtn.textContent = 'Copied!';
-setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-});
-} else {
-const ta = document.getElementById('emailBodyTextarea');
-ta.select();
-document.execCommand('copy');
-copyBtn.textContent = 'Copied!';
-setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-}
-});
-document.getElementById('sendEmailBtn').addEventListener('click', () => {
-const subj = document.getElementById('emailSubjectInput').value;
-const body = document.getElementById('emailBodyTextarea').value;
-openMailto(subj, body);
-});
-} else {
-const emailAnywayLink = document.getElementById('emailAnywayLink');
-emailAnywayLink.addEventListener('click', () => {
-document.getElementById('customEmailSubject').value = Report: ${selectedBlock} Restroom;
-document.getElementById('customEmailBody').value = '';
-summaryPage.style.display = 'none';
-document.getElementById('customEmailPage').style.display = 'block';
-window.scrollTo(0, 0);
-});
-}
-resultsPage.style.display = 'none';
-summaryPage.style.display = 'block';
-window.scrollTo(0, 0);
-}
-// Write Your Own Email Page Buttons
-const customEmailHeader = document.querySelector('#customEmailPage .email-header');
-if (customEmailHeader && !document.getElementById('sendCustomEmailBtn')) {
-const btnGroup = document.createElement('div');
-btnGroup.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap;';
-const copyCustomBtn = document.getElementById('copyCustomEmailBtn');
-const sendCustomBtn = document.createElement('button');
-sendCustomBtn.type = 'button';
-sendCustomBtn.id = 'sendCustomEmailBtn';
-sendCustomBtn.className = 'copy-email-btn';
-sendCustomBtn.style.backgroundColor = '#218838';
-sendCustomBtn.textContent = 'Send Email';
-customEmailHeader.appendChild(btnGroup);
-btnGroup.appendChild(copyCustomBtn);
-btnGroup.appendChild(sendCustomBtn);
-sendCustomBtn.addEventListener('click', () => {
-const subj = document.getElementById('customEmailSubject').value;
-const body = document.getElementById('customEmailBody').value;
-openMailto(subj, body);
-});
-}
-document.getElementById('customEmailBackBtn').addEventListener('click', () => {
-document.getElementById('customEmailPage').style.display = 'none';
-summaryPage.style.display = 'block';
-window.scrollTo(0, 0);
-});
-document.getElementById('copyCustomEmailBtn').addEventListener('click', () => {
-const btn = document.getElementById('copyCustomEmailBtn');
-const subj = document.getElementById('customEmailSubject').value;
-const body = document.getElementById('customEmailBody').value;
-const fullText = Subject: ${subj}\n\n${body};
-if (navigator.clipboard && navigator.clipboard.writeText) {
-navigator.clipboard.writeText(fullText).then(() => {
-btn.textContent = 'Copied!';
-setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
-});
-} else {
-const ta = document.getElementById('customEmailBody');
-ta.select();
-document.execCommand('copy');
-btn.textContent = 'Copied!';
-setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
-}
-});
-document.getElementById('customEmailDoneBtn').addEventListener('click', () => {
-document.getElementById('customEmailPage').style.display = 'none';
-backHomeBtn.click();
-});
-// Suggestion Box Page Buttons
-const suggestionPage = document.getElementById('suggestionPage');
-const suggestionBoxBtn = document.getElementById('suggestionBoxBtn');
-if (suggestionBoxBtn && suggestionPage) {
-const sugHeader = suggestionPage.querySelector('.email-header');
-if (sugHeader && !document.getElementById('sendSuggestionBtn')) {
-const sugBtnGroup = document.createElement('div');
-sugBtnGroup.style.cssText = 'display: flex; gap: 8px; flex-wrap: wrap;';
-const copySugBtn = document.getElementById('copySuggestionBtn');
-const sendSugBtn = document.createElement('button');
-sendSugBtn.type = 'button';
-sendSugBtn.id = 'sendSuggestionBtn';
-sendSugBtn.className = 'copy-email-btn';
-sendSugBtn.style.backgroundColor = '#218838';
-sendSugBtn.textContent = 'Send Email';
-sugHeader.appendChild(sugBtnGroup);
-sugBtnGroup.appendChild(copySugBtn);
-sugBtnGroup.appendChild(sendSugBtn);
-sendSugBtn.addEventListener('click', () => {
-const topic = document.getElementById('suggestionCategory').value;
-const text = document.getElementById('suggestionBody').value.trim();
-openMailto(Suggestion Box: ${topic}, Topic: ${topic}\n\n${text});
-});
-}
-suggestionBoxBtn.addEventListener('click', () => {
-document.getElementById('pageHeader').style.display = 'none';
-document.getElementById('pageMain').style.display = 'none';
-document.getElementById('pageFooter').style.display = 'none';
-document.getElementById('suggestionCategory').selectedIndex = 0;
-document.getElementById('suggestionBody').value = '';
-suggestionPage.style.display = 'block';
-window.scrollTo(0, 0);
-});
-document.getElementById('suggestionBackBtn').addEventListener('click', () => {
-suggestionPage.style.display = 'none';
-backHomeBtn.click();
-});
-document.getElementById('copySuggestionBtn').addEventListener('click', () => {
-const btn = document.getElementById('copySuggestionBtn');
-const topic = document.getElementById('suggestionCategory').value;
-const text = document.getElementById('suggestionBody').value.trim();
-const fullText = Topic: ${topic}\n\n${text};
-if (navigator.clipboard && navigator.clipboard.writeText) {
-navigator.clipboard.writeText(fullText).then(() => {
-btn.textContent = 'Copied!';
-setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
-});
-} else {
-const ta = document.getElementById('suggestionBody');
-ta.select();
-document.execCommand('copy');
-btn.textContent = 'Copied!';
-setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
-}
-});
-document.getElementById('suggestionDoneBtn').addEventListener('click', () => {
-suggestionPage.style.display = 'none';
-backHomeBtn.click();
-});
-}
-function highlightUnansweredDropdowns() {
-let firstUnanswered = null;
-document.querySelectorAll('.result-card').forEach(card => {
-const sel = card.querySelector('.section-dropdown');
-if (sel && sel.value === '') {
-card.classList.add('unanswered-highlight');
-if (!firstUnanswered) firstUnanswered = card;
-} else {
-card.classList.remove('unanswered-highlight');
-}
-});
-if (firstUnanswered) {
-firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
-}
-}
-finishBtn.addEventListener('click', () => {
-const dropdowns = Array.from(document.querySelectorAll('.section-dropdown'));
-const hasIncomplete = dropdowns.some(sel => sel.value === '');
-if (hasIncomplete) {
-openIncompleteModal();
-} else {
-goToSummaryPage();
-}
-});
-modalOkBtn.addEventListener('click', () => {
-closeIncompleteModal();
-highlightUnansweredDropdowns();
-});
-modalSkipBtn.addEventListener('click', () => {
-goToSummaryPage();
-});
-function capitalizeFirst(str) {
-const clean = (str || '').replace(/\s+/g, ' ').trim();
-if (!clean) return 'No text detected.';
-return clean.charAt(0).toUpperCase() + clean.slice(1);
-}
-const STANDARD_SECTIONS = [
-{ title: 'Too disgusting to rate', boxes: [{ label: 'Yes', dx: -0.11, dy: -3.56 }], dropdownOptions: ['No', 'Yes'], textArea: { dx: 2.38, dy: -3.65, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 1', boxes: [{ label: 'Good', dx: 0.34, dy: -2.97 }, { label: 'Dirty', dx: 0.34, dy: -2.74 }, { label: 'Damaged', dx: 0.34, dy: -2.51 }, { label: 'Broken', dx: 0.34, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -2.14, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 2', boxes: [{ label: 'Good', dx: 0.34, dy: -1.66 }, { label: 'Dirty', dx: 0.34, dy: -1.43 }, { label: 'Damaged', dx: 0.34, dy: -1.20 }, { label: 'Broken', dx: 0.34, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.83, dw: 1.65, dh: 0.25 } },
-{ title: 'Hand washing', boxes: [{ label: 'Good', dx: 2.09, dy: -2.97 }, { label: 'Dirty', dx: 2.09, dy: -2.74 }, { label: 'Damaged', dx: 2.09, dy: -2.51 }, { label: 'Broken', dx: 2.09, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -2.14, dw: 1.65, dh: 0.25 } },
-{ title: 'Urinal', boxes: [{ label: 'Good', dx: 2.09, dy: -1.66 }, { label: 'Dirty', dx: 2.09, dy: -1.43 }, { label: 'Damaged', dx: 2.09, dy: -1.20 }, { label: 'Broken', dx: 2.09, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -0.83, dw: 1.65, dh: 0.25 } },
-{ title: 'Comments', boxes: [], dropdownOptions: [], textArea: { dx: 1.15, dy: -0.18, dw: 2.85, dh: 1.15 } }
-];
-const BLOCK1_SECTIONS = [
-{ title: 'Too disgusting to rate', boxes: [{ label: 'Yes', dx: -0.11, dy: -3.56 }], dropdownOptions: ['No', 'Yes'], textArea: { dx: 2.38, dy: -3.65, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 1', boxes: [{ label: 'Good', dx: 0.34, dy: -2.97 }, { label: 'Dirty', dx: 0.34, dy: -2.74 }, { label: 'Damaged', dx: 0.34, dy: -2.51 }, { label: 'Broken', dx: 0.34, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -2.14, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 2', boxes: [{ label: 'Good', dx: 2.09, dy: -2.97 }, { label: 'Dirty', dx: 2.09, dy: -2.74 }, { label: 'Damaged', dx: 2.09, dy: -2.51 }, { label: 'Broken', dx: 2.09, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -2.14, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 3', boxes: [{ label: 'Good', dx: 0.34, dy: -1.66 }, { label: 'Dirty', dx: 0.34, dy: -1.43 }, { label: 'Damaged', dx: 0.34, dy: -1.20 }, { label: 'Broken', dx: 0.34, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.83, dw: 1.65, dh: 0.25 } },
-{ title: 'Stall 4', boxes: [{ label: 'Good', dx: 2.09, dy: -1.66 }, { label: 'Dirty', dx: 2.09, dy: -1.43 }, { label: 'Damaged', dx: 2.09, dy: -1.20 }, { label: 'Broken', dx: 2.09, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -0.83, dw: 1.65, dh: 0.25 } },
-{ title: 'Hand washing', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.50, dw: 3.40, dh: 0.25 } },
-{ title: 'Comments', boxes: [], dropdownOptions: [], textArea: { dx: 1.15, dy: -0.18, dw: 2.85, dh: 1.15 } }
-];
-function getSectionsForBlock(blockName) {
-return blockName === 'Block 1 (Yr 7-8)' ? BLOCK1_SECTIONS : STANDARD_SECTIONS;
-}
-function buildBlockSelectorHtml(selectedBlock) {
-const blocks = ['Block 3 boys (Yr9)', 'Block 5 boys (Yr10)', 'Block 1 (Yr 7-8)'];
-const optionsHtml = blocks.map(b => <option value="${b}" ${b === selectedBlock ? 'selected' : ''}>${b}</option>).join('');
-return `
-Bathroom / Block:
-${optionsHtml}
-
-`;
-}
-function buildSectionCardsHtml(sections, mode, scannedResultsMap = {}) {
-return sections.map(section => {
-const scanInfo = scannedResultsMap[section.title] || { bestMatchLabel: '', isMultiple: false, text: '' };
-const initialText = mode === 'manual' ? '' : (scanInfo.text || 'No text detected.');
-let controlHtml = '';
-if (section.dropdownOptions && section.dropdownOptions.length > 0) {
-const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-let selectedValue = '';
-if (mode === 'scan' && !scanInfo.isMultiple) {
-selectedValue = scanInfo.bestMatchLabel || (isBinary ? 'No' : '');
-}
-const optionsMarkup = [
-!isBinary ? <option value="" ${selectedValue === '' ? 'selected' : ''}>Select rating...</option> : '',
-...section.dropdownOptions.map(opt => <option value="${opt}" ${selectedValue === opt ? 'selected' : ''}>${opt}</option>)
-].join('');
-let badgeHtml = '';
-if (mode === 'scan') {
-if (scanInfo.isMultiple) badgeHtml = <span class="not-detected-badge">Detection failed</span>;
-else if (scanInfo.bestMatchLabel) badgeHtml = <span class="shaded-badge">Detected: ${scanInfo.bestMatchLabel}</span>;
-}
-controlHtml = <div class="shaded-status"> <select class="rating-select section-dropdown" aria-label="${section.title}">${optionsMarkup}</select> ${badgeHtml} </div>;
-}
-return <div class="result-card" data-card-section="${section.title}"> <h3>${section.title}</h3> ${controlHtml} <div class="text-row"> <span class="read-text" contenteditable="${mode === 'manual' ? 'true' : 'false'}">${initialText}</span> <button type="button" class="edit-pencil" title="Edit" aria-label="Edit"> <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"> <path d="M12 20h9"></path> <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path> </svg> </button> </div> </div>;
-}).join('');
-}
-function attachFormInteractions(mode, scannedResultsMap = {}) {
-const blockSelect = document.getElementById('blockSelect');
-if (blockSelect) {
-blockSelect.addEventListener('change', (e) => {
-const prevValues = {};
-document.querySelectorAll('.result-card').forEach(card => {
-const secTitle = card.getAttribute('data-card-section');
-const sel = card.querySelector('.section-dropdown');
-const txt = card.querySelector('.read-text');
-prevValues[secTitle] = {
-rating: sel ? sel.value : '',
-text: txt ? txt.textContent : ''
-};
-});
-currentBlock = e.target.value;
-const newSections = getSectionsForBlock(currentBlock);
-resultsOutput.innerHTML = buildBlockSelectorHtml(currentBlock) + buildSectionCardsHtml(newSections, mode, scannedResultsMap);
-document.querySelectorAll('.result-card').forEach(card => {
-const secTitle = card.getAttribute('data-card-section');
-if (prevValues[secTitle]) {
-const sel = card.querySelector('.section-dropdown');
-const txt = card.querySelector('.read-text');
-if (sel && prevValues[secTitle].rating) sel.value = prevValues[secTitle].rating;
-if (txt && prevValues[secTitle].text) txt.textContent = prevValues[secTitle].text;
-}
-});
-attachFormInteractions(mode, scannedResultsMap);
-});
-}
-document.querySelectorAll('.section-dropdown').forEach(sel => {
-sel.addEventListener('change', () => {
-if (sel.value !== '') {
-const card = sel.closest('.result-card');
-if (card) card.classList.remove('unanswered-highlight');
-}
-});
-});
-const isDesktopPointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-function startEditingSpan(textSpan) {
-if (textSpan.textContent.trim() === 'No text detected.') {
-textSpan.textContent = '';
-}
-textSpan.setAttribute('contenteditable', 'true');
-textSpan.focus();
-}
-function finishEditingSpan(textSpan) {
-if (mode === 'scan') {
-textSpan.textContent = capitalizeFirst(textSpan.textContent);
-textSpan.setAttribute('contenteditable', 'false');
-}
-}
-document.querySelectorAll('.read-text').forEach(textSpan => {
-if (isDesktopPointer && mode === 'scan') {
-textSpan.addEventListener('click', () => {
-if (textSpan.getAttribute('contenteditable') !== 'true') {
-startEditingSpan(textSpan);
-}
-});
-textSpan.addEventListener('blur', () => {
-if (textSpan.getAttribute('contenteditable') === 'true') {
-finishEditingSpan(textSpan);
-}
-});
-textSpan.addEventListener('keydown', (e) => {
-if (e.key === 'Enter' && !e.shiftKey) {
-e.preventDefault();
-textSpan.blur();
-}
-});
-}
-});
-document.querySelectorAll('.edit-pencil').forEach(btn => {
-btn.addEventListener('click', () => {
-const textSpan = btn.previousElementSibling;
-const isEditing = textSpan.getAttribute('contenteditable') === 'true';
-if (!isEditing) {
-startEditingSpan(textSpan);
-} else if (mode === 'scan') {
-finishEditingSpan(textSpan);
-} else {
-textSpan.focus();
-}
-});
-});
-}
-manualEntryBtn.addEventListener('click', () => {
-showWhiteScreen('Manual entry');
-const sections = getSectionsForBlock(currentBlock);
-resultsOutput.innerHTML = buildBlockSelectorHtml(currentBlock) + buildSectionCardsHtml(sections, 'manual');
-attachFormInteractions('manual');
-});
-function detectSheetQR(img) {
-const scales =;
-for (const maxDim of scales) {
-const canvas = document.createElement('canvas');
-const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-canvas.width = Math.round(img.width * scale);
-canvas.height = Math.round(img.height * scale);
-const ctx = canvas.getContext('2d', { willReadFrequently: true });
-ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-const fullImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
-const qr = jsQR(fullImg.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
-if (qr) return { qr, canvas, ctx };
-}
-return null;
-}
-function checkBoxState(ctx, width, height, cx, cy, qrSize) {
-const coreHalf = Math.max(2, Math.round(qrSize * 0.022));
-const coreSize = coreHalf * 2 + 1;
-const step = Math.max(2, Math.round(qrSize * 0.015));
-if (cx - coreHalf < 0 || cy - coreHalf < 0 || cx + coreHalf >= width || cy + coreHalf >= height) {
-return { state: 'not_detected', inkScore: 0 };
-}
-const sampleCore = (ox, oy) => {
-const x0 = Math.max(0, Math.min(width - coreSize, Math.round(ox - coreHalf)));
-const y0 = Math.max(0, Math.min(height - coreSize, Math.round(oy - coreHalf)));
-const bgX = Math.max(0, Math.round(x0 - qrSize * 0.14));
-const bgW = Math.max(4, Math.round(qrSize * 0.06));
-const bgData = ctx.getImageData(bgX, y0, bgW, coreSize).data;
-let bgSum = 0;
-const bgCount = bgData.length / 4;
-for (let i = 0; i < bgData.length; i += 4) {
-bgSum += 0.299 * bgData[i] + 0.587 * bgData[i + 1] + 0.114 * bgData[i + 2];
-}
-const paperLuma = bgSum / Math.max(1, bgCount);
-if (paperLuma < 85) return 0;
-const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
-const total = boxData.length / 4;
-let markedPixels = 0;
-let lumaDropSum = 0;
-for (let i = 0; i < boxData.length; i += 4) {
-const r = boxData[i], g = boxData[i + 1], b = boxData[i + 2];
-const luma = 0.299 * r + 0.587 * g + 0.114 * b;
-const blueBoost = Math.max(0, b - (r + g) * 0.5) * 0.95;
-const effectiveDarkness = (paperLuma - luma) + blueBoost;
-if (effectiveDarkness > paperLuma * 0.18) {
-markedPixels++;
-lumaDropSum += effectiveDarkness / paperLuma;
-}
-}
-const fillRatio = markedPixels / total;
-const avgDrop = lumaDropSum / total;
-return fillRatio >= 0.35 ? (fillRatio * 0.7 + avgDrop) : 0;
-};
-const offsets = [[0, 0], [-step, 0], [step, 0], [0, -step], [0, step]];
-let bestScore = 0;
-for (const [dx, dy] of offsets) {
-const s = sampleCore(cx + dx, cy + dy);
-if (s > bestScore) bestScore = s;
-}
-if (bestScore >= 0.38) return { state: 'shaded', inkScore: bestScore };
-return { state: 'unshaded', inkScore: bestScore };
-}
-function extractRectifiedZone(sourceCanvas, tl, ux, uy, vx, vy, area) {
-const outW = Math.max(240, Math.round(area.dw * 340));
-const outH = Math.max(64, Math.round(area.dh * 340));
-const pad = 20;
-const crop = document.createElement('canvas');
-crop.width = outW + pad * 2;
-crop.height = outH + pad * 2;
-const cctx = crop.getContext('2d', { willReadFrequently: true });
-cctx.fillStyle = '#ffffff';
-cctx.fillRect(0, 0, crop.width, crop.height);
-cctx.save();
-cctx.translate(pad, pad);
-const a = (area.dw * ux) / outW;
-const b = (area.dw * uy) / outW;
-const c = (area.dh * vx) / outH;
-const d = (area.dh * vy) / outH;
-const e = tl.x + area.dx * ux + area.dy * vx;
-const f = tl.y + area.dx * uy + area.dy * vy;
-const det = a * d - b * c;
-if (Math.abs(det) > 1e-6) {
-cctx.transform(d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det);
-cctx.drawImage(sourceCanvas, 0, 0);
-}
-cctx.restore();
-const imgData = cctx.getImageData(0, 0, crop.width, crop.height);
-const data = imgData.data;
-const w = crop.width;
-const h = crop.height;
-const luma = new Float32Array(w * h);
-const hist = new Uint32Array(256);
-for (let i = 0; i < w * h; i++) {
-const r = data[i * 4], g = data[i * 4 + 1], bl = data[i * 4 + 2];
-const blueBoost = Math.max(0, bl - (r + g) * 0.5) * 0.95;
-const val = Math.max(0, Math.min(255, (0.299 * r + 0.587 * g + 0.114 * bl) - blueBoost));
-luma[i] = val;
-hist[Math.round(val)]++;
-}
-let count = 0;
-let paperBg = 225;
-const target = Math.floor(w * h * 0.85);
-for (let v = 0; v < 256; v++) {
-count += hist[v];
-if (count >= target) {
-paperBg = Math.max(120, v);
-break;
-}
-}
-const inkMask = new Uint8Array(w * h);
-for (let i = 0; i < w * h; i++) {
-const rel = (luma[i] / paperBg) * 255;
-if (rel < 205) inkMask[i] = 1;
-}
-for (let y = pad; y < h - pad; y++) {
-let rowDark = 0;
-for (let x = pad; x < w - pad; x++) {
-if (inkMask[y * w + x]) rowDark++;
-}
-if (rowDark > outW * 0.68) {
-for (let x = pad; x < w - pad; x++) {
-const aboveInk = (y - 2 >= 0 && inkMask[(y - 2) * w + x]) || (y - 3 >= 0 && inkMask[(y - 3) * w + x]);
-const belowInk = (y + 2 < h && inkMask[(y + 2) * w + x]) || (y + 3 < h && inkMask[(y + 3) * w + x]);
-if (!aboveInk && !belowInk) {
-inkMask[y * w + x] = 0;
-if (y - 1 >= 0) inkMask[(y - 1) * w + x] = 0;
-if (y + 1 < h) inkMask[(y + 1) * w + x] = 0;
-}
-}
-}
-}
-let remainingInk = 0;
-for (let y = pad; y < h - pad; y++) {
-for (let x = pad; x < w - pad; x++) {
-if (inkMask[y * w + x]) remainingInk++;
-}
-}
-const inkDensity = remainingInk / (outW * outH);
-if (inkDensity < 0.0025) return null;
-for (let i = 0; i < w * h; i++) {
-const val = inkMask[i] ? 0 : 255;
-data[i * 4] = val;
-data[i * 4 + 1] = val;
-data[i * 4 + 2] = val;
-data[i * 4 + 3] = 255;
-}
-cctx.putImageData(imgData, 0, 0);
-return crop;
-}
-function cleanOcrText(rawText) {
-let text = (rawText || '')
-.replace(/[_|—–=~`^<>[]{}]+/g, ' ')
-.replace(/\b(Too disgusting to rate|Why|Stall\s\d*|Hand\swashing|Urinal|Comments|Good|Dirty|Damaged|Broken)\b[:-]/gi, ' ')
-.replace(/\s+/g, ' ')
-.trim();
-const lettersOnly = text.replace(/[^a-zA-Z0-9]/g, '');
-if (lettersOnly.length < 2) return 'No text detected.';
-return capitalizeFirst(text);
-}
-function withTimeout(promise, ms, fallbackVal = null) {
-let timer;
-return Promise.race([
-promise.finally(() => clearTimeout(timer)),
-new Promise(resolve => {
-timer = setTimeout(() => resolve(fallbackVal), ms);
-})
-]);
-}
-async function handleImageUpload(event) {
-const file = event.target.files[0];
-if (!file) return;
-showWhiteScreen('Scan results', 'Locating QR code...');
-const img = new Image();
-img.onload = async () => {
-const detected = detectSheetQR(img);
-if (!detected) {
-resultsOutput.innerHTML = 'Page not detected.';
-return;
-}
-const { qr, canvas, ctx } = detected;
-const tl = qr.location.topLeftCorner;
-const tr = qr.location.topRightCorner;
-const bl = qr.location.bottomLeftCorner;
-const ux = tr.x - tl.x;
-const uy = tr.y - tl.y;
-const vx = bl.x - tl.x;
-const vy = bl.y - tl.y;
-const qrSize = Math.hypot(ux, uy);
-let ocrWorker = null;
-try {
-resultsOutput.innerHTML = 'Loading handwriting reader...';
-ocrWorker = await withTimeout(Tesseract.createWorker('eng'), 10000, null);
-if (ocrWorker) {
-await withTimeout(ocrWorker.setParameters({ tessedit_pageseg_mode: '6' }), 2500, null);
-}
-} catch (e) {
-ocrWorker = null;
-}
-const activeSections = getSectionsForBlock(currentBlock);
-const scannedResultsMap = {};
-for (let idx = 0; idx < activeSections.length; idx++) {
-const section = activeSections[idx];
-resultsOutput.innerHTML = <p class="status-msg">Reading ${section.title} (${idx + 1}/${activeSections.length})...</p>;
-const shadedMatches = [];
-for (const box of section.boxes) {
-const px = tl.x + box.dx * ux + box.dy * vx;
-const py = tl.y + box.dx * uy + box.dy * vy;
-const result = checkBoxState(ctx, canvas.width, canvas.height, px, py, qrSize);
-if (result.state === 'shaded') shadedMatches.push(box.label);
-}
-const isMultiple = shadedMatches.length > 1;
-const bestMatchLabel = shadedMatches.length === 1 ? shadedMatches[0] : '';
-let extractedText = 'No text detected.';
-const cropCanvas = extractRectifiedZone(canvas, tl, ux, uy, vx, vy, section.textArea);
-if (cropCanvas && ocrWorker) {
-try {
-const res = await withTimeout(ocrWorker.recognize(cropCanvas), 5000, null);
-if (res && res.data && res.data.text) {
-extractedText = cleanOcrText(res.data.text);
-}
-} catch (e) {
-extractedText = 'No text detected.';
-}
-}
-scannedResultsMap[section.title] = {
-bestMatchLabel,
-isMultiple,
-text: extractedText
-};
-}
-if (ocrWorker) {
-try { await ocrWorker.terminate(); } catch (e) {}
-}
-resultsOutput.innerHTML = buildBlockSelectorHtml(currentBlock) + buildSectionCardsHtml(activeSections, 'scan', scannedResultsMap);
-finishBtn.style.display = 'inline-block';
-attachFormInteractions('scan', scannedResultsMap);
-};
-img.src = URL.createObjectURL(file);
-}
-cameraInput.addEventListener('change', handleImageUpload);
-photosInput.addEventListener('change', handleImageUpload);
         .summary-table th {
             background-color: #f4f4f4;
             font-weight: bold;
             color: #222;
         }
-
-        .summary-unanswered {
+                .summary-unanswered {
             display: inline-block;
             background-color: #fdecea;
             color: #b82020;
@@ -1532,7 +701,7 @@ photosInput.addEventListener('change', handleImageUpload);
                 <button type="button" class="back-btn" id="backHomeBtn">Back</button>
             </div>
             <div id="resultsOutput"></div>
-            <div class="bottom-actions" id="resultsBottomActions" style="display: none;">
+            <div class="bottom-actions" id="resultsBottomActions">
                 <button type="button" class="finish-btn" id="finishBtn">Finish</button>
             </div>
         </div>
@@ -1541,7 +710,7 @@ photosInput.addEventListener('change', handleImageUpload);
     <section id="summaryPage" class="white-screen">
         <div class="results-container">
             <div class="results-top">
-                <h2>Response summary</h2>
+                <h2>Response Summary</h2>
                 <button type="button" class="back-btn" id="summaryBackBtn">Back</button>
             </div>
             <div id="summaryOutput"></div>
@@ -1601,7 +770,8 @@ photosInput.addEventListener('change', handleImageUpload);
             </div>
         </div>
     </section>
-    <script>
+
+ <script>
         const openScanBtn = document.getElementById('openScanBtn');
         const bottomPopup = document.getElementById('bottomPopup');
         const overlay = document.getElementById('overlay');
@@ -1612,252 +782,109 @@ photosInput.addEventListener('change', handleImageUpload);
         const resultsTitle = document.getElementById('resultsTitle');
         const resultsOutput = document.getElementById('resultsOutput');
         const backHomeBtn = document.getElementById('backHomeBtn');
+        const finishBtn = document.getElementById('finishBtn');
+
         const summaryPage = document.getElementById('summaryPage');
         const summaryOutput = document.getElementById('summaryOutput');
         const summaryBackBtn = document.getElementById('summaryBackBtn');
         const summaryDoneBtn = document.getElementById('summaryDoneBtn');
-        const customEmailPage = document.getElementById('customEmailPage');
-        const customEmailBackBtn = document.getElementById('customEmailBackBtn');
-        const copyCustomEmailBtn = document.getElementById('copyCustomEmailBtn');
-        const customEmailDoneBtn = document.getElementById('customEmailDoneBtn');
-        const suggestionPage = document.getElementById('suggestionPage');
-        const suggestionBoxBtn = document.getElementById('suggestionBoxBtn');
+
         const incompleteModal = document.getElementById('incompleteModal');
         const modalOkBtn = document.getElementById('modalOkBtn');
         const modalSkipBtn = document.getElementById('modalSkipBtn');
 
+        const EMAILJS_SERVICE_ID = 'service_4bm1iuk';
+        const EMAILJS_TEMPLATE_ID = 'template_73zlh6r';
         let currentBlock = 'Block 3 boys (Yr9)';
-        let currentMode = 'scan';
-        let lastScanDetections = {};
-        let lastExtractedTexts = {};
 
-        const BLOCK_OPTIONS = [
-            'Block 3 boys (Yr9)',
-            'Block 5 boys (Yr10)',
-            'Block 1 (Yr 7-8)'
-        ];
-
-        const STANDARD_SECTIONS = [
-            {
-                title: 'Too disgusting to rate',
-                boxes: [{ label: 'Yes', dx: -0.10, dy: -3.96 }],
-                dropdownOptions: ['No', 'Yes'],
-                textLabel: 'Why',
-                textArea: { dx: 2.88, dy: -4.08, dw: 1.65, dh: 0.28 }
-            },
-            {
-                title: 'Stall 1',
-                boxes: [
-                    { label: 'Good', dx: 0.45, dy: -3.32 },
-                    { label: 'Dirty', dx: 0.45, dy: -3.06 },
-                    { label: 'Damaged', dx: 0.45, dy: -2.79 },
-                    { label: 'Broken', dx: 0.45, dy: -2.53 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.35, dy: -2.35, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Stall 2',
-                boxes: [
-                    { label: 'Good', dx: 0.45, dy: -1.82 },
-                    { label: 'Dirty', dx: 0.45, dy: -1.56 },
-                    { label: 'Damaged', dx: 0.45, dy: -1.29 },
-                    { label: 'Broken', dx: 0.45, dy: -1.03 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.35, dy: -0.85, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Hand washing',
-                boxes: [
-                    { label: 'Good', dx: 2.33, dy: -3.32 },
-                    { label: 'Dirty', dx: 2.33, dy: -3.06 },
-                    { label: 'Damaged', dx: 2.33, dy: -2.79 },
-                    { label: 'Broken', dx: 2.33, dy: -2.53 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.25, dy: -2.35, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Urinal',
-                boxes: [
-                    { label: 'Good', dx: 2.33, dy: -1.82 },
-                    { label: 'Dirty', dx: 2.33, dy: -1.56 },
-                    { label: 'Damaged', dx: 2.33, dy: -1.29 },
-                    { label: 'Broken', dx: 2.33, dy: -1.03 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.25, dy: -0.85, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textLabel: 'Comments',
-                textArea: { dx: 1.14, dy: 0.02, dw: 3.00, dh: 1.15 }
-            }
-        ];
-
-        const BLOCK_1_SECTIONS = [
-            {
-                title: 'Too disgusting to rate',
-                boxes: [{ label: 'Yes', dx: -0.10, dy: -3.96 }],
-                dropdownOptions: ['No', 'Yes'],
-                textLabel: 'Why',
-                textArea: { dx: 2.88, dy: -4.08, dw: 1.65, dh: 0.28 }
-            },
-            {
-                title: 'Stall 1',
-                boxes: [
-                    { label: 'Good', dx: 0.45, dy: -3.32 },
-                    { label: 'Dirty', dx: 0.45, dy: -3.06 },
-                    { label: 'Damaged', dx: 0.45, dy: -2.79 },
-                    { label: 'Broken', dx: 0.45, dy: -2.53 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.35, dy: -2.35, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Stall 2',
-                boxes: [
-                    { label: 'Good', dx: 0.45, dy: -1.82 },
-                    { label: 'Dirty', dx: 0.45, dy: -1.56 },
-                    { label: 'Damaged', dx: 0.45, dy: -1.29 },
-                    { label: 'Broken', dx: 0.45, dy: -1.03 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.35, dy: -0.85, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Stall 3',
-                boxes: [
-                    { label: 'Good', dx: 2.33, dy: -3.32 },
-                    { label: 'Dirty', dx: 2.33, dy: -3.06 },
-                    { label: 'Damaged', dx: 2.33, dy: -2.79 },
-                    { label: 'Broken', dx: 2.33, dy: -2.53 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.25, dy: -2.35, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Stall 4',
-                boxes: [
-                    { label: 'Good', dx: 2.33, dy: -1.82 },
-                    { label: 'Dirty', dx: 2.33, dy: -1.56 },
-                    { label: 'Damaged', dx: 2.33, dy: -1.29 },
-                    { label: 'Broken', dx: 2.33, dy: -1.03 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 2.25, dy: -0.85, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Hand washing',
-                boxes: [
-                    { label: 'Good', dx: 0.45, dy: -0.35 },
-                    { label: 'Dirty', dx: 0.45, dy: -0.09 },
-                    { label: 'Damaged', dx: 0.45, dy: 0.17 },
-                    { label: 'Broken', dx: 0.45, dy: 0.43 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textLabel: 'Description',
-                textArea: { dx: 0.35, dy: 0.62, dw: 1.75, dh: 0.24 }
-            },
-            {
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textLabel: 'Comments',
-                textArea: { dx: 1.14, dy: 0.95, dw: 3.00, dh: 1.15 }
-            }
-        ];
-
-        function getSectionsForBlock(blockName) {
-            return blockName === 'Block 1 (Yr 7-8)' ? BLOCK_1_SECTIONS : STANDARD_SECTIONS;
+        function el(tag, props = {}, children = []) {
+            const node = document.createElement(tag);
+            Object.entries(props).forEach(([k, v]) => {
+                if (k === 'className') node.className = v;
+                else if (k === 'textContent') node.textContent = v;
+                else if (k === 'value') node.value = v;
+                else if (k === 'style') node.style.cssText = v;
+                else node.setAttribute(k, v);
+            });
+            children.forEach(c => {
+                if (typeof c === 'string') node.appendChild(document.createTextNode(c));
+                else if (c) node.appendChild(c);
+            });
+            return node;
         }
 
-        function openBottomDrawer() {
+        async function sendViaEmailJS(btnElement, subjectText, bodyText) {
+            const originalLabel = btnElement.textContent;
+            btnElement.disabled = true;
+            btnElement.textContent = 'Sending...';
+
+            try {
+                await emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+                    subject: subjectText,
+                    message: bodyText
+                });
+                btnElement.textContent = 'Sent!';
+                btnElement.style.backgroundColor = '#19692c';
+            } catch (err) {
+                console.error('EmailJS send failed:', err);
+                btnElement.textContent = 'Failed - Try Again';
+                btnElement.style.backgroundColor = '#d92b2b';
+            } finally {
+                setTimeout(() => {
+                    btnElement.disabled = false;
+                    btnElement.textContent = originalLabel;
+                    btnElement.style.backgroundColor = '#218838';
+                }, 2500);
+            }
+        }
+
+        function openPopup() {
             bottomPopup.style.display = 'flex';
             bottomPopup.style.visibility = 'visible';
-            overlay.style.display = 'block';
-            overlay.style.visibility = 'visible';
             requestAnimationFrame(() => {
                 bottomPopup.classList.add('active');
                 overlay.classList.add('active');
             });
         }
 
-        function closeBottomDrawer() {
+        function closePopup() {
             bottomPopup.classList.remove('active');
-            overlay.classList.remove('active');
-            setTimeout(() => {
-                if (!bottomPopup.classList.contains('active') && !incompleteModal.classList.contains('active')) {
-                    overlay.style.visibility = 'hidden';
-                }
-            }, 260);
+            if (!incompleteModal.classList.contains('active')) {
+                overlay.classList.remove('active');
+            }
         }
 
         function openIncompleteModal() {
-            overlay.style.display = 'block';
-            overlay.style.visibility = 'visible';
             overlay.classList.add('active');
             incompleteModal.classList.add('active');
         }
 
         function closeIncompleteModal() {
             incompleteModal.classList.remove('active');
-            overlay.classList.remove('active');
-            setTimeout(() => {
-                if (!incompleteModal.classList.contains('active') && !bottomPopup.classList.contains('active')) {
-                    overlay.style.visibility = 'hidden';
-                }
-            }, 220);
+            if (!bottomPopup.classList.contains('active')) {
+                overlay.classList.remove('active');
+            }
         }
 
-        openScanBtn.addEventListener('click', openBottomDrawer);
+        openScanBtn.addEventListener('click', openPopup);
 
         overlay.addEventListener('click', () => {
-            if (incompleteModal.classList.contains('active')) {
-                closeIncompleteModal();
-            } else {
-                closeBottomDrawer();
-            }
+            closePopup();
+            closeIncompleteModal();
         });
 
-        function showWhiteFormScreen(titleText, initialMsg) {
-            closeBottomDrawer();
-            document.getElementById('pageHeader').style.display = 'none';
-            document.getElementById('pageMain').style.display = 'none';
-            document.getElementById('pageFooter').style.display = 'none';
-            summaryPage.style.display = 'none';
-            if (customEmailPage) customEmailPage.style.display = 'none';
-            if (suggestionPage) suggestionPage.style.display = 'none';
-            resultsTitle.textContent = titleText;
-            resultsPage.style.display = 'block';
-            if (initialMsg) {
-                resultsOutput.innerHTML = `<p class="status-msg">${initialMsg}</p>`;
-            }
-            window.scrollTo(0, 0);
-        }
-
         backHomeBtn.addEventListener('click', () => {
+            closePopup();
+            closeIncompleteModal();
             resultsPage.style.display = 'none';
             summaryPage.style.display = 'none';
-            if (customEmailPage) customEmailPage.style.display = 'none';
-            if (suggestionPage) suggestionPage.style.display = 'none';
+            document.getElementById('customEmailPage').style.display = 'none';
+            document.getElementById('suggestionPage').style.display = 'none';
             document.getElementById('pageHeader').style.display = 'flex';
             document.getElementById('pageMain').style.display = 'flex';
             document.getElementById('pageFooter').style.display = 'flex';
             cameraInput.value = '';
             photosInput.value = '';
-            window.scrollTo(0, 0);
         });
 
         summaryBackBtn.addEventListener('click', () => {
@@ -1867,1234 +894,87 @@ photosInput.addEventListener('change', handleImageUpload);
         });
 
         summaryDoneBtn.addEventListener('click', () => {
+            summaryPage.style.display = 'none';
             backHomeBtn.click();
         });
 
-        if (suggestionBoxBtn && suggestionPage) {
-            suggestionBoxBtn.addEventListener('click', () => {
-                closeBottomDrawer();
-                document.getElementById('pageHeader').style.display = 'none';
-                document.getElementById('pageMain').style.display = 'none';
-                document.getElementById('pageFooter').style.display = 'none';
-                resultsPage.style.display = 'none';
-                summaryPage.style.display = 'none';
-                if (customEmailPage) customEmailPage.style.display = 'none';
-                document.getElementById('suggestionCategory').selectedIndex = 0;
-                document.getElementById('suggestionBody').value = '';
-                suggestionPage.style.display = 'block';
-                window.scrollTo(0, 0);
-            });
-
-            document.getElementById('suggestionBackBtn').addEventListener('click', () => {
-                suggestionPage.style.display = 'none';
-                backHomeBtn.click();
-            });
-
-            document.getElementById('copySuggestionBtn').addEventListener('click', () => {
-                const btn = document.getElementById('copySuggestionBtn');
-                const topic = document.getElementById('suggestionCategory').value;
-                const text = document.getElementById('suggestionBody').value.trim();
-                const fullText = `Topic: ${topic}\n\n${text}`;
-
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(fullText).then(() => {
-                        btn.textContent = 'Copied!';
-                        setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
-                    });
-                } else {
-                    const ta = document.getElementById('suggestionBody');
-                    ta.select();
-                    document.execCommand('copy');
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
-                }
-            });
-
-            document.getElementById('suggestionDoneBtn').addEventListener('click', () => {
-                suggestionPage.style.display = 'none';
-                backHomeBtn.click();
-            });
-        }
-
-        function capitalizeFirst(str) {
-            const clean = (str || '').replace(/\s+/g, ' ').trim();
-            if (!clean) return 'No text detected.';
-            return clean.charAt(0).toUpperCase() + clean.slice(1);
-        }
-
-        function renderFormCards() {
-            const sections = getSectionsForBlock(currentBlock);
-            const blockOptionsHtml = BLOCK_OPTIONS.map(opt =>
-                `<option value="${opt}" ${opt === currentBlock ? 'selected' : ''}>${opt}</option>`
-            ).join('');
-
-            let html = `
-                <div class="block-card">
-                    <label for="blockSelect">Bathroom / Block:</label>
-                    <select id="blockSelect" class="rating-select">
-                        ${blockOptionsHtml}
-                    </select>
-                </div>
-            `;
-
-            for (const section of sections) {
-                const det = lastScanDetections[section.title] || { status: 'none', label: '' };
-                const textVal = lastExtractedTexts[section.title] !== undefined
-                    ? lastExtractedTexts[section.title]
-                    : (currentMode === 'manual' ? '' : 'No text detected.');
-
-                let controlHtml = '';
-                if (section.dropdownOptions && section.dropdownOptions.length > 0) {
-                    const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-                    let selectedValue = '';
-                    if (det.status === 'detected') {
-                        selectedValue = det.label;
-                    } else if (isBinary) {
-                        selectedValue = 'No';
-                    }
-
-                    const optionsMarkup = [
-                        !isBinary ? `<option value="" ${selectedValue === '' ? 'selected' : ''}>Select rating...</option>` : '',
-                        ...section.dropdownOptions.map(opt =>
-                            `<option value="${opt}" ${selectedValue === opt ? 'selected' : ''}>${opt}</option>`
-                        )
-                    ].join('');
-
-                    let badgeHtml = '';
-                    if (det.status === 'detected') {
-                        badgeHtml = `<span class="shaded-badge">Detected: ${det.label}</span>`;
-                    } else if (det.status === 'failed') {
-                        badgeHtml = `<span class="not-detected-badge">Detection failed</span>`;
-                    } else if (det.status === 'uncertain' && !isBinary) {
-                        badgeHtml = `<span class="not-detected-badge">Faint / Unclear mark</span>`;
-                    }
-
-                    controlHtml = `
-                        <div class="shaded-status">
-                            <select class="rating-select section-dropdown" data-section="${section.title}" aria-label="${section.title}">
-                                ${optionsMarkup}
-                            </select>
-                            ${badgeHtml}
-                        </div>
-                    `;
-                }
-
-                const placeholderText = currentMode === 'manual' ? `Enter ${section.textLabel.toLowerCase()}...` : '';
-                html += `
-                    <div class="result-card" data-card-section="${section.title}">
-                        <h3>${section.title}</h3>
-                        ${controlHtml}
-                        <div class="text-row">
-                            <span class="read-text" contenteditable="${currentMode === 'manual' ? 'true' : 'false'}" data-placeholder="${placeholderText}">${textVal}</span>
-                            <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9"></path>
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
-            }
-
-            html += `
-                <div class="bottom-actions">
-                    <button type="button" class="finish-btn" id="finishFormBtn">Finish</button>
-                </div>
-            `;
-
-            resultsOutput.innerHTML = html;
-
-            const blockSelect = document.getElementById('blockSelect');
-            blockSelect.addEventListener('change', (e) => {
-                saveCurrentInputsToState();
-                currentBlock = e.target.value;
-                renderFormCards();
-            });
-
-            document.querySelectorAll('.section-dropdown').forEach(sel => {
-                sel.addEventListener('change', () => {
-                    if (sel.value !== '') {
-                        const card = sel.closest('.result-card');
-                        if (card) card.classList.remove('unanswered-highlight');
-                    }
-                });
-            });
-
-            const isDesktopPointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-            function startEditingText(textSpan) {
-                if (textSpan.textContent.trim() === 'No text detected.') {
-                    textSpan.textContent = '';
-                }
-                textSpan.setAttribute('contenteditable', 'true');
-                textSpan.focus();
-            }
-
-            document.querySelectorAll('.edit-pencil').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    const textSpan = btn.previousElementSibling;
-                    const isEditing = textSpan.getAttribute('contenteditable') === 'true';
-                    if (!isEditing) {
-                        startEditingText(textSpan);
-                    } else {
-                        textSpan.textContent = currentMode === 'manual'
-                            ? textSpan.textContent.trim()
-                            : capitalizeFirst(textSpan.textContent);
-                        textSpan.setAttribute('contenteditable', 'false');
-                    }
-                });
-            });
-
-            if (isDesktopPointer) {
-                document.querySelectorAll('.read-text').forEach(textSpan => {
-                    textSpan.addEventListener('click', () => {
-                        if (textSpan.getAttribute('contenteditable') !== 'true') {
-                            startEditingText(textSpan);
-                        }
-                    });
-                    textSpan.addEventListener('blur', () => {
-                        if (currentMode !== 'manual') {
-                            textSpan.textContent = capitalizeFirst(textSpan.textContent);
-                            textSpan.setAttribute('contenteditable', 'false');
-                        }
-                    });
-                    textSpan.addEventListener('keydown', (e) => {
-                        if (e.key === 'Enter' && !e.shiftKey) {
-                            e.preventDefault();
-                            textSpan.blur();
-                        }
-                    });
-                });
-            }
-
-            document.getElementById('finishFormBtn').addEventListener('click', handleFinishClick);
-        }
-
-        function saveCurrentInputsToState() {
-            document.querySelectorAll('.result-card').forEach(card => {
-                const title = card.getAttribute('data-card-section');
-                const sel = card.querySelector('.section-dropdown');
-                const txt = card.querySelector('.read-text');
-                if (sel && sel.value) {
-                    lastScanDetections[title] = { status: 'detected', label: sel.value };
-                }
-                if (txt) {
-                    lastExtractedTexts[title] = txt.textContent;
-                }
-            });
-        }
-
-        function handleFinishClick() {
-            const dropdowns = Array.from(document.querySelectorAll('.section-dropdown'));
-            const hasIncomplete = dropdowns.some(sel => sel.value === '');
-            if (hasIncomplete) {
-                openIncompleteModal();
-            } else {
-                goToSummaryPage();
-            }
-        }
-
-        modalOkBtn.addEventListener('click', () => {
+        function showWhiteScreen(titleText, statusText = '') {
+            closePopup();
             closeIncompleteModal();
-            let firstUnansweredCard = null;
-            document.querySelectorAll('.result-card').forEach(card => {
-                const sel = card.querySelector('.section-dropdown');
-                if (sel && sel.value === '') {
-                    card.classList.add('unanswered-highlight');
-                    if (!firstUnansweredCard) firstUnansweredCard = card;
-                } else {
-                    card.classList.remove('unanswered-highlight');
-                }
-            });
-            if (firstUnansweredCard) {
-                firstUnansweredCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-
-        modalSkipBtn.addEventListener('click', () => {
-            closeIncompleteModal();
-            goToSummaryPage();
-        });
-
-        function buildFormalEmail(blockName, rows) {
-            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
-            const isTooDisgusting = tooDisgusting && tooDisgusting.rating === 'Yes';
-
-            const issueLines = [];
-
-            if (isTooDisgusting) {
-                const reason = tooDisgusting.hasText ? ` (Reason noted: ${tooDisgusting.rawText})` : '';
-                issueLines.push(`- Overall Facility Condition: Marked as "Too disgusting to rate"${reason}.`);
-            }
-
-            for (const r of rows) {
-                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') continue;
-                const badRatings = ['Dirty', 'Damaged', 'Broken'];
-                const hasBadRating = badRatings.includes(r.rating);
-                if (hasBadRating || r.hasText) {
-                    const ratingPart = hasBadRating ? `Rated as ${r.rating}` : 'Notes recorded';
-                    const notePart = r.hasText ? ` — ${r.rawText}` : '';
-                    issueLines.push(`- ${r.title}: ${ratingPart}${notePart}.`);
-                }
-            }
-
-            const commentsRow = rows.find(r => r.title === 'Comments');
-            if (commentsRow && commentsRow.hasText) {
-                issueLines.push(`- Additional Comments: ${commentsRow.rawText}`);
-            }
-
-            const bodyDetails = issueLines.length > 0
-                ? issueLines.join('\n')
-                : '- No specific defects or ratings were flagged, though a formal review of the facility is requested.';
-
-            const subject = `Facility Maintenance & Hygiene Report — ${blockName}`;
-            const body = [
-                'Dear School Administration / Facilities Team,',
-                '',
-                `I am writing to report hygiene and maintenance issues identified in the ${blockName} restroom facilities.`,
-                '',
-                'Summary of Reported Issues:',
-                bodyDetails,
-                '',
-                'Please arrange for the appropriate cleaning or maintenance team to inspect and address these matters at your earliest convenience.',
-                '',
-                'Kind regards,',
-                'KSHS Student Complaints'
-            ].join('\n');
-
-            return { subject, body };
-        }
-
-        function hasReportedIssues(rows) {
-            const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
-            if (tooDisgusting && tooDisgusting.rating === 'Yes') return true;
-
-            for (const r of rows) {
-                if (r.title === 'Too disgusting to rate' || r.title === 'Comments') continue;
-                if (['Dirty', 'Damaged', 'Broken'].includes(r.rating) || r.hasText) {
-                    return true;
-                }
-            }
-
-            const commentsRow = rows.find(r => r.title === 'Comments');
-            if (commentsRow && commentsRow.hasText) return true;
-
-            return false;
-        }
-
-        function goToSummaryPage() {
-            closeIncompleteModal();
-            const blockSelect = document.getElementById('blockSelect');
-            const selectedBlock = blockSelect ? blockSelect.value : currentBlock;
-
-            const collectedRows = [];
-            let rowsHtml = `
-                <tr>
-                    <td><strong>Bathroom / Block</strong></td>
-                    <td>${selectedBlock}</td>
-                    <td>—</td>
-                </tr>
-            `;
-
-            document.querySelectorAll('.result-card').forEach(card => {
-                const title = card.getAttribute('data-card-section');
-                const sel = card.querySelector('.section-dropdown');
-                const txt = card.querySelector('.read-text');
-
-                const rawRating = sel ? sel.value : '—';
-                const isUnanswered = sel && sel.value === '';
-                const ratingCell = isUnanswered
-                    ? `<span class="summary-unanswered">Unanswered</span>`
-                    : rawRating;
-
-                const rawText = txt ? txt.textContent.trim() : '';
-                const isNoText = !rawText || rawText === 'No text detected.';
-                const textCell = isNoText
-                    ? `<span class="summary-notext">No text entered</span>`
-                    : rawText;
-
-                collectedRows.push({
-                    title,
-                    rating: isUnanswered ? '' : rawRating,
-                    hasText: !isNoText,
-                    rawText
-                });
-
-                rowsHtml += `
-                    <tr>
-                        <td><strong>${title}</strong></td>
-                        <td>${ratingCell}</td>
-                        <td>${textCell}</td>
-                    </tr>
-                `;
-            });
-
-            const issuesFound = hasReportedIssues(collectedRows);
-            let bottomEmailBlock = '';
-
-            if (issuesFound) {
-                const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
-                bottomEmailBlock = `
-                    <div class="email-section">
-                        <div class="email-header">
-                            <h3>Formal Report Email (Editable)</h3>
-                            <button type="button" class="copy-email-btn" id="copyEmailBtn">Copy Email</button>
-                        </div>
-                        <div class="email-subject-row">
-                            <label for="emailSubjectInput">Subject:</label>
-                            <input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '&quot;')}">
-                        </div>
-                        <textarea id="emailBodyTextarea" class="email-textarea" aria-label="Formal email draft">${emailDraft.body}</textarea>
-                    </div>
-                `;
-            } else {
-                bottomEmailBlock = `
-                    <div class="email-section" style="text-align: center; padding: 24px 16px;">
-                        <p style="font-size: 18px; font-weight: bold; color: #29251f; margin-bottom: 6px;">No email needed</p>
-                        <button type="button" id="emailAnywayLink" style="background: none; border: none; color: #0066cc; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 0;">Email anyway</button>
-                    </div>
-                `;
-            }
-
-            summaryOutput.innerHTML = `
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Rating</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-                ${bottomEmailBlock}
-            `;
-
-            if (issuesFound) {
-                const copyBtn = document.getElementById('copyEmailBtn');
-                copyBtn.addEventListener('click', () => {
-                    const subj = document.getElementById('emailSubjectInput').value;
-                    const body = document.getElementById('emailBodyTextarea').value;
-                    const fullText = `Subject: ${subj}\n\n${body}`;
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(fullText).then(() => {
-                            copyBtn.textContent = 'Copied!';
-                            setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                        });
-                    } else {
-                        const ta = document.getElementById('emailBodyTextarea');
-                        ta.select();
-                        document.execCommand('copy');
-                        copyBtn.textContent = 'Copied!';
-                        setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                    }
-                });
-            } else {
-                const emailAnywayLink = document.getElementById('emailAnywayLink');
-                emailAnywayLink.addEventListener('click', () => {
-                    document.getElementById('customEmailSubject').value = `Report: ${selectedBlock} Restroom`;
-                    document.getElementById('customEmailBody').value = '';
-                    summaryPage.style.display = 'none';
-                    customEmailPage.style.display = 'block';
-                    window.scrollTo(0, 0);
-                });
-            }
-
-            resultsPage.style.display = 'none';
-            summaryPage.style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        if (customEmailBackBtn) {
-            customEmailBackBtn.addEventListener('click', () => {
-                customEmailPage.style.display = 'none';
-                summaryPage.style.display = 'block';
-                window.scrollTo(0, 0);
-            });
-        }
-
-        if (copyCustomEmailBtn) {
-            copyCustomEmailBtn.addEventListener('click', () => {
-                const subj = document.getElementById('customEmailSubject').value;
-                const body = document.getElementById('customEmailBody').value;
-                const fullText = `Subject: ${subj}\n\n${body}`;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(fullText).then(() => {
-                        copyCustomEmailBtn.textContent = 'Copied!';
-                        setTimeout(() => { copyCustomEmailBtn.textContent = 'Copy Email'; }, 1800);
-                    });
-                } else {
-                    const ta = document.getElementById('customEmailBody');
-                    ta.select();
-                    document.execCommand('copy');
-                    copyCustomEmailBtn.textContent = 'Copied!';
-                    setTimeout(() => { copyCustomEmailBtn.textContent = 'Copy Email'; }, 1800);
-                }
-            });
-        }
-
-        if (customEmailDoneBtn) {
-            customEmailDoneBtn.addEventListener('click', () => {
-                customEmailPage.style.display = 'none';
-                backHomeBtn.click();
-            });
-        }
-
-        manualEntryBtn.addEventListener('click', () => {
-            currentMode = 'manual';
-            lastScanDetections = {};
-            lastExtractedTexts = {};
-            showWhiteFormScreen('Manual entry', '');
-            renderFormCards();
-        });
-
-        function detectQRStrict(img) {
-            const scales = [1600, 2200, 1100];
-
-            for (const maxDim of scales) {
-                const canvas = document.createElement('canvas');
-                const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-                canvas.width = Math.round(img.width * scale);
-                canvas.height = Math.round(img.height * scale);
-
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                const base = ctx.getImageData(0, 0, canvas.width, canvas.height);
-
-                let qr = jsQR(base.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
-                if (qr && qr.data && qr.data.trim().length > 0) return { qr, canvas, ctx };
-
-                const w = canvas.width;
-                const h = canvas.height;
-                const smooth = new Uint8ClampedArray(base.data.length);
-                for (let y = 0; y < h; y++) {
-                    for (let x = 0; x < w; x++) {
-                        let r = 0, g = 0, b = 0, count = 0;
-                        for (let dy = -1; dy <= 1; dy++) {
-                            const ny = y + dy;
-                            if (ny < 0 || ny >= h) continue;
-                            for (let dx = -1; dx <= 1; dx++) {
-                                const nx = x + dx;
-                                if (nx < 0 || nx >= w) continue;
-                                const idx = (ny * w + nx) * 4;
-                                r += base.data[idx];
-                                g += base.data[idx + 1];
-                                b += base.data[idx + 2];
-                                count++;
-                            }
-                        }
-                        const outIdx = (y * w + x) * 4;
-                        smooth[outIdx] = r / count;
-                        smooth[outIdx + 1] = g / count;
-                        smooth[outIdx + 2] = b / count;
-                        smooth[outIdx + 3] = 255;
-                    }
-                }
-
-                qr = jsQR(smooth, w, h, { inversionAttempts: 'attemptBoth' });
-                if (qr && qr.data && qr.data.trim().length > 0) return { qr, canvas, ctx };
-            }
-
-            return null;
-        }
-
-        function checkBoxShading(ctx, width, height, cx, cy, qrSize) {
-            const coreHalf = Math.max(3, Math.round(qrSize * 0.028));
-            const coreSize = coreHalf * 2 + 1;
-            const searchStep = Math.max(2, Math.round(qrSize * 0.022));
-
-            if (cx - coreHalf < 0 || cy - coreHalf < 0 || cx + coreHalf >= width || cy + coreHalf >= height) {
-                return { state: 'not_detected', score: 0 };
-            }
-
-            const bgX = Math.max(0, Math.round(cx - qrSize * 0.14 - coreHalf));
-            const bgY = Math.max(0, Math.min(height - coreSize, Math.round(cy - coreHalf)));
-            const bgData = ctx.getImageData(bgX, bgY, coreSize, coreSize).data;
-
-            let bgSum = 0;
-            for (let i = 0; i < bgData.length; i += 4) {
-                bgSum += (bgData[i] + bgData[i + 1] + bgData[i + 2]) / 3;
-            }
-            const paperLuma = bgSum / (bgData.length / 4);
-            if (paperLuma < 65) return { state: 'not_detected', score: 0 };
-
-            const evalCore = (ox, oy) => {
-                const x0 = Math.max(0, Math.min(width - coreSize, Math.round(ox - coreHalf)));
-                const y0 = Math.max(0, Math.min(height - coreSize, Math.round(oy - coreHalf)));
-                const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
-
-                let lumaSum = 0;
-                let blueBoostSum = 0;
-                const total = boxData.length / 4;
-
-                for (let i = 0; i < boxData.length; i += 4) {
-                    const r = boxData[i];
-                    const g = boxData[i + 1];
-                    const b = boxData[i + 2];
-                    lumaSum += (r + g + b) / 3;
-                    blueBoostSum += Math.max(0, b - (r + g) * 0.5);
-                }
-
-                const meanLuma = lumaSum / total;
-                const meanBlue = blueBoostSum / total;
-                const darknessDrop = (paperLuma - meanLuma) / paperLuma;
-                return darknessDrop + (meanBlue / 255) * 0.45;
-            };
-
-            const offsets = [
-                [0, 0],
-                [-searchStep, 0],
-                [searchStep, 0],
-                [0, -searchStep],
-                [0, searchStep]
-            ];
-
-            let bestScore = -1;
-            for (const [dx, dy] of offsets) {
-                const s = evalCore(cx + dx, cy + dy);
-                if (s > bestScore) bestScore = s;
-            }
-
-            if (bestScore >= 0.14) return { state: 'shaded', score: bestScore };
-            if (bestScore >= 0.08) return { state: 'uncertain', score: bestScore };
-            return { state: 'unshaded', score: bestScore };
-        }
-
-        function buildRectifiedCrop(sourceCanvas, tl, ux, uy, vx, vy, area) {
-            const destW = Math.max(260, Math.round(area.dw * 340));
-            const destH = Math.max(85, Math.round(area.dh * 340));
-            const pad = 28;
-
-            const crop = document.createElement('canvas');
-            crop.width = destW + pad * 2;
-            crop.height = destH + pad * 2;
-            const cctx = crop.getContext('2d');
-
-            cctx.fillStyle = '#ffffff';
-            cctx.fillRect(0, 0, crop.width, crop.height);
-
-            const ox = tl.x + area.dx * ux + area.dy * vx;
-            const oy = tl.y + area.dx * uy + area.dy * vy;
-
-            const a = area.dw * ux;
-            const b = area.dw * uy;
-            const c = area.dh * vx;
-            const d = area.dh * vy;
-            const det = a * d - b * c;
-            if (Math.abs(det) < 1e-6) return null;
-
-            cctx.save();
-            cctx.beginPath();
-            cctx.rect(pad, pad, destW, destH);
-            cctx.clip();
-
-            cctx.transform(
-                (destW * d) / det,
-                (-destH * b) / det,
-                (-destW * c) / det,
-                (destH * a) / det,
-                pad - (destW * (d * ox - c * oy)) / det,
-                pad - (destH * (-b * ox + a * oy)) / det
-            );
-            cctx.drawImage(sourceCanvas, 0, 0);
-            cctx.restore();
-
-            const imgData = cctx.getImageData(pad, pad, destW, destH);
-            const data = imgData.data;
-
-            const lumas = new Float32Array(destW * destH);
-            const sorted = new Float32Array(destW * destH);
-
-            for (let i = 0, p = 0; i < data.length; i += 4, p++) {
-                const r = data[i];
-                const g = data[i + 1];
-                const bl = data[i + 2];
-                const blueBoost = Math.max(0, bl - (r + g) * 0.5) * 1.4;
-                const val = Math.max(0, (r + g + bl) / 3 - blueBoost);
-                lumas[p] = val;
-                sorted[p] = val;
-            }
-
-            sorted.sort();
-            const bgPaper = Math.max(95, sorted[Math.floor(sorted.length * 0.85)]);
-
-            const binary = new Uint8Array(destW * destH);
-            for (let p = 0; p < lumas.length; p++) {
-                binary[p] = lumas[p] < bgPaper * 0.78 ? 1 : 0;
-            }
-
-            for (let y = 0; y < destH; y++) {
-                let rowDark = 0;
-                for (let x = 0; x < destW; x++) {
-                    rowDark += binary[y * destW + x];
-                }
-                if (rowDark > destW * 0.68) {
-                    for (let x = 0; x < destW; x++) {
-                        const above = y > 1 ? binary[(y - 2) * destW + x] : 0;
-                        const below = y < destH - 2 ? binary[(y + 2) * destW + x] : 0;
-                        if (!above && !below) {
-                            binary[y * destW + x] = 0;
-                        }
-                    }
-                }
-            }
-
-            let inkPixels = 0;
-            for (let p = 0, i = 0; p < binary.length; p++, i += 4) {
-                if (binary[p]) {
-                    inkPixels++;
-                    data[i] = 0;
-                    data[i + 1] = 0;
-                    data[i + 2] = 0;
-                } else {
-                    data[i] = 255;
-                    data[i + 1] = 255;
-                    data[i + 2] = 255;
-                }
-                data[i + 3] = 255;
-            }
-
-            if (inkPixels / binary.length < 0.0025) return null;
-
-            cctx.putImageData(imgData, pad, pad);
-            return crop;
-        }
-
-        function cleanFormArtifacts(rawText) {
-            let text = (rawText || '')
-                .replace(/[_|—–=~`^*<>\\/]+/g, ' ')
-                .replace(/\b(Why|Description|Comments|Stall\s*[1-4]?|Hand\s*washing|Urinal|Good|Dirty|Damaged|Broken|Too\s*disgusting\s*to\s*rate)\b\s*:?/gi, ' ')
-                .replace(/\s+/g, ' ')
-                .trim();
-
-            const letters = (text.match(/[a-zA-Z0-9]/g) || []).length;
-            if (letters < 2) return 'No text detected.';
-            return capitalizeFirst(text);
-        }
-
-        function withTimeout(promise, ms) {
-            return Promise.race([
-                promise,
-                new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
-            ]);
-        }
-
-        async function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            currentMode = 'scan';
-            showWhiteFormScreen('Scan results', 'Scanning sheet, please wait...');
-
-            const img = new Image();
-            img.onload = async () => {
-                const detected = detectQRStrict(img);
-
-                if (!detected) {
-                    resultsOutput.innerHTML = '<p class="status-msg">Page not detected.</p>';
-                    return;
-                }
-
-                const { qr, canvas, ctx } = detected;
-
-                const qrText = (qr.data || '').toLowerCase();
-                if (qrText.includes('block 1') || qrText.includes('yr 7')) {
-                    currentBlock = 'Block 1 (Yr 7-8)';
-                } else if (qrText.includes('block 5') || qrText.includes('yr10') || qrText.includes('yr 10')) {
-                    currentBlock = 'Block 5 boys (Yr10)';
-                } else if (qrText.includes('block 3') || qrText.includes('yr9') || qrText.includes('yr 9')) {
-                    currentBlock = 'Block 3 boys (Yr9)';
-                }
-
-                const tl = qr.location.topLeftCorner;
-                const tr = qr.location.topRightCorner;
-                const bl = qr.location.bottomLeftCorner;
-
-                const ux = tr.x - tl.x;
-                const uy = tr.y - tl.y;
-                const vx = bl.x - tl.x;
-                const vy = bl.y - tl.y;
-                const qrSize = Math.hypot(ux, uy);
-
-                let ocrWorker = null;
-                try {
-                    ocrWorker = await withTimeout(Tesseract.createWorker('eng'), 9000);
-                    await ocrWorker.setParameters({ tessedit_pageseg_mode: '6' });
-                } catch (e) {
-                    ocrWorker = null;
-                }
-
-                lastScanDetections = {};
-                lastExtractedTexts = {};
-
-                const sections = getSectionsForBlock(currentBlock);
-
-                for (const section of sections) {
-                    const shadedMatches = [];
-                    let hasUncertain = false;
-
-                    for (const box of section.boxes) {
-                        const px = tl.x + box.dx * ux + box.dy * vx;
-                        const py = tl.y + box.dx * uy + box.dy * vy;
-                        const result = checkBoxShading(ctx, canvas.width, canvas.height, px, py, qrSize);
-
-                        if (result.state === 'shaded') {
-                            shadedMatches.push(box.label);
-                        } else if (result.state === 'uncertain') {
-                            hasUncertain = true;
-                        }
-                    }
-
-                    if (shadedMatches.length > 1) {
-                        lastScanDetections[section.title] = { status: 'failed', label: '' };
-                    } else if (shadedMatches.length === 1) {
-                        lastScanDetections[section.title] = { status: 'detected', label: shadedMatches[0] };
-                    } else if (hasUncertain) {
-                        lastScanDetections[section.title] = { status: 'uncertain', label: '' };
-                    } else {
-                        lastScanDetections[section.title] = { status: 'none', label: '' };
-                    }
-
-                    let extractedText = 'No text detected.';
-                    const crop = buildRectifiedCrop(canvas, tl, ux, uy, vx, vy, section.textArea);
-                    if (crop && ocrWorker) {
-                        try {
-                            const res = await withTimeout(ocrWorker.recognize(crop), 6000);
-                            if (res && res.data && res.data.confidence >= 30) {
-                                extractedText = cleanFormArtifacts(res.data.text);
-                            }
-                        } catch (e) {
-                            extractedText = 'No text detected.';
-                        }
-                    }
-
-                    lastExtractedTexts[section.title] = extractedText;
-                }
-
-                if (ocrWorker) {
-                    try { await ocrWorker.terminate(); } catch (e) {}
-                }
-
-                renderFormCards();
-            };
-            img.src = URL.createObjectURL(file);
-        }
-
-        cameraInput.addEventListener('change', handleImageUpload);
-        photosInput.addEventListener('change', handleImageUpload);
-    </script>
-
-</body>
-</html>
-
-    <!-- First White Screen: Form / Scan Results -->
-    <section id="resultsPage" class="white-screen">
-        <div class="results-container">
-            <div class="results-top">
-                <h2 id="formPageTitle">Scan results</h2>
-                <button class="back-btn" id="backHomeBtn">Back</button>
-            </div>
-            <div id="resultsOutput"></div>
-            <div class="bottom-actions" id="formBottomActions" style="display:none;">
-                <button type="button" class="finish-btn" id="finishBtn">Finish</button>
-            </div>
-        </div>
-    </section>
-
-    <!-- Second White Screen: Response Summary + Editable Formal Email -->
-    <section id="summaryPage" class="white-screen">
-        <div class="results-container">
-            <div class="results-top">
-                <h2>Response summary</h2>
-                <button class="back-btn" id="backToFormBtn">Back</button>
-            </div>
-            <div id="summaryOutput"></div>
-            <div class="bottom-actions">
-                <button type="button" class="finish-btn" id="doneSummaryBtn">Done</button>
-            </div>
-        </div>
-    </section>
-
-    <script>
-        const openScanBtn = document.getElementById('openScanBtn');
-        const bottomPopup = document.getElementById('bottomPopup');
-        const overlay = document.getElementById('overlay');
-        const cameraInput = document.getElementById('cameraInput');
-        const photosInput = document.getElementById('photosInput');
-        const manualEntryBtn = document.getElementById('manualEntryBtn');
-        const resultsPage = document.getElementById('resultsPage');
-        const summaryPage = document.getElementById('summaryPage');
-        const resultsOutput = document.getElementById('resultsOutput');
-        const summaryOutput = document.getElementById('summaryOutput');
-        const formPageTitle = document.getElementById('formPageTitle');
-        const formBottomActions = document.getElementById('formBottomActions');
-        const backHomeBtn = document.getElementById('backHomeBtn');
-        const finishBtn = document.getElementById('finishBtn');
-        const backToFormBtn = document.getElementById('backToFormBtn');
-        const doneSummaryBtn = document.getElementById('doneSummaryBtn');
-        const incompleteModal = document.getElementById('incompleteModal');
-        const modalOkBtn = document.getElementById('modalOkBtn');
-        const modalSkipBtn = document.getElementById('modalSkipBtn');
-
-        const BLOCK_OPTIONS = [
-            'Block 3 boys (Yr9)',
-            'Block 5 boys (Yr10)',
-            'Block 1 (Yr 7-8)'
-        ];
-
-        const SECTIONS_STANDARD = [
-            {
-                title: 'Too disgusting to rate',
-                boxes: [{ label: 'Yes', dx: 0.08, dy: -3.88 }],
-                dropdownOptions: ['No', 'Yes'],
-                textArea: { dx: 2.68, dy: -4.02, dw: 1.72, dh: 0.30 }
-            },
-            {
-                title: 'Stall 1',
-                boxes: [
-                    { label: 'Good', dx: 0.56, dy: -3.22 },
-                    { label: 'Dirty', dx: 0.56, dy: -2.97 },
-                    { label: 'Damaged', dx: 0.56, dy: -2.72 },
-                    { label: 'Broken', dx: 0.56, dy: -2.47 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 0.36, dy: -2.30, dw: 1.78, dh: 0.30 }
-            },
-            {
-                title: 'Stall 2',
-                boxes: [
-                    { label: 'Good', dx: 0.56, dy: -1.76 },
-                    { label: 'Dirty', dx: 0.56, dy: -1.51 },
-                    { label: 'Damaged', dx: 0.56, dy: -1.26 },
-                    { label: 'Broken', dx: 0.56, dy: -1.01 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 0.36, dy: -0.84, dw: 1.78, dh: 0.30 }
-            },
-            {
-                title: 'Hand washing',
-                boxes: [
-                    { label: 'Good', dx: 2.38, dy: -3.22 },
-                    { label: 'Dirty', dx: 2.38, dy: -2.97 },
-                    { label: 'Damaged', dx: 2.38, dy: -2.72 },
-                    { label: 'Broken', dx: 2.38, dy: -2.47 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 2.24, dy: -2.30, dw: 1.78, dh: 0.30 }
-            },
-            {
-                title: 'Urinal',
-                boxes: [
-                    { label: 'Good', dx: 2.38, dy: -1.76 },
-                    { label: 'Dirty', dx: 2.38, dy: -1.51 },
-                    { label: 'Damaged', dx: 2.38, dy: -1.26 },
-                    { label: 'Broken', dx: 2.38, dy: -1.01 }
-                ],
-                dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'],
-                textArea: { dx: 2.24, dy: -0.84, dw: 1.78, dh: 0.30 }
-            },
-            {
-                title: 'Comments',
-                boxes: [],
-                dropdownOptions: [],
-                textArea: { dx: 1.12, dy: -0.18, dw: 3.05, dh: 1.18 }
-            }
-        ];
-
-        const SECTIONS_BLOCK1 = [
-            { title: 'Too disgusting to rate', boxes: [], dropdownOptions: ['No', 'Yes'] },
-            { title: 'Stall 1', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
-            { title: 'Stall 2', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
-            { title: 'Stall 3', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
-            { title: 'Stall 4', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
-            { title: 'Hand washing', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'] },
-            { title: 'Comments', boxes: [], dropdownOptions: [] }
-        ];
-
-        let currentBlock = BLOCK_OPTIONS[0];
-        let lastScanData = {};
-        let currentMode = 'scan';
-
-        function openDrawer() {
-            bottomPopup.style.display = 'flex';
-            bottomPopup.classList.add('active');
-            overlay.classList.add('active');
-        }
-
-        function closeDrawer() {
-            bottomPopup.classList.remove('active');
-            overlay.classList.remove('active');
-        }
-
-        function closeIncompleteModal() {
-            incompleteModal.classList.remove('active');
-            overlay.classList.remove('active');
-        }
-
-        openScanBtn.addEventListener('click', openDrawer);
-
-        overlay.addEventListener('click', () => {
-            closeDrawer();
-            closeIncompleteModal();
-        });
-
-        function returnHome() {
-            closeDrawer();
-            closeIncompleteModal();
-            resultsPage.style.display = 'none';
-            summaryPage.style.display = 'none';
-            document.getElementById('pageHeader').style.display = 'flex';
-            document.getElementById('pageMain').style.display = 'flex';
-            document.getElementById('pageFooter').style.display = 'flex';
-            cameraInput.value = '';
-            photosInput.value = '';
-            lastScanData = {};
-        }
-
-        backHomeBtn.addEventListener('click', returnHome);
-        doneSummaryBtn.addEventListener('click', returnHome);
-
-        backToFormBtn.addEventListener('click', () => {
-            summaryPage.style.display = 'none';
-            resultsPage.style.display = 'block';
-            window.scrollTo(0, 0);
-        });
-
-        function showFormPage(titleText) {
-            closeDrawer();
             document.getElementById('pageHeader').style.display = 'none';
             document.getElementById('pageMain').style.display = 'none';
             document.getElementById('pageFooter').style.display = 'none';
             summaryPage.style.display = 'none';
+            resultsTitle.textContent = titleText;
             resultsPage.style.display = 'block';
-            formPageTitle.textContent = titleText;
-            formBottomActions.style.display = 'none';
-        }
-
-        function capitalizeFirst(str) {
-            const clean = (str || '').replace(/\s+/g, ' ').trim();
-            if (!clean) return 'No text detected.';
-            return clean.charAt(0).toUpperCase() + clean.slice(1);
-        }
-
-        function getActiveSections(blockName) {
-            return blockName === 'Block 1 (Yr 7-8)' ? SECTIONS_BLOCK1 : SECTIONS_STANDARD;
-        }
-
-        function renderFormCards(blockName, prefillMap = {}) {
-            const sections = getActiveSections(blockName);
-            const blockOptionsHtml = BLOCK_OPTIONS.map(b =>
-                `<option value="${b}" ${b === blockName ? 'selected' : ''}>${b}</option>`
-            ).join('');
-
-            let html = `
-                <div class="block-card">
-                    <label for="blockSelect">Bathroom / Block</label>
-                    <select id="blockSelect" class="rating-select">
-                        ${blockOptionsHtml}
-                    </select>
-                </div>
-            `;
-
-            for (const section of sections) {
-                const saved = prefillMap[section.title] || {};
-                const detectedValue = saved.selectedValue || '';
-                const badgeHtml = saved.badgeHtml || '';
-                const textVal = saved.text || 'No text detected.';
-
-                let controlHtml = '';
-                if (section.dropdownOptions && section.dropdownOptions.length > 0) {
-                    const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
-                    const defaultVal = detectedValue || (isBinary ? 'No' : '');
-                    const optionsMarkup = [
-                        !isBinary ? `<option value="" ${defaultVal === '' ? 'selected' : ''}>Select rating...</option>` : '',
-                        ...section.dropdownOptions.map(opt =>
-                            `<option value="${opt}" ${defaultVal === opt ? 'selected' : ''}>${opt}</option>`
-                        )
-                    ].join('');
-
-                    controlHtml = `
-                        <div class="shaded-status">
-                            <select class="rating-select section-dropdown" data-section="${section.title}" aria-label="${section.title}">
-                                ${optionsMarkup}
-                            </select>
-                            ${badgeHtml}
-                        </div>
-                    `;
-                }
-
-                html += `
-                    <div class="result-card" data-card-section="${section.title}">
-                        <h3>${section.title}</h3>
-                        ${controlHtml}
-                        <div class="text-row">
-                            <span class="read-text" data-section="${section.title}" contenteditable="false">${textVal}</span>
-                            <button type="button" class="edit-pencil" title="Edit" aria-label="Edit">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <path d="M12 20h9"></path>
-                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"></path>
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-                `;
+            document.getElementById('resultsBottomActions').style.display = statusText ? 'none' : 'flex';
+            finishBtn.style.display = statusText ? 'none' : 'inline-block';
+            resultsOutput.innerHTML = '';
+            if (statusText) {
+                resultsOutput.appendChild(el('p', { className: 'status-msg', textContent: statusText }));
             }
-
-            resultsOutput.innerHTML = html;
-            formBottomActions.style.display = 'flex';
-
-            const blockSelect = document.getElementById('blockSelect');
-            blockSelect.addEventListener('change', () => {
-                const snapshot = captureCurrentFormState();
-                currentBlock = blockSelect.value;
-                renderFormCards(currentBlock, snapshot);
-            });
-
-            document.querySelectorAll('.section-dropdown').forEach(sel => {
-                sel.addEventListener('change', () => {
-                    if (sel.value !== '') {
-                        const card = sel.closest('.result-card');
-                        if (card) card.classList.remove('unanswered-highlight');
-                    }
-                });
-            });
-
-            attachTextEditHandlers();
         }
-
-        function captureCurrentFormState() {
-            const snapshot = { ...lastScanData };
-            document.querySelectorAll('.result-card').forEach(card => {
-                const title = card.getAttribute('data-card-section');
-                const sel = card.querySelector('.section-dropdown');
-                const txt = card.querySelector('.read-text');
-                const badge = card.querySelector('.shaded-badge, .not-detected-badge');
-                snapshot[title] = {
-                    selectedValue: sel ? sel.value : '',
-                    text: txt ? txt.textContent.trim() : 'No text detected.',
-                    badgeHtml: badge ? badge.outerHTML : ''
-                };
-            });
-            return snapshot;
-        }
-
-        function startEditingSpan(span) {
-            if (!span) return;
-            if (span.getAttribute('contenteditable') !== 'true') {
-                if (span.textContent.trim() === 'No text detected.') {
-                    span.textContent = '';
-                }
-                span.setAttribute('contenteditable', 'true');
-            }
-            span.focus();
-        }
-
-        function finishEditingSpan(span) {
-            if (!span || span.getAttribute('contenteditable') !== 'true') return;
-            span.textContent = capitalizeFirst(span.textContent);
-            span.setAttribute('contenteditable', 'false');
-        }
-
-        function attachTextEditHandlers() {
-            const isDesktopPointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-
-            document.querySelectorAll('.read-text').forEach(span => {
-                if (isDesktopPointer) {
-                    span.addEventListener('click', () => startEditingSpan(span));
-                }
-                span.addEventListener('blur', () => finishEditingSpan(span));
-                span.addEventListener('keydown', e => {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        finishEditingSpan(span);
-                    }
-                });
-            });
-
-            document.querySelectorAll('.edit-pencil').forEach(btn => {
-                btn.addEventListener('click', e => {
-                    e.stopPropagation();
-                    const textSpan = btn.previousElementSibling;
-                    if (textSpan.getAttribute('contenteditable') === 'true') {
-                        finishEditingSpan(textSpan);
-                    } else {
-                        startEditingSpan(textSpan);
-                    }
-                });
-            });
-        }
-
-            manualEntryBtn.addEventListener('click', () => {
-            currentMode = 'manual';
-            lastScanData = {};
-            showFormPage('Manual entry');
-            renderFormCards(currentBlock, {});
-        });
 
         function buildFormalEmail(blockName, rows) {
             const tooDisgusting = rows.find(r => r.title === 'Too disgusting to rate');
             const isTooDisgusting = tooDisgusting && tooDisgusting.rating === 'Yes';
-            const tooDisgustingReason = tooDisgusting && tooDisgusting.hasText ? tooDisgusting.rawText : '';
 
-            const issues = [];
+            const problemItems = [];
+            const goodItems = [];
+
             rows.forEach(r => {
                 if (r.title === 'Too disgusting to rate' || r.title === 'Comments') return;
-                const badStatus = ['Dirty', 'Damaged', 'Broken'].includes(r.rating);
-                if (badStatus || r.hasText) {
-                    const statusPart = badStatus ? `Condition: ${r.rating}` : (r.rating ? `Condition: ${r.rating}` : 'Condition: Not specified');
-                    const detailPart = r.hasText ? ` — Details: "${r.rawText}"` : '';
-                    issues.push(`• ${r.title}: ${statusPart}${detailPart}`);
+                const hasIssue = ['Dirty', 'Damaged', 'Broken'].includes(r.rating);
+                if (hasIssue || r.hasText) {
+                    const statusPart = hasIssue ? 'rated as ' + r.rating : 'noted';
+                    const detailPart = r.hasText ? ' (' + r.rawText + ')' : '';
+                    problemItems.push('- ' + r.title + ': ' + statusPart + detailPart);
+                } else if (r.rating === 'Good') {
+                    goodItems.push(r.title);
                 }
             });
 
             const commentsRow = rows.find(r => r.title === 'Comments');
-            const generalComments = commentsRow && commentsRow.hasText ? commentsRow.rawText : '';
+            const extraComments = commentsRow && commentsRow.hasText ? commentsRow.rawText : '';
 
-            const subject = `Maintenance & Hygiene issues: ${blockName} Restroom`;
-
-            let bodyLines = [
-                'Dear Facilities and Maintenance Team,',
+            const subject = 'Restroom Maintenance & Hygiene Report — ' + blockName;
+            const lines = [
+                'Dear Facilities & Administration Team,',
                 '',
-                `I am writing to report hygiene and maintenance issues identified in the ${blockName} restroom facilities.`
+                'I am writing to report hygiene and maintenance issues identified in the ' + blockName + ' restroom facilities.'
             ];
 
             if (isTooDisgusting) {
-                bodyLines.push('');
-                bodyLines.push(
-                    tooDisgustingReason
-                        ? `Please note that the facility was marked as too unsanitary to enter due to the following reason: "${tooDisgustingReason}".`
-                        : 'Please note that the overall condition of the facility was marked as too unsanitary to enter.'
+                const reasonText = tooDisgusting.hasText ? ' Reason noted: "' + tooDisgusting.rawText + '".' : '';
+                lines.push(
+                    '',
+                    'The restroom was marked as "Too disgusting to rate," indicating severe unsanitary conditions requiring immediate cleaning attention.' + reasonText
                 );
             }
 
-            if (issues.length > 0) {
-                bodyLines.push('');
-                bodyLines.push('The specific issues requiring attention are detailed below:');
-                bodyLines.push(...issues);
+            if (problemItems.length > 0) {
+                lines.push('', 'Summary of Reported Issues:', ...problemItems);
             } else if (!isTooDisgusting) {
-                bodyLines.push('');
-                bodyLines.push('No specific fixture faults or cleanliness issues were flagged during this inspection.');
+                lines.push('', 'No specific fixture defects were flagged, though the inspection log is attached below for your records.');
             }
 
-            if (generalComments) {
-                bodyLines.push('');
-                bodyLines.push(`Additional Comments: ${generalComments}`);
+            if (goodItems.length > 0) {
+                lines.push('', 'Fixtures found in satisfactory condition: ' + goodItems.join(', ') + '.');
             }
 
-            bodyLines.push('');
-            bodyLines.push('Thank you for your prompt attention to resolving these matters so the facilities remain safe and sanitary for students.');
-            bodyLines.push('');
-            bodyLines.push('Kind regards,');
-            bodyLines.push('KSHS students');
+            if (extraComments) {
+                lines.push('', 'Additional Comments: ' + extraComments);
+            }
 
-            return {
-                subject,
-                body: bodyLines.join('\n')
-            };
+            lines.push(
+                '',
+                'Please arrange for maintenance or custodial staff to inspect and address these concerns at your earliest convenience.',
+                '',
+                'Kind regards,',
+                'KSHS Student Complaints'
+            );
+
+            return { subject, body: lines.join('\n') };
         }
 
         function hasReportedIssues(rows) {
@@ -3114,471 +994,682 @@ photosInput.addEventListener('change', handleImageUpload);
             return false;
         }
 
-        function ensureCustomEmailPage() {
-            if (document.getElementById('customEmailPage')) return;
-            const section = document.createElement('section');
-            section.id = 'customEmailPage';
-            section.className = 'white-screen';
-            section.innerHTML = `
-                <div class="results-container">
-                    <div class="results-top">
-                        <h2>Write Your Own Email</h2>
-                        <button type="button" class="back-btn" id="customEmailBackBtn">Back</button>
-                    </div>
-                    <div class="email-section">
-                        <div class="email-header">
-                            <h3>Custom Email</h3>
-                            <button type="button" class="copy-email-btn" id="copyCustomEmailBtn">Copy Email</button>
-                        </div>
-                        <div class="email-subject-row">
-                            <label for="customEmailSubject">Subject:</label>
-                            <input type="text" id="customEmailSubject" class="email-subject-input" placeholder="Enter email subject...">
-                        </div>
-                        <textarea id="customEmailBody" class="email-textarea" placeholder="Write your email here..."></textarea>
-                    </div>
-                    <div class="bottom-actions">
-                        <button type="button" class="finish-btn" id="customEmailDoneBtn">Done</button>
-                    </div>
-                </div>
-            `;
-            document.body.appendChild(section);
-
-            document.getElementById('customEmailBackBtn').addEventListener('click', () => {
-                document.getElementById('customEmailPage').style.display = 'none';
-                summaryPage.style.display = 'block';
-                window.scrollTo(0, 0);
-            });
-
-            document.getElementById('copyCustomEmailBtn').addEventListener('click', () => {
-                const btn = document.getElementById('copyCustomEmailBtn');
-                const subj = document.getElementById('customEmailSubject').value;
-                const body = document.getElementById('customEmailBody').value;
-                const fullText = `Subject: ${subj}\n\n${body}`;
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    navigator.clipboard.writeText(fullText).then(() => {
-                        btn.textContent = 'Copied!';
-                        setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
-                    });
-                } else {
-                    const ta = document.getElementById('customEmailBody');
-                    ta.select();
-                    document.execCommand('copy');
-                    btn.textContent = 'Copied!';
-                    setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
-                }
-            });
-
-            document.getElementById('customEmailDoneBtn').addEventListener('click', () => {
-                document.getElementById('customEmailPage').style.display = 'none';
-                backHomeBtn.click();
-            });
-        }
-
         function goToSummaryPage() {
             closeIncompleteModal();
-            ensureCustomEmailPage();
             const blockSelect = document.getElementById('blockSelect');
             const selectedBlock = blockSelect ? blockSelect.value : currentBlock;
 
             const collectedRows = [];
-            let rowsHtml = `
-                <tr>
-                    <td><strong>Bathroom / Block</strong></td>
-                    <td>${selectedBlock}</td>
-                    <td>—</td>
-                </tr>
-            `;
+            const tbody = el('tbody');
 
-            document.querySelectorAll('.result-card').forEach(card => {
-                const title = card.getAttribute('data-card-section');
-                const sel = card.querySelector('.section-dropdown');
-                const txt = card.querySelector('.read-text');
-
-                const rawRating = sel ? sel.value : '—';
-                const isUnanswered = sel && sel.value === '';
-                const ratingCell = isUnanswered
-                    ? `<span class="summary-unanswered">Unanswered</span>`
-                    : rawRating;
-
-                const rawText = txt ? txt.textContent.trim() : '';
-                const isNoText = !rawText || rawText === 'No text detected.';
-                const textCell = isNoText
-                    ? `<span class="summary-notext">No text entered</span>`
-                    : rawText;
-
-                collectedRows.push({
-                    title,
-                    rating: isUnanswered ? '' : rawRating,
-                    hasText: !isNoText,
-                    rawText
-                });
-
-                rowsHtml += `
-                    <tr>
-                        <td><strong>${title}</strong></td>
-                        <td>${ratingCell}</td>
-                        <td>${textCell}</td>
-                    </tr>
-                `;
-            });
-
-            const issuesFound = hasReportedIssues(collectedRows);
-            let bottomEmailBlock = '';
-
-            if (issuesFound) {
-                const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
-                bottomEmailBlock = `
-                    <div class="email-section">
-                        <div class="email-header">
-                            <h3>Formal Report Email (Editable)</h3>
-                            <button type="button" class="copy-email-btn" id="copyEmailBtn">Copy Email</button>
-                        </div>
-                        <div class="email-subject-row">
-                            <label for="emailSubjectInput">Subject:</label>
-                            <input type="text" id="emailSubjectInput" class="email-subject-input" value="${emailDraft.subject.replace(/"/g, '&quot;')}">
-                        </div>
-                        <textarea id="emailBodyTextarea" class="email-textarea" aria-label="Formal email draft">${emailDraft.body}</textarea>
-                    </div>
-                `;
-            } else {
-                bottomEmailBlock = `
-                    <div class="email-section" style="text-align: center; padding: 24px 16px;">
-                        <p style="font-size: 18px; font-weight: bold; color: #29251f; margin-bottom: 6px;">No email needed</p>
-                        <button type="button" id="emailAnywayLink" style="background: none; border: none; color: #0066cc; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 0;">Email anyway</button>
-                    </div>
-                `;
-            }
-
-            summaryOutput.innerHTML = `
-                <table class="summary-table">
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Rating</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtml}
-                    </tbody>
-                </table>
-                ${bottomEmailBlock}
-            `;
-
-            if (issuesFound) {
-                const copyBtn = document.getElementById('copyEmailBtn');
-                copyBtn.addEventListener('click', () => {
-                    const subj = document.getElementById('emailSubjectInput').value;
-                    const body = document.getElementById('emailBodyTextarea').value;
-                    const fullText = `Subject: ${subj}\n\n${body}`;
-                    if (navigator.clipboard && navigator.clipboard.writeText) {
-                        navigator.clipboard.writeText(fullText).then(() => {
-                            copyBtn.textContent = 'Copied!';
-                            setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                        });
-                    } else {
-                        const ta = document.getElementById('emailBodyTextarea');
-                        ta.select();
-                        document.execCommand('copy');
-                        copyBtn.textContent = 'Copied!';
-                        setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
-                    }
-                });
-            } else {
-                const emailAnywayLink = document.getElementById('emailAnywayLink');
-                emailAnywayLink.addEventListener('click', () => {
-                    document.getElementById('customEmailSubject').value = `Report: ${selectedBlock} Restroom`;
-                    document.getElementById('customEmailBody').value = '';
-                    summaryPage.style.display = 'none';
-                    document.getElementById('customEmailPage').style.display = 'block';
-                    window.scrollTo(0, 0);
-                });
-            }
-
-            resultsPage.style.display = 'none';
-            summaryPage.style.display = 'block';
-            window.scrollTo(0, 0);
-        }
-
-        finishBtn.addEventListener('click', () => {
-            document.querySelectorAll('.read-text[contenteditable="true"]').forEach(finishEditingSpan);
-
-            const unansweredDropdowns = Array.from(document.querySelectorAll('.section-dropdown'))
-                .filter(sel => sel.value === '');
-
-            if (unansweredDropdowns.length > 0) {
-                incompleteModal.classList.add('active');
-                overlay.classList.add('active');
-            } else {
-                goToSummaryPage();
-            }
-        });
-
-        modalOkBtn.addEventListener('click', () => {
-            closeIncompleteModal();
-            let firstUnansweredCard = null;
-            document.querySelectorAll('.section-dropdown').forEach(sel => {
-                const card = sel.closest('.result-card');
-                if (sel.value === '') {
-                    if (card) {
-                        card.classList.add('unanswered-highlight');
-                        if (!firstUnansweredCard) firstUnansweredCard = card;
-                    }
-                } else if (card) {
-                    card.classList.remove('unanswered-highlight');
-                }
-            });
-            if (firstUnansweredCard) {
-                firstUnansweredCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            }
-        });
-
-        modalSkipBtn.addEventListener('click', goToSummaryPage);
-
-        // QR & Sheet Scanner
-        function detectQR(img) {
-            const scales = [1400, 2000, 1000];
-            for (const maxDim of scales) {
-                const canvas = document.createElement('canvas');
-                const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
-                canvas.width = Math.round(img.width * scale);
-                canvas.height = Math.round(img.height * scale);
-                const ctx = canvas.getContext('2d', { willReadFrequently: true });
-                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-                const scanW = Math.round(canvas.width * 0.86);
-                const baseImage = ctx.getImageData(0, 0, scanW, canvas.height);
-
-                let qr = jsQR(baseImage.data, scanW, canvas.height, { inversionAttempts: 'attemptBoth' });
-                if (qr) return { qr, canvas, ctx };
-
-                const data = new Uint8ClampedArray(baseImage.data);
-                let minL = 255, maxL = 0;
-                for (let i = 0; i < data.length; i += 4) {
-                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                    if (l < minL) minL = l;
-                    if (l > maxL) maxL = l;
-                }
-                const range = Math.max(1, maxL - minL);
-                for (let i = 0; i < data.length; i += 4) {
-                    const l = 0.299 * data[i] + 0.587 * data[i + 1] + 0.114 * data[i + 2];
-                    const s = ((l - minL) / range) * 255;
-                    const b = s < 128 ? s * 0.72 : Math.min(255, s * 1.18);
-                    data[i] = data[i + 1] = data[i + 2] = b;
-                }
-                qr = jsQR(data, scanW, canvas.height, { inversionAttempts: 'attemptBoth' });
-                if (qr) return { qr, canvas, ctx };
-            }
-            return null;
-        }
-
-        function measureBoxInterior(ctx, width, height, cx, cy, qrSize) {
-            const coreHalf = Math.max(3, Math.round(qrSize * 0.026));
-            const coreSize = coreHalf * 2 + 1;
-            const jitter = Math.max(2, Math.round(qrSize * 0.016));
-
-            if (cx - coreHalf < 0 || cy - coreHalf < 0 || cx + coreHalf >= width || cy + coreHalf >= height) {
-                return { shaded: false, score: 0 };
-            }
-
-            const bgX = Math.max(0, Math.round(cx - qrSize * 0.16));
-            const bgY = Math.max(0, Math.min(height - coreSize, Math.round(cy - coreHalf)));
-            const bgData = ctx.getImageData(bgX, bgY, coreSize, coreSize).data;
-            let paperSum = 0;
-            for (let i = 0; i < bgData.length; i += 4) {
-                const eff = Math.min((bgData[i] + bgData[i + 1] + bgData[i + 2]) / 3, bgData[i] * 0.5 + bgData[i + 1] * 0.5);
-                paperSum += eff;
-            }
-            const paperLuma = paperSum / (bgData.length / 4);
-            if (paperLuma < 65) return { shaded: false, score: 0 };
-
-            const offsets = [[0, 0], [-jitter, 0], [jitter, 0], [0, -jitter], [0, jitter]];
-            let bestScore = 0;
-
-            for (const [dx, dy] of offsets) {
-                const x0 = Math.max(0, Math.min(width - coreSize, Math.round(cx + dx - coreHalf)));
-                const y0 = Math.max(0, Math.min(height - coreSize, Math.round(cy + dy - coreHalf)));
-                const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
-
-                let darkCount = 0;
-                const total = boxData.length / 4;
-                for (let i = 0; i < boxData.length; i += 4) {
-                    const r = boxData[i], g = boxData[i + 1], b = boxData[i + 2];
-                    const luma = (r + g + b) / 3;
-                    const blueBoost = Math.max(0, b - (r + g) * 0.5);
-                    const effectiveDarkness = paperLuma - (luma - blueBoost * 0.65);
-                    if (effectiveDarkness > paperLuma * 0.24) darkCount++;
-                }
-                const ratio = darkCount / total;
-                if (ratio > bestScore) bestScore = ratio;
-            }
-
-            return { shaded: bestScore >= 0.42, score: bestScore };
-        }
-
-        async function readWritingZone(sourceCanvas, tl, ux, uy, vx, vy, qrSize, area) {
-            const p0x = tl.x + area.dx * ux + area.dy * vx;
-            const p0y = tl.y + area.dx * uy + area.dy * vy;
-            const p1x = tl.x + (area.dx + area.dw) * ux + area.dy * vx;
-            const p1y = tl.y + (area.dx + area.dw) * uy + area.dy * vy;
-            const p2x = tl.x + area.dx * ux + (area.dy + area.dh) * vx;
-            const p2y = tl.y + area.dx * uy + (area.dy + area.dh) * vy;
-
-            const outW = Math.max(60, Math.round(area.dw * qrSize * 3));
-            const outH = Math.max(30, Math.round(area.dh * qrSize * 3));
-
-            const crop = document.createElement('canvas');
-            crop.width = outW;
-            crop.height = outH;
-            const cctx = crop.getContext('2d', { willReadFrequently: true });
-
-            const a = (p1x - p0x) / outW;
-            const b = (p1y - p0y) / outW;
-            const c = (p2x - p0x) / outH;
-            const d = (p2y - p0y) / outH;
-            cctx.setTransform(a, b, c, d, p0x, p0y);
-            cctx.drawImage(sourceCanvas, 0, 0);
-            cctx.setTransform(1, 0, 0, 1, 0, 0);
-
-            const imgData = cctx.getImageData(0, 0, outW, outH);
-            const px = imgData.data;
-            const gray = new Float32Array(outW * outH);
-            const samples = [];
-
-            for (let i = 0; i < outW * outH; i++) {
-                const r = px[i * 4], g = px[i * 4 + 1], bCh = px[i * 4 + 2];
-                const blueBoost = Math.max(0, bCh - (r + g) * 0.5);
-                const val = ((r + g + bCh) / 3) - blueBoost * 0.7;
-                gray[i] = val;
-                if (i % 4 === 0) samples.push(val);
-            }
-
-            samples.sort((x, y) => x - y);
-            const paperBg = samples[Math.floor(samples.length * 0.85)] || 220;
-
-            const bin = new Uint8Array(outW * outH);
-            let inkPixels = 0;
-            for (let i = 0; i < outW * outH; i++) {
-                const isInk = (paperBg - gray[i]) > Math.max(18, paperBg * 0.13);
-                bin[i] = isInk ? 1 : 0;
-                if (isInk) inkPixels++;
-            }
-
-            for (let y = 0; y < outH; y++) {
-                let rowInk = 0;
-                for (let x = 0; x < outW; x++) rowInk += bin[y * outW + x];
-                if (rowInk > outW * 0.68) {
-                    for (let x = 0; x < outW; x++) {
-                        const above = y > 1 ? bin[(y - 2) * outW + x] : 0;
-                        const below = y < outH - 2 ? bin[(y + 2) * outW + x] : 0;
-                        if (!above && !below && bin[y * outW + x]) {
-                            bin[y * outW + x] = 0;
-                            inkPixels--;
-                        }
-                    }
-                }
-            }
-
-            if (inkPixels / (outW * outH) < 0.0025) return 'No text detected.';
-
-            const pad = 24;
-            const padded = document.createElement('canvas');
-            padded.width = outW + pad * 2;
-            padded.height = outH + pad * 2;
-            const pctx = padded.getContext('2d');
-            pctx.fillStyle = '#ffffff';
-            pctx.fillRect(0, 0, padded.width, padded.height);
-
-            const cleanImg = pctx.createImageData(outW, outH);
-            for (let i = 0; i < outW * outH; i++) {
-                const v = bin[i] ? 0 : 255;
-                cleanImg.data[i * 4] = v;
-                cleanImg.data[i * 4 + 1] = v;
-                cleanImg.data[i * 4 + 2] = v;
-                cleanImg.data[i * 4 + 3] = 255;
-            }
-            pctx.putImageData(cleanImg, pad, pad);
-
-            try {
-                const res = await Tesseract.recognize(padded, 'eng', { tessedit_pageseg_mode: '6' });
-                let text = (res.data.text || '')
-                    .replace(/^(why|description|comments)\s*:?\s*/i, '')
-                    .replace(/(stall\s*[1234]|hand\s*washing|urinal|good|dirty|damaged|broken|too\s*disgusting\s*to\s*rate)/gi, ' ')
-                    .replace(/[_|—–~`^*=<>\/\[\]{}]+/g, ' ')
-                    .replace(/\s+/g, ' ')
-                    .trim();
-
-                if (!text || !/[a-zA-Z0-9]{2,}/.test(text)) return 'No text detected.';
-                return capitalizeFirst(text);
-            } catch (err) {
-                return 'No text detected.';
-            }
-        }
-
-        async function handleImageUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            currentMode = 'scan';
-            showFormPage('Scan results');
-            resultsOutput.innerHTML = '<p class="status-msg">Scanning sheet, please wait...</p>';
-
-            const img = new Image();
-            img.onload = async () => {
-                const detected = detectQR(img);
-                if (!detected) {
-                    resultsOutput.innerHTML = '<p class="status-msg">Page not detected.</p>';
-                    return;
-                }
-
-                const { qr, canvas, ctx } = detected;
-                const tl = qr.location.topLeftCorner;
-                const tr = qr.location.topRightCorner;
-                const bl = qr.location.bottomLeftCorner;
-
-                const ux = tr.x - tl.x;
-                const uy = tr.y - tl.y;
-                const vx = bl.x - tl.x;
-                const vy = bl.y - tl.y;
-                const qrSize = Math.hypot(ux, uy);
-
-                const scannedMap = {};
-
-                for (const section of SECTIONS_STANDARD) {
-                    const shadedBoxes = [];
-                    for (const box of section.boxes) {
-                        const px = tl.x + box.dx * ux + box.dy * vx;
-                        const py = tl.y + box.dx * uy + box.dy * vy;
-                        const res = measureBoxInterior(ctx, canvas.width, canvas.height, px, py, qrSize);
-                        if (res.shaded) shadedBoxes.push(box.label);
-                    }
-
-                    const text = await readWritingZone(canvas, tl, ux, uy, vx, vy, qrSize, section.textArea);
-
-                    let selectedValue = '';
-                    let badgeHtml = '';
-
-                    if (shadedBoxes.length > 1) {
-                        selectedValue = '';
-                        badgeHtml = '<span class="not-detected-badge">Detection failed</span>';
-                    } else if (shadedBoxes.length === 1) {
-                        selectedValue = shadedBoxes[0];
-                        badgeHtml = `<span class="shaded-badge">Detected: ${shadedBoxes[0]}</span>`;
-                    } else if (section.title === 'Too disgusting to rate') {
-                        selectedValue = 'No';
-                    }
-
-                    scannedMap[section.title] = { selectedValue, badgeHtml, text };
-                }
-
-                lastScanData = scannedMap;
-                renderFormCards(currentBlock, scannedMap);
-            };
-            img.src = URL.createObjectURL(file);
-        }
-
-        cameraInput.addEventListener('change', handleImageUpload);
-        photosInput.addEventListener('change', handleImageUpload);
+            tbody.appendChild(el('tr', {}, [
+el('td', {}, [el('strong', { textContent: 'Bathroom / Block' })]),
+el('td', { textContent: selectedBlock }),
+el('td', { textContent: '—' })
+]));
+document.querySelectorAll('.result-card').forEach(card => {
+const title = card.getAttribute('data-card-section');
+const sel = card.querySelector('.section-dropdown');
+const txt = card.querySelector('.read-text');
+const rawRating = sel ? sel.value : '—';
+const isUnanswered = sel && sel.value === '';
+const ratingNode = isUnanswered
+? el('span', { className: 'summary-unanswered', textContent: 'Unanswered' })
+: document.createTextNode(rawRating);
+const rawText = txt ? txt.textContent.trim() : '';
+const isNoText = !rawText || rawText === 'No text detected.';
+const textNode = isNoText
+? el('span', { className: 'summary-notext', textContent: 'No text entered' })
+: document.createTextNode(rawText);
+collectedRows.push({
+title,
+rating: isUnanswered ? '' : rawRating,
+hasText: !isNoText,
+rawText
+});
+tbody.appendChild(el('tr', {}, [
+el('td', {}, [el('strong', { textContent: title })]),
+el('td', {}, [ratingNode]),
+el('td', {}, [textNode])
+]));
+});
+const table = el('table', { className: 'summary-table' }, [
+el('thead', {}, [
+el('tr', {}, [
+el('th', { textContent: 'Section' }),
+el('th', { textContent: 'Rating' }),
+el('th', { textContent: 'Notes' })
+])
+]),
+tbody
+]);
+summaryOutput.innerHTML = '';
+summaryOutput.appendChild(table);
+const issuesFound = hasReportedIssues(collectedRows);
+if (issuesFound) {
+const emailDraft = buildFormalEmail(selectedBlock, collectedRows);
+const copyBtn = el('button', { type: 'button', className: 'copy-email-btn', textContent: 'Copy Email' });
+const sendBtn = el('button', {
+type: 'button',
+className: 'copy-email-btn',
+style: 'background-color: #218838;',
+textContent: 'Send Email'
+});
+const subjInput = el('input', {
+type: 'text',
+id: 'emailSubjectInput',
+className: 'email-subject-input',
+value: emailDraft.subject
+});
+const bodyTextarea = el('textarea', {
+id: 'emailBodyTextarea',
+className: 'email-textarea',
+value: emailDraft.body
+});
+copyBtn.addEventListener('click', () => {
+const fullText = 'Subject: ' + subjInput.value + '\n\n' + bodyTextarea.value;
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(fullText).then(() => {
+copyBtn.textContent = 'Copied!';
+setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
+});
+} else {
+bodyTextarea.select();
+document.execCommand('copy');
+copyBtn.textContent = 'Copied!';
+setTimeout(() => { copyBtn.textContent = 'Copy Email'; }, 1800);
+}
+});
+sendBtn.addEventListener('click', () => {
+sendViaEmailJS(sendBtn, subjInput.value, bodyTextarea.value);
+});
+const emailBox = el('div', { className: 'email-section' }, [
+el('div', { className: 'email-header' }, [
+el('h3', { textContent: 'Formal Report Email (Editable)' }),
+el('div', { style: 'display: flex; gap: 8px; flex-wrap: wrap;' }, [copyBtn, sendBtn])
+]),
+el('div', { className: 'email-subject-row' }, [
+el('label', { for: 'emailSubjectInput', textContent: 'Subject:' }),
+subjInput
+]),
+bodyTextarea
+]);
+summaryOutput.appendChild(emailBox);
+} else {
+const anywayBtn = el('button', {
+type: 'button',
+style: 'background: none; border: none; color: #0066cc; font-size: 13px; text-decoration: underline; cursor: pointer; padding: 0;',
+textContent: 'Email anyway'
+});
+anywayBtn.addEventListener('click', () => {
+document.getElementById('customEmailSubject').value = 'Report: ' + selectedBlock + ' Restroom';
+document.getElementById('customEmailBody').value = '';
+summaryPage.style.display = 'none';
+document.getElementById('customEmailPage').style.display = 'block';
+window.scrollTo(0, 0);
+});
+const noEmailBox = el('div', {
+className: 'email-section',
+style: 'text-align: center; padding: 24px 16px;'
+}, [
+el('p', {
+style: 'font-size: 18px; font-weight: bold; color: #29251f; margin-bottom: 6px;',
+textContent: 'No email needed'
+}),
+anywayBtn
+]);
+summaryOutput.appendChild(noEmailBox);
+}
+resultsPage.style.display = 'none';
+summaryPage.style.display = 'block';
+window.scrollTo(0, 0);
+}
+// Write Your Own Email Page Buttons
+const customEmailHeader = document.querySelector('#customEmailPage .email-header');
+if (customEmailHeader && !document.getElementById('sendCustomEmailBtn')) {
+const btnGroup = el('div', { style: 'display: flex; gap: 8px; flex-wrap: wrap;' });
+const copyCustomBtn = document.getElementById('copyCustomEmailBtn');
+const sendCustomBtn = el('button', {
+type: 'button',
+id: 'sendCustomEmailBtn',
+className: 'copy-email-btn',
+style: 'background-color: #218838;',
+textContent: 'Send Email'
+});
+customEmailHeader.appendChild(btnGroup);
+btnGroup.appendChild(copyCustomBtn);
+btnGroup.appendChild(sendCustomBtn);
+sendCustomBtn.addEventListener('click', () => {
+const subj = document.getElementById('customEmailSubject').value;
+const body = document.getElementById('customEmailBody').value;
+sendViaEmailJS(sendCustomBtn, subj, body);
+});
+}
+document.getElementById('customEmailBackBtn').addEventListener('click', () => {
+document.getElementById('customEmailPage').style.display = 'none';
+summaryPage.style.display = 'block';
+window.scrollTo(0, 0);
+});
+document.getElementById('copyCustomEmailBtn').addEventListener('click', () => {
+const btn = document.getElementById('copyCustomEmailBtn');
+const subj = document.getElementById('customEmailSubject').value;
+const body = document.getElementById('customEmailBody').value;
+const fullText = 'Subject: ' + subj + '\n\n' + body;
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(fullText).then(() => {
+btn.textContent = 'Copied!';
+setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
+});
+} else {
+const ta = document.getElementById('customEmailBody');
+ta.select();
+document.execCommand('copy');
+btn.textContent = 'Copied!';
+setTimeout(() => { btn.textContent = 'Copy Email'; }, 1800);
+}
+});
+document.getElementById('customEmailDoneBtn').addEventListener('click', () => {
+document.getElementById('customEmailPage').style.display = 'none';
+backHomeBtn.click();
+});
+// Suggestion Box Page Buttons
+const suggestionPage = document.getElementById('suggestionPage');
+const suggestionBoxBtn = document.getElementById('suggestionBoxBtn');
+if (suggestionBoxBtn && suggestionPage) {
+const sugHeader = suggestionPage.querySelector('.email-header');
+if (sugHeader && !document.getElementById('sendSuggestionBtn')) {
+const sugBtnGroup = el('div', { style: 'display: flex; gap: 8px; flex-wrap: wrap;' });
+const copySugBtn = document.getElementById('copySuggestionBtn');
+const sendSugBtn = el('button', {
+type: 'button',
+id: 'sendSuggestionBtn',
+className: 'copy-email-btn',
+style: 'background-color: #218838;',
+textContent: 'Send Email'
+});
+sugHeader.appendChild(sugBtnGroup);
+sugBtnGroup.appendChild(copySugBtn);
+sugBtnGroup.appendChild(sendSugBtn);
+sendSugBtn.addEventListener('click', () => {
+const topic = document.getElementById('suggestionCategory').value;
+const text = document.getElementById('suggestionBody').value.trim();
+sendViaEmailJS(sendSugBtn, 'Suggestion Box: ' + topic, 'Topic: ' + topic + '\n\n' + text);
+});
+}
+suggestionBoxBtn.addEventListener('click', () => {
+document.getElementById('pageHeader').style.display = 'none';
+document.getElementById('pageMain').style.display = 'none';
+document.getElementById('pageFooter').style.display = 'none';
+document.getElementById('suggestionCategory').selectedIndex = 0;
+document.getElementById('suggestionBody').value = '';
+suggestionPage.style.display = 'block';
+window.scrollTo(0, 0);
+});
+document.getElementById('suggestionBackBtn').addEventListener('click', () => {
+suggestionPage.style.display = 'none';
+backHomeBtn.click();
+});
+document.getElementById('copySuggestionBtn').addEventListener('click', () => {
+const btn = document.getElementById('copySuggestionBtn');
+const topic = document.getElementById('suggestionCategory').value;
+const text = document.getElementById('suggestionBody').value.trim();
+const fullText = 'Topic: ' + topic + '\n\n' + text;
+if (navigator.clipboard && navigator.clipboard.writeText) {
+navigator.clipboard.writeText(fullText).then(() => {
+btn.textContent = 'Copied!';
+setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
+});
+} else {
+const ta = document.getElementById('suggestionBody');
+ta.select();
+document.execCommand('copy');
+btn.textContent = 'Copied!';
+setTimeout(() => { btn.textContent = 'Copy Suggestion'; }, 1800);
+}
+});
+document.getElementById('suggestionDoneBtn').addEventListener('click', () => {
+suggestionPage.style.display = 'none';
+backHomeBtn.click();
+});
+}
+function highlightUnansweredDropdowns() {
+let firstUnanswered = null;
+document.querySelectorAll('.result-card').forEach(card => {
+const sel = card.querySelector('.section-dropdown');
+if (sel && sel.value === '') {
+card.classList.add('unanswered-highlight');
+if (!firstUnanswered) firstUnanswered = card;
+} else {
+card.classList.remove('unanswered-highlight');
+}
+});
+if (firstUnanswered) {
+firstUnanswered.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+}
+finishBtn.addEventListener('click', () => {
+const dropdowns = Array.from(document.querySelectorAll('.section-dropdown'));
+const hasIncomplete = dropdowns.some(sel => sel.value === '');
+if (hasIncomplete) {
+openIncompleteModal();
+} else {
+goToSummaryPage();
+}
+});
+modalOkBtn.addEventListener('click', () => {
+closeIncompleteModal();
+highlightUnansweredDropdowns();
+});
+modalSkipBtn.addEventListener('click', () => {
+goToSummaryPage();
+});
+function capitalizeFirst(str) {
+const clean = (str || '').replace(/\s+/g, ' ').trim();
+if (!clean) return 'No text detected.';
+return clean.charAt(0).toUpperCase() + clean.slice(1);
+}
+const STANDARD_SECTIONS = [
+{ title: 'Too disgusting to rate', boxes: [{ label: 'Yes', dx: -0.11, dy: -3.56 }], dropdownOptions: ['No', 'Yes'], textArea: { dx: 2.38, dy: -3.65, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 1', boxes: [{ label: 'Good', dx: 0.34, dy: -2.97 }, { label: 'Dirty', dx: 0.34, dy: -2.74 }, { label: 'Damaged', dx: 0.34, dy: -2.51 }, { label: 'Broken', dx: 0.34, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -2.14, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 2', boxes: [{ label: 'Good', dx: 0.34, dy: -1.66 }, { label: 'Dirty', dx: 0.34, dy: -1.43 }, { label: 'Damaged', dx: 0.34, dy: -1.20 }, { label: 'Broken', dx: 0.34, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.83, dw: 1.65, dh: 0.25 } },
+{ title: 'Hand washing', boxes: [{ label: 'Good', dx: 2.09, dy: -2.97 }, { label: 'Dirty', dx: 2.09, dy: -2.74 }, { label: 'Damaged', dx: 2.09, dy: -2.51 }, { label: 'Broken', dx: 2.09, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -2.14, dw: 1.65, dh: 0.25 } },
+{ title: 'Urinal', boxes: [{ label: 'Good', dx: 2.09, dy: -1.66 }, { label: 'Dirty', dx: 2.09, dy: -1.43 }, { label: 'Damaged', dx: 2.09, dy: -1.20 }, { label: 'Broken', dx: 2.09, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -0.83, dw: 1.65, dh: 0.25 } },
+{ title: 'Comments', boxes: [], dropdownOptions: [], textArea: { dx: 1.15, dy: -0.18, dw: 2.85, dh: 1.15 } }
+];
+const BLOCK1_SECTIONS = [
+{ title: 'Too disgusting to rate', boxes: [{ label: 'Yes', dx: -0.11, dy: -3.56 }], dropdownOptions: ['No', 'Yes'], textArea: { dx: 2.38, dy: -3.65, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 1', boxes: [{ label: 'Good', dx: 0.34, dy: -2.97 }, { label: 'Dirty', dx: 0.34, dy: -2.74 }, { label: 'Damaged', dx: 0.34, dy: -2.51 }, { label: 'Broken', dx: 0.34, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -2.14, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 2', boxes: [{ label: 'Good', dx: 2.09, dy: -2.97 }, { label: 'Dirty', dx: 2.09, dy: -2.74 }, { label: 'Damaged', dx: 2.09, dy: -2.51 }, { label: 'Broken', dx: 2.09, dy: -2.28 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -2.14, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 3', boxes: [{ label: 'Good', dx: 0.34, dy: -1.66 }, { label: 'Dirty', dx: 0.34, dy: -1.43 }, { label: 'Damaged', dx: 0.34, dy: -1.20 }, { label: 'Broken', dx: 0.34, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.83, dw: 1.65, dh: 0.25 } },
+{ title: 'Stall 4', boxes: [{ label: 'Good', dx: 2.09, dy: -1.66 }, { label: 'Dirty', dx: 2.09, dy: -1.43 }, { label: 'Damaged', dx: 2.09, dy: -1.20 }, { label: 'Broken', dx: 2.09, dy: -0.97 }], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 2.00, dy: -0.83, dw: 1.65, dh: 0.25 } },
+{ title: 'Hand washing', boxes: [], dropdownOptions: ['Good', 'Dirty', 'Damaged', 'Broken'], textArea: { dx: 0.25, dy: -0.50, dw: 3.40, dh: 0.25 } },
+{ title: 'Comments', boxes: [], dropdownOptions: [], textArea: { dx: 1.15, dy: -0.18, dw: 2.85, dh: 1.15 } }
+];
+function getSectionsForBlock(blockName) {
+return blockName === 'Block 1 (Yr 7-8)' ? BLOCK1_SECTIONS : STANDARD_SECTIONS;
+}
+function renderFormUI(mode, scannedResultsMap = {}) {
+resultsOutput.innerHTML = '';
+const blocks = ['Block 3 boys (Yr9)', 'Block 5 boys (Yr10)', 'Block 1 (Yr 7-8)'];
+const blockSelect = el('select', { id: 'blockSelect', className: 'rating-select' },
+blocks.map(b => {
+const opt = el('option', { value: b, textContent: b });
+if (b === currentBlock) opt.selected = true;
+return opt;
+})
+);
+blockSelect.addEventListener('change', (e) => {
+const prevValues = {};
+document.querySelectorAll('.result-card').forEach(card => {
+const secTitle = card.getAttribute('data-card-section');
+const sel = card.querySelector('.section-dropdown');
+const txt = card.querySelector('.read-text');
+prevValues[secTitle] = {
+rating: sel ? sel.value : '',
+text: txt ? txt.textContent : ''
+};
+});
+currentBlock = e.target.value;
+renderFormUI(mode, scannedResultsMap);
+document.querySelectorAll('.result-card').forEach(card => {
+const secTitle = card.getAttribute('data-card-section');
+if (prevValues[secTitle]) {
+const sel = card.querySelector('.section-dropdown');
+const txt = card.querySelector('.read-text');
+if (sel && prevValues[secTitle].rating) sel.value = prevValues[secTitle].rating;
+if (txt && prevValues[secTitle].text) txt.textContent = prevValues[secTitle].text;
+}
+});
+});
+resultsOutput.appendChild(el('div', { className: 'block-card' }, [
+el('label', { for: 'blockSelect', textContent: 'Bathroom / Block:' }),
+blockSelect
+]));
+const isDesktopPointer = window.matchMedia && window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+const sections = getSectionsForBlock(currentBlock);
+sections.forEach(section => {
+const scanInfo = scannedResultsMap[section.title] || { bestMatchLabel: '', isMultiple: false, text: '' };
+const initialText = mode === 'manual' ? '' : (scanInfo.text || 'No text detected.');
+const cardChildren = [el('h3', { textContent: section.title })];
+if (section.dropdownOptions && section.dropdownOptions.length > 0) {
+const isBinary = section.dropdownOptions.includes('No') && section.dropdownOptions.includes('Yes');
+let selectedValue = '';
+if (mode === 'scan' && !scanInfo.isMultiple) {
+selectedValue = scanInfo.bestMatchLabel || (isBinary ? 'No' : '');
+}
+const sel = el('select', { className: 'rating-select section-dropdown', 'aria-label': section.title });
+if (!isBinary) {
+const placeholder = el('option', { value: '', textContent: 'Select rating...' });
+if (selectedValue === '') placeholder.selected = true;
+sel.appendChild(placeholder);
+}
+section.dropdownOptions.forEach(optText => {
+const opt = el('option', { value: optText, textContent: optText });
+if (selectedValue === optText) opt.selected = true;
+sel.appendChild(opt);
+});
+sel.addEventListener('change', () => {
+if (sel.value !== '') {
+const card = sel.closest('.result-card');
+if (card) card.classList.remove('unanswered-highlight');
+}
+});
+const statusRowChildren = [sel];
+if (mode === 'scan') {
+if (scanInfo.isMultiple) {
+statusRowChildren.push(el('span', { className: 'not-detected-badge', textContent: 'Detection failed' }));
+} else if (scanInfo.bestMatchLabel) {
+statusRowChildren.push(el('span', { className: 'shaded-badge', textContent: 'Detected: ' + scanInfo.bestMatchLabel }));
+}
+}
+cardChildren.push(el('div', { className: 'shaded-status' }, statusRowChildren));
+}
+const textSpan = el('span', {
+className: 'read-text',
+contenteditable: mode === 'manual' ? 'true' : 'false',
+textContent: initialText
+});
+const startEditing = () => {
+if (textSpan.textContent.trim() === 'No text detected.') textSpan.textContent = '';
+textSpan.setAttribute('contenteditable', 'true');
+textSpan.focus();
+};
+const finishEditing = () => {
+if (mode === 'scan') {
+textSpan.textContent = capitalizeFirst(textSpan.textContent);
+textSpan.setAttribute('contenteditable', 'false');
+}
+};
+if (isDesktopPointer && mode === 'scan') {
+textSpan.addEventListener('click', () => {
+if (textSpan.getAttribute('contenteditable') !== 'true') startEditing();
+});
+textSpan.addEventListener('blur', () => {
+if (textSpan.getAttribute('contenteditable') === 'true') finishEditing();
+});
+textSpan.addEventListener('keydown', (e) => {
+if (e.key === 'Enter' && !e.shiftKey) {
+e.preventDefault();
+textSpan.blur();
+}
+});
+}
+const pencilBtn = el('button', {
+type: 'button',
+className: 'edit-pencil',
+title: 'Edit',
+'aria-label': 'Edit',
+textContent: '✎'
+});
+pencilBtn.addEventListener('click', () => {
+if (textSpan.getAttribute('contenteditable') !== 'true') startEditing();
+else if (mode === 'scan') finishEditing();
+else textSpan.focus();
+});
+cardChildren.push(el('div', { className: 'text-row' }, [textSpan, pencilBtn]));
+resultsOutput.appendChild(el('div', {
+className: 'result-card',
+'data-card-section': section.title
+}, cardChildren));
+});
+}
+manualEntryBtn.addEventListener('click', () => {
+showWhiteScreen('Manual entry');
+renderFormUI('manual');
+});
+function detectSheetQR(img) {
+const scales = new Array(1600, 1200, 900, 2200);
+for (const maxDim of scales) {
+const canvas = document.createElement('canvas');
+const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+canvas.width = Math.round(img.width * scale);
+canvas.height = Math.round(img.height * scale);
+const ctx = canvas.getContext('2d', { willReadFrequently: true });
+ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+const fullImg = ctx.getImageData(0, 0, canvas.width, canvas.height);
+const qr = jsQR(fullImg.data, canvas.width, canvas.height, { inversionAttempts: 'attemptBoth' });
+if (qr) return { qr, canvas, ctx };
+}
+return null;
+}
+function checkBoxState(ctx, width, height, cx, cy, qrSize) {
+const coreHalf = Math.max(2, Math.round(qrSize * 0.022));
+const coreSize = coreHalf * 2 + 1;
+const step = Math.max(2, Math.round(qrSize * 0.015));
+if (cx - coreHalf < 0 || cy - coreHalf < 0 || cx + coreHalf >= width || cy + coreHalf >= height) {
+return { state: 'not_detected', inkScore: 0 };
+}
+const sampleCore = (ox, oy) => {
+const x0 = Math.max(0, Math.min(width - coreSize, Math.round(ox - coreHalf)));
+const y0 = Math.max(0, Math.min(height - coreSize, Math.round(oy - coreHalf)));
+const bgX = Math.max(0, Math.round(x0 - qrSize * 0.14));
+const bgW = Math.max(4, Math.round(qrSize * 0.06));
+const bgData = ctx.getImageData(bgX, y0, bgW, coreSize).data;
+let bgSum = 0;
+const bgCount = bgData.length / 4;
+for (let i = 0; i < bgData.length; i += 4) {
+bgSum += 0.299 * bgData[i] + 0.587 * bgData[i + 1] + 0.114 * bgData[i + 2];
+}
+const paperLuma = bgSum / Math.max(1, bgCount);
+if (paperLuma < 85) return 0;
+const boxData = ctx.getImageData(x0, y0, coreSize, coreSize).data;
+const total = boxData.length / 4;
+let markedPixels = 0;
+let lumaDropSum = 0;
+for (let i = 0; i < boxData.length; i += 4) {
+const r = boxData[i], g = boxData[i + 1], b = boxData[i + 2];
+const luma = 0.299 * r + 0.587 * g + 0.114 * b;
+const blueBoost = Math.max(0, b - (r + g) * 0.5) * 0.95;
+const effectiveDarkness = (paperLuma - luma) + blueBoost;
+if (effectiveDarkness > paperLuma * 0.18) {
+markedPixels++;
+lumaDropSum += effectiveDarkness / paperLuma;
+}
+}
+const fillRatio = markedPixels / total;
+const avgDrop = lumaDropSum / total;
+return fillRatio >= 0.35 ? (fillRatio * 0.7 + avgDrop) : 0;
+};
+const offsets = new Array(
+new Array(0, 0),
+new Array(-step, 0),
+new Array(step, 0),
+new Array(0, -step),
+new Array(0, step)
+);
+let bestScore = 0;
+for (const pair of offsets) {
+const s = sampleCore(cx + pair.at(0), cy + pair.at(1));
+if (s > bestScore) bestScore = s;
+}
+if (bestScore >= 0.38) return { state: 'shaded', inkScore: bestScore };
+return { state: 'unshaded', inkScore: bestScore };
+}
+function extractRectifiedZone(sourceCanvas, tl, ux, uy, vx, vy, area) {
+const outW = Math.max(240, Math.round(area.dw * 340));
+const outH = Math.max(64, Math.round(area.dh * 340));
+const pad = 20;
+const crop = document.createElement('canvas');
+crop.width = outW + pad * 2;
+crop.height = outH + pad * 2;
+const cctx = crop.getContext('2d', { willReadFrequently: true });
+cctx.fillStyle = '#ffffff';
+cctx.fillRect(0, 0, crop.width, crop.height);
+cctx.save();
+cctx.translate(pad, pad);
+const a = (area.dw * ux) / outW;
+const b = (area.dw * uy) / outW;
+const c = (area.dh * vx) / outH;
+const d = (area.dh * vy) / outH;
+const e = tl.x + area.dx * ux + area.dy * vx;
+const f = tl.y + area.dx * uy + area.dy * vy;
+const det = a * d - b * c;
+if (Math.abs(det) > 1e-6) {
+cctx.transform(d / det, -b / det, -c / det, a / det, (c * f - d * e) / det, (b * e - a * f) / det);
+cctx.drawImage(sourceCanvas, 0, 0);
+}
+cctx.restore();
+const imgData = cctx.getImageData(0, 0, crop.width, crop.height);
+const data = imgData.data;
+const w = crop.width;
+const h = crop.height;
+const luma = new Float32Array(w * h);
+const hist = new Uint32Array(256);
+for (let i = 0; i < w * h; i++) {
+const r = data[i * 4], g = data[i * 4 + 1], bl = data[i * 4 + 2];
+const blueBoost = Math.max(0, bl - (r + g) * 0.5) * 0.95;
+const val = Math.max(0, Math.min(255, (0.299 * r + 0.587 * g + 0.114 * bl) - blueBoost));
+luma[i] = val;
+hist[Math.round(val)]++;
+}
+let count = 0;
+let paperBg = 225;
+const target = Math.floor(w * h * 0.85);
+for (let v = 0; v < 256; v++) {
+count += hist[v];
+if (count >= target) {
+paperBg = Math.max(120, v);
+break;
+}
+}
+const inkMask = new Uint8Array(w * h);
+for (let i = 0; i < w * h; i++) {
+const rel = (luma[i] / paperBg) * 255;
+if (rel < 205) inkMask[i] = 1;
+}
+for (let y = pad; y < h - pad; y++) {
+let rowDark = 0;
+for (let x = pad; x < w - pad; x++) {
+if (inkMask[y * w + x]) rowDark++;
+}
+if (rowDark > outW * 0.68) {
+for (let x = pad; x < w - pad; x++) {
+const aboveInk = (y - 2 >= 0 && inkMask[(y - 2) * w + x]) || (y - 3 >= 0 && inkMask[(y - 3) * w + x]);
+const belowInk = (y + 2 < h && inkMask[(y + 2) * w + x]) || (y + 3 < h && inkMask[(y + 3) * w + x]);
+if (!aboveInk && !belowInk) {
+inkMask[y * w + x] = 0;
+if (y - 1 >= 0) inkMask[(y - 1) * w + x] = 0;
+if (y + 1 < h) inkMask[(y + 1) * w + x] = 0;
+}
+}
+}
+}
+let remainingInk = 0;
+for (let y = pad; y < h - pad; y++) {
+for (let x = pad; x < w - pad; x++) {
+if (inkMask[y * w + x]) remainingInk++;
+}
+}
+const inkDensity = remainingInk / (outW * outH);
+if (inkDensity < 0.0025) return null;
+for (let i = 0; i < w * h; i++) {
+const val = inkMask[i] ? 0 : 255;
+data[i * 4] = val;
+data[i * 4 + 1] = val;
+data[i * 4 + 2] = val;
+data[i * 4 + 3] = 255;
+}
+cctx.putImageData(imgData, 0, 0);
+return crop;
+}
+function cleanOcrText(rawText) {
+let text = (rawText || '')
+.replace(/[_|—–=~`^<>[]{}]+/g, ' ')
+.replace(/\b(Too disgusting to rate|Why|Stall\s*\d*|Hand\swashing|Urinal|Comments|Good|Dirty|Damaged|Broken)\b[:-]/gi, ' ')
+.replace(/\s+/g, ' ')
+.trim();
+const lettersOnly = text.replace(/[^a-zA-Z0-9]/g, '');
+if (lettersOnly.length < 2) return 'No text detected.';
+return capitalizeFirst(text);
+}
+function withTimeout(promise, ms, fallbackVal = null) {
+let timer;
+return Promise.race([
+promise.finally(() => clearTimeout(timer)),
+new Promise(resolve => {
+timer = setTimeout(() => resolve(fallbackVal), ms);
+})
+]);
+}
+async function handleImageUpload(event) {
+const file = event.target.files ? event.target.files.item(0) : null;
+if (!file) return;
+showWhiteScreen('Scan results', 'Locating QR code...');
+const img = new Image();
+img.onload = async () => {
+const detected = detectSheetQR(img);
+if (!detected) {
+resultsOutput.innerHTML = '';
+resultsOutput.appendChild(el('p', { className: 'status-msg', textContent: 'Page not detected.' }));
+return;
+}
+const { qr, canvas, ctx } = detected;
+const tl = qr.location.topLeftCorner;
+const tr = qr.location.topRightCorner;
+const bl = qr.location.bottomLeftCorner;
+const ux = tr.x - tl.x;
+const uy = tr.y - tl.y;
+const vx = bl.x - tl.x;
+const vy = bl.y - tl.y;
+const qrSize = Math.hypot(ux, uy);
+let ocrWorker = null;
+try {
+resultsOutput.innerHTML = '';
+resultsOutput.appendChild(el('p', { className: 'status-msg', textContent: 'Loading handwriting reader...' }));
+ocrWorker = await withTimeout(Tesseract.createWorker('eng'), 10000, null);
+if (ocrWorker) {
+await withTimeout(ocrWorker.setParameters({ tessedit_pageseg_mode: '6' }), 2500, null);
+}
+} catch (e) {
+ocrWorker = null;
+}
+const activeSections = getSectionsForBlock(currentBlock);
+const scannedResultsMap = {};
+for (let idx = 0; idx < activeSections.length; idx++) {
+const section = activeSections[idx];
+resultsOutput.innerHTML = '';
+resultsOutput.appendChild(el('p', {
+className: 'status-msg',
+textContent: 'Reading ' + section.title + ' (' + (idx + 1) + '/' + activeSections.length + ')...'
+}));
+const shadedMatches = [];
+for (const box of section.boxes) {
+const px = tl.x + box.dx * ux + box.dy * vx;
+const py = tl.y + box.dx * uy + box.dy * vy;
+const result = checkBoxState(ctx, canvas.width, canvas.height, px, py, qrSize);
+if (result.state === 'shaded') shadedMatches.push(box.label);
+}
+const isMultiple = shadedMatches.length > 1;
+const bestMatchLabel = shadedMatches.length === 1 ? shadedMatches.at(0) : '';
+let extractedText = 'No text detected.';
+const cropCanvas = extractRectifiedZone(canvas, tl, ux, uy, vx, vy, section.textArea);
+if (cropCanvas && ocrWorker) {
+try {
+const res = await withTimeout(ocrWorker.recognize(cropCanvas), 5000, null);
+if (res && res.data && res.data.text) {
+extractedText = cleanOcrText(res.data.text);
+}
+} catch (e) {
+extractedText = 'No text detected.';
+}
+}
+scannedResultsMap[section.title] = {
+bestMatchLabel,
+isMultiple,
+text: extractedText
+};
+}
+if (ocrWorker) {
+try { await ocrWorker.terminate(); } catch (e) {}
+}
+renderFormUI('scan', scannedResultsMap);
+document.getElementById('resultsBottomActions').style.display = 'flex';
+finishBtn.style.display = 'inline-block';
+};
+img.src = URL.createObjectURL(file);
+}
+cameraInput.addEventListener('change', handleImageUpload);
+photosInput.addEventListener('change', handleImageUpload);
     </script>
 </body>
 </html>
