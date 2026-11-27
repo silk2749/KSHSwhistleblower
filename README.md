@@ -1,2 +1,2 @@
-# KSHSwhistleblower
-a site to blow the whistle on things
+# KSHScomplaints
+a site to complain about things
