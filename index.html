@@ -139,31 +139,44 @@
             z-index: 10;
         }
 
-        .footer-links {
+               .footer-links {
             display: flex;
             align-items: center;
-            gap: 16px;
+            gap: 12px;
         }
 
-        footer a { color: #ffffff; text-decoration: none; font-weight: bold; font-size: 15px; }
-        footer a:hover { text-decoration: underline; }
+        footer a {
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 15px;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
 
         .suggestion-btn {
-            background-color: #525252;
+            background: none;
+            border: none;
+            padding: 0;
             color: #ffffff;
-            border: 1px solid #666;
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 14px;
+            font-family: inherit;
             font-weight: bold;
+            font-size: 15px;
             cursor: pointer;
-            transition: 0.2s;
         }
 
         .suggestion-btn:hover {
-            background-color: #636363;
+            text-decoration: underline;
         }
 
+        .footer-divider {
+            color: #9e9e9e;
+            font-size: 15px;
+            user-select: none;
+        }
+        
         .version-label { color: #d6d6d6; font-weight: bold; font-size: 14px; }
 
         .overlay {
