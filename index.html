@@ -635,11 +635,7 @@
             .popup-boxes { flex-direction: column; gap: 12px; }
             .option-box { flex-direction: row; justify-content: center; padding: 16px; }
         }
-                 {
-            background-color: #e6c229;
-            color: #111111;
-        }
-
+   
              .modal-back-btn,
         .modal-send-btn,
         .modal-finish-btn {
@@ -1644,15 +1640,17 @@ data[i * 4 + 3] = 255;
 cctx.putImageData(imgData, 0, 0);
 return crop;
 }
-function cleanOcrText(rawText) {
-let text = (rawText || '')
-.replace(/[_|—–=~`^<>[]{}]+/g, ' ')
-.replace(/\b(Too disgusting to rate|Why|Stall\s*\d*|Hand\swashing|Urinal|Comments|Good|Dirty|Damaged|Broken)\b[:-]/gi, ' ')
-.replace(/\s+/g, ' ')
-.trim();
-const lettersOnly = text.replace(/[^a-zA-Z0-9]/g, '');
-if (lettersOnly.length < 2) return 'No text detected.';
-return capitalizeFirst(text);
+        function cleanOcrText(rawText) {
+            let text = (rawText || '')
+                .replace(/[_|—–=~`^<>\[\]{}]+/g, ' ')
+                .replace(/\b(Too disgusting to rate|Why|Stall\s*\d*|Hand\s*washing|Urinal|Comments|Good|Dirty|Damaged|Broken)\b[:-]*/gi, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+            const lettersOnly = text.replace(/[^a-zA-Z0-9]/g, '');
+            if (lettersOnly.length < 2) return 'No text detected.';
+            return capitalizeFirst(text);
+        }
+
 }
 function withTimeout(promise, ms, fallbackVal = null) {
 let timer;
@@ -1760,14 +1758,32 @@ img.src = URL.createObjectURL(file);
          }
      }
 
-                   unsentBackBtn.onclick = (e) => {
+                        unsentBackBtn.onclick = (e) => {
             if (e) {
                 e.preventDefault();
                 e.stopPropagation();
             }
-            unsentEmailModal.classList.remove('active');
-            overlay.classList.remove('active');
-            pendingSendAction = null;
+            closeUnsentModal();
+        };
+
+        unsentSendBtn.onclick = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            const action = pendingSendAction;
+            closeUnsentModal();
+            if (action) action();
+        };
+
+        unsentFinishBtn.onclick = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            closeUnsentModal();
+            emailWasSent = false;
+            backHomeBtn.click();
         };
 
      overlay.addEventListener('click', closeUnsentModal);
