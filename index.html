@@ -635,6 +635,24 @@
             .popup-boxes { flex-direction: column; gap: 12px; }
             .option-box { flex-direction: row; justify-content: center; padding: 16px; }
         }
+                .modal-send-btn {
+            background-color: #e6c229;
+            color: #111111;
+        }
+
+        .modal-send-btn:hover {
+            background-color: #d4b11f;
+        }
+
+        .modal-finish-btn {
+            background-color: #218838;
+            color: #ffffff;
+        }
+
+        .modal-finish-btn:hover {
+            background-color: #1b6f2e;
+        }
+
     </style>
 </head>
 <body>
@@ -708,6 +726,15 @@
             <button type="button" class="modal-skip-btn" id="modalSkipBtn">Skip</button>
         </div>
     </div>
+    
+ <div class="center-modal" id="unsentEmailModal">
+     <p>the email has not been sent</p>
+     <div class="modal-actions">
+         <button type="button" class="modal-ok-btn" id="unsentBackBtn">Back</button>
+         <button type="button" class="modal-send-btn" id="unsentSendBtn">Send</button>
+         <button type="button" class="modal-finish-btn" id="unsentFinishBtn">Finish</button>
+     </div>
+ </div>
 
     <section id="resultsPage" class="white-screen">
         <div class="results-container">
@@ -811,6 +838,8 @@
         const EMAILJS_SERVICE_ID = 'service_4bm1iuk';
         const EMAILJS_TEMPLATE_ID = 'template_73zlh6r';
         let currentBlock = 'Block 3 boys (Yr9)';
+     let emailWasSent = false;
+
 
         function el(tag, props = {}, children = []) {
             const node = document.createElement(tag);
@@ -839,6 +868,7 @@
                     message: bodyText
                 });
                 btnElement.textContent = 'Sent!';
+                             emailWasSent = true;
                 btnElement.style.backgroundColor = '#19692c';
             } catch (err) {
                 console.error('EmailJS send failed:', err);
@@ -1683,6 +1713,87 @@ finishBtn.style.display = 'inline-block';
 };
 img.src = URL.createObjectURL(file);
 }
+          const unsentEmailModal = document.getElementById('unsentEmailModal');
+     const unsentBackBtn = document.getElementById('unsentBackBtn');
+     const unsentSendBtn = document.getElementById('unsentSendBtn');
+     const unsentFinishBtn = document.getElementById('unsentFinishBtn');
+     let pendingSendAction = null;
+
+     function openUnsentModal(sendCallback) {
+         pendingSendAction = sendCallback;
+         overlay.classList.add('active');
+         unsentEmailModal.classList.add('active');
+     }
+
+     function closeUnsentModal() {
+         unsentEmailModal.classList.remove('active');
+         pendingSendAction = null;
+         if (!bottomPopup.classList.contains('active') && !incompleteModal.classList.contains('active')) {
+             overlay.classList.remove('active');
+         }
+     }
+
+     unsentBackBtn.addEventListener('click', closeUnsentModal);
+
+     unsentSendBtn.addEventListener('click', () => {
+         const action = pendingSendAction;
+         closeUnsentModal();
+         if (action) action();
+     });
+
+     unsentFinishBtn.addEventListener('click', () => {
+         closeUnsentModal();
+         emailWasSent = false;
+         backHomeBtn.click();
+     });
+
+     overlay.addEventListener('click', closeUnsentModal);
+     backHomeBtn.addEventListener('click', () => { emailWasSent = false; });
+     finishBtn.addEventListener('click', () => { emailWasSent = false; });
+     suggestionBoxBtn.addEventListener('click', () => { emailWasSent = false; });
+
+     summaryDoneBtn.onclick = () => {
+         const sendBtn = document.getElementById('sendEmailBtn');
+         if (sendBtn && !emailWasSent) {
+             openUnsentModal(() => {
+                 const subj = document.getElementById('emailSubjectInput').value;
+                 const body = document.getElementById('emailBodyTextarea').value;
+                 sendViaEmailJS(sendBtn, subj, body);
+             });
+         } else {
+             summaryPage.style.display = 'none';
+             backHomeBtn.click();
+         }
+     };
+
+     document.getElementById('customEmailDoneBtn').onclick = () => {
+         const sendCustomBtn = document.getElementById('sendCustomEmailBtn');
+         const body = document.getElementById('customEmailBody').value.trim();
+         if (body && !emailWasSent) {
+             openUnsentModal(() => {
+                 const subj = document.getElementById('customEmailSubject').value;
+                 sendViaEmailJS(sendCustomBtn, subj, body);
+             });
+         } else {
+             document.getElementById('customEmailPage').style.display = 'none';
+             backHomeBtn.click();
+         }
+     };
+
+     document.getElementById('suggestionDoneBtn').onclick = () => {
+         const sendSugBtn = document.getElementById('sendSuggestionBtn');
+         const text = document.getElementById('suggestionBody').value.trim();
+         if (text && !emailWasSent) {
+             openUnsentModal(() => {
+                 const topic = document.getElementById('suggestionCategory').value;
+                 sendViaEmailJS(sendSugBtn, 'Suggestion Box: ' + topic, 'Topic: ' + topic + '\n\n' + text);
+             });
+         } else {
+             suggestionPage.style.display = 'none';
+             backHomeBtn.click();
+         }
+     };
+
 cameraInput.addEventListener('change', handleImageUpload);
 photosInput.addEventListener('change', handleImageUpload);
     </script>
