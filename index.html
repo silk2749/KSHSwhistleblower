@@ -640,15 +640,25 @@
             color: #111111;
         }
 
-                .modal-send-btn,
+             .modal-back-btn,
+        .modal-send-btn,
         .modal-finish-btn {
             border: none;
-            padding: 10px 22px;
+            padding: 10px 20px;
             border-radius: 8px;
             font-size: 15px;
             font-weight: bold;
             cursor: pointer;
-            min-width: 90px;
+            flex: 1;
+        }
+
+        .modal-back-btn {
+            background-color: #d92b2b;
+            color: #ffffff;
+        }
+
+        .modal-back-btn:hover {
+            background-color: #b82020;
         }
 
         .modal-send-btn {
@@ -746,11 +756,12 @@
  <div class="center-modal" id="unsentEmailModal">
      <p>the email has not been sent</p>
      <div class="modal-actions">
-         <button type="button" class="modal-ok-btn" id="unsentBackBtn">Back</button>
+         <button type="button" class="modal-back-btn" id="unsentBackBtn">Back</button>
          <button type="button" class="modal-send-btn" id="unsentSendBtn">Send</button>
          <button type="button" class="modal-finish-btn" id="unsentFinishBtn">Finish</button>
      </div>
  </div>
+
 
     <section id="resultsPage" class="white-screen">
         <div class="results-container">
@@ -773,7 +784,7 @@
             </div>
             <div id="summaryOutput"></div>
             <div class="bottom-actions">
-                <button type="button" class="finish-btn" id="summaryDoneBtn">Done</button>
+                <button type="button" class="finish-btn" id="summaryDoneBtn">Finish</button>
             </div>
         </div>
     </section>
@@ -796,7 +807,7 @@
                 <textarea id="customEmailBody" class="email-textarea" placeholder="Write your email here..."></textarea>
             </div>
             <div class="bottom-actions">
-                <button type="button" class="finish-btn" id="customEmailDoneBtn">Done</button>
+                <button type="button" class="finish-btn" id="customEmailDoneBtn">Finish</button>
             </div>
         </div>
     </section>
@@ -824,7 +835,7 @@
                 <textarea id="suggestionBody" class="email-textarea" placeholder="Share your idea or feedback to help improve KSHS complaints..."></textarea>
             </div>
             <div class="bottom-actions">
-                <button type="button" class="finish-btn" id="suggestionDoneBtn">Done</button>
+                <button type="button" class="finish-btn" id="suggestionDoneBtn">Finish</button>
             </div>
         </div>
     </section>
@@ -1749,23 +1760,15 @@ img.src = URL.createObjectURL(file);
          }
      }
 
-            unsentBackBtn.addEventListener('click', (e) => {
-            e.stopPropagation();
-            closeUnsentModal();
-        });
-
-
-     unsentSendBtn.addEventListener('click', () => {
-         const action = pendingSendAction;
-         closeUnsentModal();
-         if (action) action();
-     });
-
-     unsentFinishBtn.addEventListener('click', () => {
-         closeUnsentModal();
-         emailWasSent = false;
-         backHomeBtn.click();
-     });
+                   unsentBackBtn.onclick = (e) => {
+            if (e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            unsentEmailModal.classList.remove('active');
+            overlay.classList.remove('active');
+            pendingSendAction = null;
+        };
 
      overlay.addEventListener('click', closeUnsentModal);
      backHomeBtn.addEventListener('click', () => { emailWasSent = false; });
